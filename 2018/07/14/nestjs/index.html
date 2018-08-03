@@ -1,0 +1,199 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>用来angular的体系来写node之nestjs简介 | hello2dj | if you can&#39;t explain it simply, you don&#39;t understand it well enough</title>
+
+  
+  <meta name="author" content="hello2dj (dj_amazing@sina.com)">
+  
+
+  
+  <meta name="description" content="每个人都是带着棱角来到世上，只有磨平棱角才能走的更远">
+  
+
+  
+  
+  <meta name="keywords" content="nodejs,typescript,angular2">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="用来angular的体系来写node之nestjs简介"/>
+
+  <meta property="og:site_name" content="hello2dj"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="hello2dj" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">hello2dj</a>
+    </h1>
+    <p class="site-description">if you can&#39;t explain it simply, you don&#39;t understand it well enough</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/categories">Categories</a></li>
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>用来angular的体系来写node之nestjs简介</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/07/14/nestjs/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-07-14T13:00:30.044Z">
+          2018-07-14
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>先上图<br><img src="https://camo.githubusercontent.com/18fe3feea5e3593c593e12e552494a3995eceacf/687474703a2f2f6b616d696c6d79736c69776965632e636f6d2f7075626c69632f6e6573742d6c6f676f2e706e672331" alt=""></p>
+<p>这几年前端发展的很快，出现了很多优秀的框架。例如Angular2, React, Vue等他们大大提升了开发者的生产效率，以及快速创建可测试化，可扩展的前端应用。但是在server端nodejs到没有出现如此的框架都是一些基础的框架，工具等等，虽然目前有eggjs,thinkjs，私以为他们架构成熟性还有待进步，他依然也只是提供了一些工具和方法等，不过egg还是要胜think一筹的（都是我瞎掰的），当然他们也都在不同程度上的解决了一些初步的架构问题。</p>
+<p>这里我看到了一个新近的框架nestjs(基于express)，他提供了一个开箱即用的架构体系，是啥样的架构体系呢？angular2的架构体系，可以说几乎是一样的架构体系，照着搬过来了，不过可以想一想用angular2的前端架构来写后端代码，也是一种酸爽！（typescript）在我看看来就是一个nodejs中ROR,flask或者是django。</p>
+<h3 id="概念普及"><a href="#概念普及" class="headerlink" title="概念普及"></a>概念普及</h3><ul>
+<li>typescript js的超集，提供强类型校验，以及es6,7等js特性</li>
+<li>express 一个node， httpserver,提供了最基础的框架如路由等。</li>
+<li><p>依赖注入，angular里面有个重要的概念就是依赖注入，nestjs中也是大量使用，有一个<a href="http://www.cnblogs.com/DebugLZQ/archive/2013/06/05/3107957.html" target="_blank" rel="noopener">IOC容器</a>。这里nest的注入和angular2的是一样的，注入可以是一个class, 也可以是一个值，可以是一个function等等不过不是一个class的就得用如下的方式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  provide: &apos;PhotoRepositoryToken&apos;,</span><br><span class="line">  useFactory: (connection: Connection) =&gt; connection.getRepository(Photo),</span><br><span class="line">  inject: [&apos;DbConnectionToken&apos;],</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中inject是这个注入值要使用的依赖注入，provide是提供给其他人要使用的注入标识符，useFactory代表要执行的方法，也可以是useValue,此时是一个普通对象即可。还有循环依赖，此时就要使用forwardRef了，就不细讲了，大家可以具体<a href="https://docs.nestjs.com/fundamentals/dependency-injection" target="_blank" rel="noopener">参见</a></p>
+</li>
+<li><p>装饰器，要是写过angular2，或者flask等就会知道，都是一堆@name堆起来的了的</p>
+</li>
+<li><p>@Controller<br>处理req的handler的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@Controller(&apos;cats&apos;)</span><br><span class="line">export class CatsController &#123;</span><br><span class="line">  @Get()</span><br><span class="line">  findAll(@Req() user) &#123;</span><br><span class="line">    return [];</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>@Component<br>就是service</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">@Component()</span><br><span class="line">export class CatsService &#123;</span><br><span class="line">  private readonly cats: Cat[] = [];</span><br><span class="line">  create(cat: Cat) &#123;</span><br><span class="line">    this.cats.push(cat);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">// 使用</span><br><span class="line">export class CatsController &#123;</span><br><span class="line">  constructor(private readonly catsService: CatsService) &#123;&#125; // 注入</span><br><span class="line"></span><br><span class="line">  @Post()</span><br><span class="line">  async create(@Body() createCatDto: CreateCatDto) &#123;</span><br><span class="line">    this.catsService.create(createCatDto);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>@Module<br>在angualr中代码是以module为粗粒度单元进行组织的，就是rootModule包含其他module比如orderModule, reportModule, userModule,等等，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@Module(&#123;</span><br><span class="line">    imports: [CatsModule, OrderModule, ReportModule, UserModule],</span><br><span class="line">&#125;)</span><br><span class="line">export class ApplicationModule &#123;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>@Middleware<br>同理与express的middleware,只是写法有变化，需要包裹一下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">@Middleware()</span><br><span class="line">export class LoggerMiddleware implements NestMiddleware &#123;</span><br><span class="line">  resolve(...args: any[]): ExpressMiddleware &#123;</span><br><span class="line">    return (req, res, next) =&gt; &#123;</span><br><span class="line">      console.log(&apos;Request...&apos;);</span><br><span class="line">      next();</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>@Filter 和 HttpException<br>用来处理handler执行过程产生exception或者说错误（但是异常和错误应当是区分开来的）,Filter是区分全局和路由级的。 HttpException是nest提供的错误类型</p>
+<p><img src="https://docs.nestjs.com/assets/Filter_1.png" alt=""></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">@Post()</span><br><span class="line">async create(@Body() createCatDto: CreateCatDto) &#123;</span><br><span class="line">  throw new HttpException(&#123;</span><br><span class="line">    status: HttpStatus.FORBIDDEN,</span><br><span class="line">    error: &apos;This is a custom message&apos;,</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line">/**</span><br><span class="line">&#123;</span><br><span class="line">  &quot;status&quot;: 403,</span><br><span class="line">  &quot;error&quot;: &quot;This is a custom message&quot;</span><br><span class="line">&#125;</span><br><span class="line">*/</span><br></pre></td></tr></table></figure>
+<p>expecptions的体系是可以扩展的，当然nest还提供很多的类型，如BadRequestExceptio, UnauthorizedExceptio等等</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">export class ForbiddenException extends HttpException &#123;</span><br><span class="line">  constructor() &#123;</span><br><span class="line">    super(&apos;Forbidden&apos;, HttpStatus.FORBIDDEN);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>@Filter的正式称呼应当是Exception Filters。这次望文生义是正确的。是的就是处理Exception的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">@Catch(HttpException)</span><br><span class="line">export class HttpExceptionFilter implements ExceptionFilter &#123;</span><br><span class="line">  catch(exception: HttpException, response) &#123;</span><br><span class="line">    const status = exception.getStatus();</span><br><span class="line"></span><br><span class="line">    response</span><br><span class="line">      .status(status)</span><br><span class="line">      .json(&#123;</span><br><span class="line">        statusCode: status,</span><br><span class="line">        message: `It&apos;s a message from the exception filter`,</span><br><span class="line">      &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">// 使用</span><br><span class="line">@Post()</span><br><span class="line">@UseFilters(new HttpExceptionFilter())</span><br><span class="line">async create(@Body() createCatDto: CreateCatDto) &#123;</span><br><span class="line">  throw new ForbiddenException();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 全局的</span><br><span class="line">async function bootstrap() &#123;</span><br><span class="line">  const app = await NestFactory.create(ApplicationModule);</span><br><span class="line">  app.useGlobalFilters(new HttpExceptionFilter());</span><br><span class="line">  await app.listen(3000);</span><br><span class="line">&#125;</span><br><span class="line">bootstrap();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>@Guards<br>用来决定请求是否要被handler处理，典型就是权限判断</p>
+<p><img src="https://docs.nestjs.com/assets/Guards_1.png" alt=""></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">@Guard()</span><br><span class="line">export class RolesGuard implements CanActivate &#123;</span><br><span class="line">  canActivate(dataOrRequest, context: ExecutionContext): boolean | Promise&lt;boolean&gt; | Observable&lt;boolean&gt; &#123;</span><br><span class="line">    return true;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">// 使用</span><br><span class="line">@Controller(&apos;cats&apos;)</span><br><span class="line">@UseGuards(RolesGuard)</span><br><span class="line">export class CatsController &#123;&#125;</span><br></pre></td></tr></table></figure>
+<p>我们可以自定义一些装饰器，给controller添加必要属性以供guard来使用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">// roles Deacator</span><br><span class="line">export const Roles = (...roles: string[]) =&gt; ReflectMetadata(&apos;roles&apos;, roles);</span><br><span class="line">// 使用</span><br><span class="line">@Post()</span><br><span class="line">@Roles(&apos;admin&apos;)</span><br><span class="line">async create(@Body() createCatDto: CreateCatDto) &#123;</span><br><span class="line">  this.catsService.create(createCatDto);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Roles guards 改写</span><br><span class="line">@Guard()</span><br><span class="line">export class RolesGuard implements CanActivate &#123;</span><br><span class="line">  constructor(private readonly reflector: Reflector) &#123;&#125;</span><br><span class="line"></span><br><span class="line">  canActivate(req, context: ExecutionContext): boolean &#123;</span><br><span class="line">    const &#123; parent, handler &#125; = context;</span><br><span class="line">    const roles = this.reflector.get&lt;string[]&gt;(&apos;roles&apos;, handler);</span><br><span class="line">    if (!roles) &#123;</span><br><span class="line">      return true;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    const user = req.user;</span><br><span class="line">    const hasRole = () =&gt; !!user.roles.find((role) =&gt; !!roles.find((item) =&gt; item === role));</span><br><span class="line">    return user &amp;&amp; user.roles &amp;&amp; hasRole();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">// 使用同上</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>@Pipe<br>使用来处理参数校验以及参数类型转换的,当然nest也提供了很多的内置pipe,<br>参数解释一下，可能不太好看，value,是传进来的值，ArgumentMetadata的属性包含： type: 参数通过什么方式传进来的（body, query, param等等），metatype: 传进来的参数是啥类型，string, number .etc, data: 这个没搞太明白文档上说的是‘The string passed to the decorator, for example  @Body(‘string’)’还没参悟处来。。。</p>
+<p><img src="https://docs.nestjs.com/assets/Pipe_1.png" alt=""></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">@Pipe()</span><br><span class="line">export class ValidationPipe implements PipeTransform&lt;any&gt; &#123;</span><br><span class="line">  transform(value: any, metadata: ArgumentMetadata) &#123;</span><br><span class="line">    return value;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">// 使用</span><br><span class="line">@Post()</span><br><span class="line">// @UsePipes(new ValidationPipe())</span><br><span class="line">async create(@Body(new ValidationPipe()) createCatDto: CreateCatDto) &#123;</span><br><span class="line">  this.catsService.create(createCatDto);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>@Interceptor<br>按照文档的说法就是受到AOP（面向切面编程）编程方式的启发。</p>
+</li>
+</ul>
+<ol>
+<li>在方法执行前后增加额外的逻辑(类似于koa中中间件的执行方式)</li>
+<li>有了1，所以我们可以转换执行结果</li>
+<li>转换执行时的异常</li>
+<li>重写执行逻辑（比如根据缓存返回结果）<br>这个例子太多了，就不贴代码了可以具体<a href="https://docs.nestjs.com/interceptors" target="_blank" rel="noopener">参见</a></li>
+</ol>
+<ul>
+<li><p>可以自定义装饰器，在guard里面我们已经见到过了。</p>
+</li>
+<li><p>nest还集成了<a href="https://docs.nestjs.com/graphql/quick-start" target="_blank" rel="noopener">graphql</a>, <a href="https://docs.nestjs.com/websockets/gateways" target="_blank" rel="noopener">websockets</a>, <a href="https://docs.nestjs.com/microservices/basics" target="_blank" rel="noopener">microservice</a>, 微服务这部分他提供两种通信方式，redis(pub/sub), tcp等等</p>
+<h3 id="目录结构"><a href="#目录结构" class="headerlink" title="目录结构"></a>目录结构</h3></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">app</span><br><span class="line">  -- modules</span><br><span class="line">    -- reports</span><br><span class="line">      -- report.controller.ts</span><br><span class="line">      -- report.service.ts</span><br><span class="line">      -- report.entity.ts</span><br><span class="line">      -- report.interface.ts</span><br><span class="line">      -- dto(data transfer object)</span><br><span class="line">        -- report.dto.ts(推荐class)</span><br><span class="line">    -- orders</span><br><span class="line">      ...</span><br><span class="line">  -- common</span><br><span class="line">    -- db.provice.ts</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+<h3 id="实践一把"><a href="#实践一把" class="headerlink" title="实践一把"></a>实践一把</h3><ol>
+<li>git clone <a href="https://github.com/nestjs/typescript-starter" target="_blank" rel="noopener">https://github.com/nestjs/typescript-starter</a></li>
+<li>npm install </li>
+<li>npm run start</li>
+<li>看看实例代码就ok了。</li>
+</ol>
+<h3 id="最后-项目地址"><a href="#最后-项目地址" class="headerlink" title="最后 项目地址"></a>最后 <a href="https://github.com/nestjs/nest" target="_blank" rel="noopener">项目地址</a></h3><p>nest项目也提供了很多的example, 总体来看写起来也还是很舒服的。集成了很多东西，点赞，希望下一个项目可以使用。</p>
+<h3 id="感悟"><a href="#感悟" class="headerlink" title="感悟"></a>感悟</h3><p>总会觉得自己不知道该怎么去更进一步的学习，一开始使用就觉得纯用express有很多问题，可是没有去思考怎么才能更好，总觉得见见世面，看看优秀的人都是怎么写的，可是，看完就完了，却没有想本项目做一样把看到的总结起来。不想动手写业余项目，因为就是觉得自己懂的太少了，还是得多看看，可是只看又有什么用呢？ps: 看的结果就是写出了屎一样的代码，还得努力啊！（有看的欢迎多多交流<a href="mailto:dj_amazing@sina.com" target="_blank" rel="noopener">dj_amazing@sina.com</a>）</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/nodejs/">nodejs</a><a href="/tags/typescript/">typescript</a><a href="/tags/angular2/">angular2</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 hello2dj (dj_amazing@sina.com)
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

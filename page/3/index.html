@@ -1,0 +1,1715 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Page 3 | hello2dj | if you can&#39;t explain it simply, you don&#39;t understand it well enough</title>
+
+  
+  <meta name="author" content="hello2dj (dj_amazing@sina.com)">
+  
+
+  
+  <meta name="description" content="每个人都是带着棱角来到世上，只有磨平棱角才能走的更远">
+  
+
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  
+
+  <meta property="og:site_name" content="hello2dj"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="hello2dj" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">hello2dj</a>
+    </h1>
+    <p class="site-description">if you can&#39;t explain it simply, you don&#39;t understand it well enough</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/categories">Categories</a></li>
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/06/05/egg/"><span>egg入门</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/06/05/egg/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-06-05T02:05:27.000Z">
+          2018-06-05
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h1 id="egg是基于koa的企业级web框架"><a href="#egg是基于koa的企业级web框架" class="headerlink" title="egg是基于koa的企业级web框架"></a>egg是基于koa的企业级web框架</h1><h2 id="egg的使用感觉"><a href="#egg的使用感觉" class="headerlink" title="egg的使用感觉"></a>egg的使用感觉</h2><ol>
+<li>约定大于配置</li>
+<li>koa中间件基本无痛使用</li>
+<li>可以总结业务通用基础服务（生产基础框架），而不用费心费力再重新写插件啥的<blockquote>
+<p>app -&gt; plugins -&gt; framework (统统一套约定)</p>
+</blockquote>
+</li>
+</ol>
+<blockquote>
+<p><a href="http://eggjs.org/zh-cn" target="_blank" rel="noopener">照着官网总结了一部分详细的还得去官网查询</a></p>
+</blockquote>
+<h3 id="官方文档进行搭建"><a href="#官方文档进行搭建" class="headerlink" title="官方文档进行搭建"></a>官方文档进行搭建</h3><ol>
+<li>npm i egg-init -g</li>
+<li>egg-init egg-example –type=simple<blockquote>
+<p>关于 type: egg 本身的集成包括了很多的东西，从一个基本的webserver走起，沉淀出plugin, 最后是framework 于是type就很明显了webserver== simple…</p>
+</blockquote>
+</li>
+</ol>
+<h3 id="整体结构-MVC"><a href="#整体结构-MVC" class="headerlink" title="整体结构 MVC"></a>整体结构 MVC</h3><h3 id="文件夹约定"><a href="#文件夹约定" class="headerlink" title="文件夹约定"></a>文件夹约定</h3><p>所有相应的文件必须放在指定目录中</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">egg-project</span><br><span class="line">├── package.json</span><br><span class="line">├── app.js (可选)</span><br><span class="line">├── agent.js (可选)</span><br><span class="line">├── app</span><br><span class="line">|   ├── router.js</span><br><span class="line">│   ├── controller</span><br><span class="line">│   |   └── home.js</span><br><span class="line">│   ├── service (可选)</span><br><span class="line">│   |   └── user.js</span><br><span class="line">│   ├── middleware (可选)</span><br><span class="line">│   |   └── response_time.js</span><br><span class="line">│   ├── schedule (可选)</span><br><span class="line">│   |   └── my_task.js</span><br><span class="line">│   ├── public (可选)</span><br><span class="line">│   |   └── reset.css</span><br><span class="line">│   ├── view (可选)</span><br><span class="line">│   |   └── home.tpl</span><br><span class="line">│   └── extend (可选)</span><br><span class="line">│       ├── helper.js (可选)</span><br><span class="line">│       ├── request.js (可选)</span><br><span class="line">│       ├── response.js (可选)</span><br><span class="line">│       ├── context.js (可选)</span><br><span class="line">│       ├── application.js (可选)</span><br><span class="line">│       └── agent.js (可选)</span><br><span class="line">├── config</span><br><span class="line">|   ├── plugin.js</span><br><span class="line">|   ├── config.default.js</span><br><span class="line">│   ├── config.prod.js</span><br><span class="line">|   ├── config.test.js (可选)</span><br><span class="line">|   ├── config.local.js (可选)</span><br><span class="line">|   └── config.unittest.js (可选)</span><br><span class="line">└── test</span><br><span class="line">    ├── middleware</span><br><span class="line">    |   └── response_time.test.js</span><br><span class="line">    └── controller</span><br><span class="line">        └── home.test.js</span><br></pre></td></tr></table></figure>
+<h3 id="内置对象"><a href="#内置对象" class="headerlink" title="内置对象"></a><a href="http://eggjs.org/zh-cn/basics/objects.html" target="_blank" rel="noopener">内置对象</a></h3><ol>
+<li>Application (ctx.app, this.app)</li>
+<li>Response/Request (ctx.request, ctx.response)</li>
+<li>Context (this.ctx)</li>
+<li>Service (this.service)`</li>
+<li>Helper (this.ctx.helper)</li>
+<li>Logger (ctx.logger, this.logger（应用打印log）) 还有coreLogger(框架打印log)</li>
+<li>Config (this.config, app.config)</li>
+<li>Subscription 订阅发布模型的规范基类</li>
+</ol>
+<h3 id="controller"><a href="#controller" class="headerlink" title="controller"></a>controller</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">// app/controller/post.js</span><br><span class="line">const Controller = require(&apos;egg&apos;).Controller;</span><br><span class="line">class PostController extends Controller &#123;</span><br><span class="line">  async create() &#123;</span><br><span class="line">    const &#123; ctx, service &#125; = this;</span><br><span class="line">    const createRule = &#123;</span><br><span class="line">      title: &#123; type: &apos;string&apos; &#125;,</span><br><span class="line">      content: &#123; type: &apos;string&apos; &#125;,</span><br><span class="line">    &#125;;</span><br><span class="line">    // 校验参数</span><br><span class="line">    ctx.validate(createRule);</span><br><span class="line">    // 组装参数</span><br><span class="line">    const author = ctx.session.userId;</span><br><span class="line">    const req = Object.assign(ctx.request.body, &#123; author &#125;);</span><br><span class="line">    // 调用 Service 进行业务处理</span><br><span class="line">    const res = await service.post.create(req);</span><br><span class="line">    // 设置响应内容和响应状态码</span><br><span class="line">    ctx.body = &#123; id: res.id &#125;;</span><br><span class="line">    ctx.status = 201;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">module.exports = PostController;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>this.ctx: 当前请求的上下文 Context 对象的实例，通过它我们可以拿到框架封装好的处理当前请求的各种便捷属性和方法。</p>
+</li>
+<li><p>this.app: 当前应用 Application 对象的实例，通过它我们可以拿到框架提供的全局对象和方法。</p>
+</li>
+<li><p>this.service：应用定义的 Service，通过它我们可以访问到抽象出的业务层，等价于 this.ctx.service 。</p>
+</li>
+<li><p>this.config：应用运行时的配置项。</p>
+</li>
+<li><p>this.logger：logger 对象，上面有四个方法（debug，info，warn，error），分别代表打印四个不同级别的日志，使用方法和效果与 context logger 中介绍的一样，但是通过这个 logger 对象记录的日志，在日志前面会加上打印该日志的文件路径，以便快速定位日志打印位置。</p>
+</li>
+</ul>
+<h3 id="service"><a href="#service" class="headerlink" title="service"></a>service</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// app/service/user.js</span><br><span class="line">const Service = require(&apos;egg&apos;).Service;</span><br><span class="line"></span><br><span class="line">class UserService extends Service &#123;</span><br><span class="line">  async find(uid) &#123;</span><br><span class="line">    const user = await this.ctx.db.query(&apos;select * from user where uid = ?&apos;, uid);</span><br><span class="line">    return user;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">module.exports = UserService;</span><br></pre></td></tr></table></figure>
+<p>this对象和controller中能拿到的实例是相同的, service的使用是依据文件名来查找的，this.service.filename.method</p>
+<p>service 在使用构造函数时需要传递ctx参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">class User extends app.Service &#123;</span><br><span class="line">  // 默认不需要提供构造函数。</span><br><span class="line">  // constructor(ctx) &#123;</span><br><span class="line">  //   super(ctx); 如果需要在构造函数做一些处理，一定要有这句话，才能保证后面 `this.ctx`的使用。</span><br><span class="line">  //   // 就可以直接通过 this.ctx 获取 ctx 了</span><br><span class="line">  //   // 还可以直接通过 this.app 获取 app 了</span><br><span class="line">  // &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="router"><a href="#router" class="headerlink" title="router"></a>router</h3><p><a href="http://eggjs.org/zh-cn/basics/router.html" target="_blank" rel="noopener">http://eggjs.org/zh-cn/basics/router.html</a></p>
+<p>基本使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// app/router.js</span><br><span class="line">module.exports = app =&gt; &#123;</span><br><span class="line">  const &#123; router, controller &#125; = app;</span><br><span class="line">  router.get(&apos;/user/:id&apos;, controller.user.info);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h3 id="middlerware"><a href="#middlerware" class="headerlink" title="middlerware"></a>middlerware</h3><p>基本示例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">const isJSON = require(&apos;koa-is-json&apos;);</span><br><span class="line">const zlib = require(&apos;zlib&apos;);</span><br><span class="line"></span><br><span class="line">async function gzip(ctx, next) &#123;</span><br><span class="line">  await next();</span><br><span class="line"></span><br><span class="line">  // 后续中间件执行完成后将响应体转换成 gzip</span><br><span class="line">  let body = ctx.body;</span><br><span class="line">  if (!body) return;</span><br><span class="line">  if (isJSON(body)) body = JSON.stringify(body);</span><br><span class="line"></span><br><span class="line">  // 设置 gzip body，修正响应头</span><br><span class="line">  const stream = zlib.createGzip();</span><br><span class="line">  stream.end(body);</span><br><span class="line">  ctx.body = stream;</span><br><span class="line">  ctx.set(&apos;Content-Encoding&apos;, &apos;gzip&apos;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>使用</p>
+<ol>
+<li><p>全局路由使用<br>module.exports = {<br>// 配置需要的中间件，数组顺序即为中间件的加载顺序<br>middleware: [ ‘gzip’ ],</p>
+<p>// 配置 gzip 中间件的配置<br>gzip: {<br> threshold: 1024, // 小于 1k 的响应体不压缩<br>},<br>};</p>
+</li>
+<li><p>某个路由使用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">module.exports = app =&gt; &#123;</span><br><span class="line">  const gzip = app.middleware.gzip(&#123; threshold: 1024 &#125;);</span><br><span class="line">  app.router.get(&apos;/needgzip&apos;, gzip, app.controller.handler);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>框架默认中间件使用<br>例如，想把某个自定义中间件放到所有中间件之前执行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// app.js</span><br><span class="line">module.exports = app =&gt; &#123;</span><br><span class="line">  // 在中间件最前面统计请求时间</span><br><span class="line">  app.config.coreMiddleware.unshift(&apos;report&apos;);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>上面的顺序可随意互换</p>
+<ol start="4">
+<li><a href="http://eggjs.org/zh-cn/basics/middleware.html#%E4%BD%BF%E7%94%A8-koa-%E7%9A%84%E4%B8%AD%E9%97%B4%E4%BB%B6" target="_blank" rel="noopener">koa中间件基本可无痛使用</a></li>
+</ol>
+<p>通用配置（无论是框架还是自定义中间件都可以）</p>
+<ol>
+<li>enable：控制中间件是否开启。</li>
+<li>match：设置只有符合某些规则的请求才会经过这个中间件。</li>
+<li>ignore：设置符合某些规则的请求不经过这个中间件。</li>
+</ol>
+<h3 id="插件（就是个mini的egg应用，只是没有路由和controller罢了）"><a href="#插件（就是个mini的egg应用，只是没有路由和controller罢了）" class="headerlink" title="插件（就是个mini的egg应用，只是没有路由和controller罢了）"></a>插件（就是个mini的egg应用，只是没有路由和controller罢了）</h3><p><a href="http://eggjs.org/zh-cn/advanced/plugin.html" target="_blank" rel="noopener">http://eggjs.org/zh-cn/advanced/plugin.html</a></p>
+<p>可以把我们的通用逻辑沉淀为插件</p>
+<p>插件配置<br>示例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">exports.mongoose = &#123;</span><br><span class="line">    enable: true,</span><br><span class="line">    package: &apos;egg-mongoose&apos;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">exports.session = false;</span><br><span class="line"></span><br><span class="line">exports.cors = &#123;</span><br><span class="line">    enable: true,</span><br><span class="line">    package: &apos;egg-cors&apos;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">exports.jwt = &#123;</span><br><span class="line">    enable: true,</span><br><span class="line">    package: &apos;egg-jwt&apos;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">exports.routerPlus = &#123;</span><br><span class="line">    enable: true,</span><br><span class="line">    package: &apos;egg-router-plus&apos;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h3 id="定时任务"><a href="#定时任务" class="headerlink" title="定时任务"></a>定时任务</h3><p><a href="http://eggjs.org/zh-cn/basics/schedule.html" target="_blank" rel="noopener">http://eggjs.org/zh-cn/basics/schedule.html</a></p>
+<h3 id="框架扩展"><a href="#框架扩展" class="headerlink" title="框架扩展"></a>框架扩展</h3><ol>
+<li>context</li>
+<li>application</li>
+<li>response</li>
+<li>request</li>
+<li>helper<br>扩展就是说可以通过context等实例直接访问到<br>例如，我们要增加一个 ctx.foo() 方法：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// app/extend/context.js</span><br><span class="line">module.exports = &#123;</span><br><span class="line">  foo(param) &#123;</span><br><span class="line">    // this 就是 ctx 对象，在其中可以调用 ctx 上的其他方法，或访问属性</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>特性根据环境进行框架扩展<br>比如unittest环境app实例有mockXX方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// app/extend/application.unittest.js</span><br><span class="line">module.exports = &#123;</span><br><span class="line">  mockXX(k, v) &#123;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h3 id="启动自定义-可以执行一些异步初始化的工作"><a href="#启动自定义-可以执行一些异步初始化的工作" class="headerlink" title="启动自定义(可以执行一些异步初始化的工作)"></a>启动自定义(可以执行一些异步初始化的工作)</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">module.exports = app =&gt; &#123;</span><br><span class="line">  app.beforeStart(async () =&gt; &#123;</span><br><span class="line">    // 应用会等待这个函数执行完成才启动</span><br><span class="line">    app.cities = await app.curl(&apos;http://example.com/city.json&apos;, &#123;</span><br><span class="line">      method: &apos;GET&apos;,</span><br><span class="line">      dataType: &apos;json&apos;,</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    // 也可以通过以下方式来调用 Service</span><br><span class="line">    // const ctx = app.createAnonymousContext();</span><br><span class="line">    // app.cities = await ctx.service.cities.load();</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>基本默认<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">config</span><br><span class="line">|- config.default.js</span><br><span class="line">|- config.test.js</span><br><span class="line">|- config.prod.js</span><br><span class="line">|- config.unittest.js</span><br><span class="line">`- config.local.js</span><br></pre></td></tr></table></figure></p>
+<p>配置加载顺序<br>-&gt; 插件 config.default.js<br>-&gt; 框架 config.default.js<br>-&gt; 应用 config.default.js<br>-&gt; 插件 config.prod.js<br>-&gt; 框架 config.prod.js<br>-&gt; 应用 config.prod.js</p>
+<p>配置示例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">module.exports = appInfo =&gt; &#123;</span><br><span class="line">    appInfo;</span><br><span class="line">    const config = exports = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">    // add your config here</span><br><span class="line">    config.middleware = [&apos;errorhandler&apos;, &apos;auth&apos;];</span><br><span class="line">    config.auth = &#123;</span><br><span class="line">        ignore: []</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    // mongoose</span><br><span class="line">    config.mongoose = &#123;</span><br><span class="line">        url: &apos;mongodb://localhost:27017/trace-to-source&apos;,</span><br><span class="line">        options: &#123;&#125;,</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    // multipart set</span><br><span class="line">    config.multipart = &#123;</span><br><span class="line">        fileSize: &apos;30mb&apos;,</span><br><span class="line">        whitelist: [</span><br><span class="line">            &apos;.xlsx&apos;,</span><br><span class="line">            &apos;.jpg&apos;,</span><br><span class="line">            &apos;.png&apos;,</span><br><span class="line">            &apos;.zip&apos;,</span><br><span class="line">        ],</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    config.security = &#123; // 关闭csrf安全防范(关闭后post delete put请求可以不携带csrf-token)</span><br><span class="line">        domainWhiteList: [&apos;http://47.104.6.246:8090&apos;, &apos;http://localhost:8000&apos;, &apos;https://localhost:8000&apos;],</span><br><span class="line">        csrf: &#123;</span><br><span class="line">            enable: false,</span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    // cors</span><br><span class="line">    config.cors = &#123;</span><br><span class="line">        credentials: true,</span><br><span class="line">        allowMethods: &apos;GET,HEAD,PUT,POST,DELETE,PATCH,OPTIONS&apos;,</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    // logger</span><br><span class="line">    config.logger = &#123;</span><br><span class="line">        buffer: true, // 文件写入时缓存 https://github.com/eggjs/egg-logger/blob/master/lib/egg/loggers.js#L44</span><br><span class="line">        maxDays: 0,</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    config.jwt = &#123;</span><br><span class="line">        secret: &apos;lksjdhglaiejf&apos;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    return config;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h3 id="运行环境"><a href="#运行环境" class="headerlink" title="运行环境"></a>运行环境</h3><ol>
+<li>通过 config/env 文件指定，该文件的内容就是运行环境，如 prod。一般通过构建工具来生成这个文件。</li>
+<li>通过 EGG_SERVER_ENV 环境变量指定。<br>一般使用 EGG_SERVER_ENV指定</li>
+</ol>
+<p>自定义环境</p>
+<p>比如，要为开发流程增加集成测试环境 SIT。将 EGG_SERVER_ENV 设置成 sit（并建议设置 NODE_ENV = production），启动时会加载 config/config.sit.js，运行环境变量 app.config.env 会被设置成 sit</p>
+<p>应用内获取运行环境</p>
+<p>框架提供了变量 app.config.env 来表示应用当前的运行环境。</p>
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a><a href="http://eggjs.org/zh-cn/core/unittest.html" target="_blank" rel="noopener">测试</a></h3><p>ctx测试<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">const assert = require(&apos;assert&apos;);</span><br><span class="line">const mock = require(&apos;egg-mock&apos;);</span><br><span class="line"></span><br><span class="line">describe(&apos;test/controller/home.test.js&apos;, () =&gt; &#123;</span><br><span class="line">  let app;</span><br><span class="line">  before(() =&gt; &#123;</span><br><span class="line">    // 创建当前应用的 app 实例</span><br><span class="line">    app = mock.app();</span><br><span class="line">    // 等待 app 启动成功，才能执行测试用例</span><br><span class="line">    return app.ready();</span><br><span class="line">  &#125;);</span><br><span class="line">  it(&apos;should mock ctx.user&apos;, () =&gt; &#123;</span><br><span class="line">        const ctx = app.mockContext(&#123;</span><br><span class="line">                user: &#123;</span><br><span class="line">                name: &apos;fengmk2&apos;,</span><br><span class="line">                &#125;,</span><br><span class="line">            &#125;);</span><br><span class="line">        assert(ctx.user);</span><br><span class="line">        assert(ctx.user.name === &apos;fengmk2&apos;);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>http请求测试(controller 测试)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// 使用 async</span><br><span class="line">it(&apos;should redirect&apos;, async () =&gt; &#123;</span><br><span class="line">  await app.httpRequest()</span><br><span class="line">    .get(&apos;/&apos;)</span><br><span class="line">    .expect(302);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>service 测试<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">describe(&apos;get()&apos;, () =&gt; &#123;</span><br><span class="line">  it(&apos;should get exists user&apos;, async () =&gt; &#123;</span><br><span class="line">    // 创建 ctx</span><br><span class="line">    const ctx = app.mockContext();</span><br><span class="line">    // 通过 ctx 访问到 service.user</span><br><span class="line">    const user = await ctx.service.user.get(&apos;fengmk2&apos;);</span><br><span class="line">    assert(user);</span><br><span class="line">    assert(user.name === &apos;fengmk2&apos;);</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  it(&apos;should get null when user not exists&apos;, async () =&gt; &#123;</span><br><span class="line">    const ctx = app.mockContext();</span><br><span class="line">    const user = await ctx.service.user.get(&apos;fengmk1&apos;);</span><br><span class="line">    assert(!user);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p><a href="http://eggjs.org/zh-cn/core/unittest.html" target="_blank" rel="noopener">更多测试</a></p>
+<h3 id="多进程架构"><a href="#多进程架构" class="headerlink" title="多进程架构"></a>多进程架构</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">                +--------+          +-------+</span><br><span class="line">                | Master |&lt;--------&gt;| Agent |</span><br><span class="line">                +--------+          +-------+</span><br><span class="line">                ^   ^    ^</span><br><span class="line">               /    |     \</span><br><span class="line">             /      |       \</span><br><span class="line">           /        |         \</span><br><span class="line">         v          v          v</span><br><span class="line">+----------+   +----------+   +----------+</span><br><span class="line">| Worker 1 |   | Worker 2 |   | Worker 3 |</span><br><span class="line">+----------+   +----------+   +----------+</span><br></pre></td></tr></table></figure>
+<p>启动顺序</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">+---------+           +---------+          +---------+</span><br><span class="line">|  Master |           |  Agent  |          |  Worker |</span><br><span class="line">+---------+           +----+----+          +----+----+</span><br><span class="line">     |      fork agent     |                    |</span><br><span class="line">     +--------------------&gt;|                    |</span><br><span class="line">     |      agent ready    |                    |</span><br><span class="line">     |&lt;--------------------+                    |</span><br><span class="line">     |                     |     fork worker    |</span><br><span class="line">     +-----------------------------------------&gt;|</span><br><span class="line">     |     worker ready    |                    |</span><br><span class="line">     |&lt;-----------------------------------------+</span><br><span class="line">     |      Egg ready      |                    |</span><br><span class="line">     +--------------------&gt;|                    |</span><br><span class="line">     |      Egg ready      |                    |</span><br><span class="line">     +-----------------------------------------&gt;|</span><br></pre></td></tr></table></figure>
+<p>消息发送</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">广播消息： agent =&gt; all workers</span><br><span class="line">                  +--------+          +-------+</span><br><span class="line">                  | Master |&lt;---------| Agent |</span><br><span class="line">                  +--------+          +-------+</span><br><span class="line">                 /    |     \</span><br><span class="line">                /     |      \</span><br><span class="line">               /      |       \</span><br><span class="line">              /       |        \</span><br><span class="line">             v        v         v</span><br><span class="line">  +----------+   +----------+   +----------+</span><br><span class="line">  | Worker 1 |   | Worker 2 |   | Worker 3 |</span><br><span class="line">  +----------+   +----------+   +----------+</span><br><span class="line"></span><br><span class="line">指定接收方： one worker =&gt; another worker</span><br><span class="line">                  +--------+          +-------+</span><br><span class="line">                  | Master |----------| Agent |</span><br><span class="line">                  +--------+          +-------+</span><br><span class="line">                 ^    |</span><br><span class="line">     send to    /     |</span><br><span class="line">    worker 2   /      |</span><br><span class="line">              /       |</span><br><span class="line">             /        v</span><br><span class="line">  +----------+   +----------+   +----------+</span><br><span class="line">  | Worker 1 |   | Worker 2 |   | Worker 3 |</span><br><span class="line">  +----------+   +----------+   +----------+</span><br></pre></td></tr></table></figure>
+<h3 id="egg-logger-使用"><a href="#egg-logger-使用" class="headerlink" title="egg-logger 使用"></a>egg-logger 使用</h3><ul>
+<li><p>自定义transport时一定要传递level参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">class RemoteTransport extends Transport &#123;</span><br><span class="line">  // level 必传</span><br><span class="line">  constructor(&#123; level, app &#125;) &#123;</span><br><span class="line">    super(&#123; level &#125;);</span><br><span class="line">    this._level = level;</span><br><span class="line">    this._app = app;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>自定logger在配置文件中必须传file参数, 必须在customLogger下面配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">config.customLogger = &#123;</span><br><span class="line">  remoteLogger: &#123;</span><br><span class="line">    file: path.join(appInfo.root, &apos;logs/remote.log&apos;),</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>所有logger的错误error方法都被errorLogger的log方法劫持了，所以当我们使用自定义logger的error方法打印时其实是被errorLogger输出了，<br>所以若是自己配置的自定义logger中有其他处理使用error时是不会被触发的</p>
+<p>原因见下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * Add a logger</span><br><span class="line"> * @param &#123;String&#125; name - logger name</span><br><span class="line"> * @param &#123;Logger&#125; logger - Logger instance</span><br><span class="line"> */</span><br><span class="line">set(name, logger) &#123;</span><br><span class="line">  if (this.has(name)) &#123;</span><br><span class="line">    return;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // redirect ERROR log to errorLogger, except errorLogger itself</span><br><span class="line">  if (name !== &apos;errorLogger&apos;) &#123;</span><br><span class="line">    logger.redirect(&apos;error&apos;, this.errorLogger);</span><br><span class="line">  &#125;</span><br><span class="line">  this[name] = logger;</span><br><span class="line">  super.set(name, logger);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="hack"><a href="#hack" class="headerlink" title="hack"></a>hack</h3><ol>
+<li>egg-mongoose 里面挂载在app上的mongoose是个conn对象，base才是mongoose实例</li>
+<li>egg 里面的hack, app下面有个serviceClasses属性里面是所有的service的构造函数，所以在拿不到service实例时，<br>可以自己new一个，切记要传入ctx对象，可以通过app.createAnonymousContext创建一个匿名ctx</li>
+</ol>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/node/">node</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/06/01/docker基础知识/"><span>docker相关的一些使用总结</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/06/01/docker基础知识/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-05-31T16:00:00.000Z">
+          2018-06-01
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <blockquote>
+<p>随时更新</p>
+</blockquote>
+<h2 id="解决docker-sudo问题"><a href="#解决docker-sudo问题" class="headerlink" title="解决docker sudo问题"></a>解决docker sudo问题</h2><h3 id="检查是否已有-docker-用户组"><a href="#检查是否已有-docker-用户组" class="headerlink" title="检查是否已有 docker 用户组"></a>检查是否已有 docker 用户组</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/group | grep docker</span><br></pre></td></tr></table></figure>
+<h3 id="将现有用户加入-docker-组"><a href="#将现有用户加入-docker-组" class="headerlink" title="将现有用户加入 docker 组"></a>将现有用户加入 docker 组</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo gpasswd -a $&#123;USER&#125; docker</span><br></pre></td></tr></table></figure>
+<h3 id="重启-docker-服务"><a href="#重启-docker-服务" class="headerlink" title="重启 docker 服务"></a>重启 docker 服务</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo service docker restart</span><br></pre></td></tr></table></figure>
+<h3 id="退出当前用户，重新登录"><a href="#退出当前用户，重新登录" class="headerlink" title="退出当前用户，重新登录"></a>退出当前用户，重新登录</h3><h2 id="docker-的远程镜像名字得和本地一致且以-url-为前缀"><a href="#docker-的远程镜像名字得和本地一致且以-url-为前缀" class="headerlink" title="docker 的远程镜像名字得和本地一致且以 url 为前缀"></a>docker 的远程镜像名字得和本地一致且以 url 为前缀</h2><p>比如 docker push docker.sensoro.com/library/ai-server，那么推送的地址是 docker.sensoro.com/library/ 我们的镜像想要叫 ai-server。 但是本地在 build 时，要用 docker build ./ -t docker.sensoro.com/library/ai-server tag 必须是这个。</p>
+<h2 id="docker-compose"><a href="#docker-compose" class="headerlink" title="docker compose"></a>docker compose</h2><ul>
+<li>networks 负责创建一个网络 <a href="https://docs.docker.com/compose/compose-file/" target="_blank" rel="noopener">见</a></li>
+<li><p>sysctls 负责内核参数 <a href="https://docs.docker.com/compose/compose-file/" target="_blank" rel="noopener">见</a></p>
+</li>
+<li><p>ulimits</p>
+</li>
+</ul>
+<h2 id="swarm"><a href="#swarm" class="headerlink" title="swarm"></a>swarm</h2><ol>
+<li>docker swarm init</li>
+<li>根据上条命令输出执行即可</li>
+</ol>
+<h2 id="docker-daemon-api-链接"><a href="#docker-daemon-api-链接" class="headerlink" title="docker daemon api 链接"></a><a href="https://www.jianshu.com/p/7ba1a93e6de4" target="_blank" rel="noopener">docker daemon api 链接</a></h2><h2 id="docker-在配置为-host-网络模式时，是不需要映射端口的，因为-docker-容器的网络（ip）就是-host（宿主）的网络-IP，并没有进行隔离"><a href="#docker-在配置为-host-网络模式时，是不需要映射端口的，因为-docker-容器的网络（ip）就是-host（宿主）的网络-IP，并没有进行隔离" class="headerlink" title="docker 在配置为 host 网络模式时，是不需要映射端口的，因为 docker 容器的网络（ip）就是 host（宿主）的网络 IP，并没有进行隔离"></a>docker 在配置为 host 网络模式时，是不需要映射端口的，因为 docker 容器的网络（ip）就是 host（宿主）的网络 IP，并没有进行隔离</h2><h2 id="网络模式"><a href="#网络模式" class="headerlink" title="网络模式"></a>网络模式</h2><ol>
+<li><p>host 模式</p>
+<p>众所周知，Docker 使用了 Linux 的 Namespaces 技术来进行资源隔离，如 PID Namespace 隔离进程，Mount Namespace 隔离文件系统，Network Namespace 隔离网络等。一个 Network Namespace 提供了一份独立的网络环境，包括网卡、路由、Iptable 规则等都与其他的 Network Namespace 隔离。一个 Docker 容器一般会分配一个独立的 Network Namespace。但如果启动容器的时候使用 host 模式，那么这个容器将不会获得一个独立的 Network Namespace，而是和宿主机共用一个 Network Namespace。容器将不会虚拟出自己的网卡，配置自己的 IP 等，而是使用宿主机的 IP 和端口。例如，我们在 10.10.101.105/24 的机器上用 host 模式启动一个含有 web 应用的 Docker 容器，监听 tcp80 端口。当我们在容器中执行任何类似 ifconfig 命令查看网络环境时，看到的都是宿主机上的信息。而外界访问容器中的应用，则直接使用 10.10.101.105:80 即可，不用任何 NAT 转换，就如直接跑在宿主机中一样。但是，容器的其他方面，如文件系统、进程列表等还是和宿主机隔离的。</p>
+</li>
+<li><p>container 模式</p>
+<p>在理解了 host 模式后，这个模式也就好理解了。这个模式指定新创建的容器和已经存在的一个容器共享一个 Network Namespace，而不是和宿主机共享。新创建的容器不会创建自己的网卡，配置自己的 IP，而是和一个指定的容器共享 IP、端口范围等。同样，两个容器除了网络方面，其他的如文件系统、进程列表等还是隔离的。两个容器的进程可以通过 lo 网卡设备通信。</p>
+</li>
+<li><p>none 模式</p>
+<p>这个模式和前两个不同。在这种模式下，Docker 容器拥有自己的 Network Namespace，但是，并不为 Docker 容器进行任何网络配置。也就是说，这个 Docker 容器没有网卡、IP、路由等信息。需要我们自己为 Docker 容器添加网卡、配置 IP 等。</p>
+</li>
+<li><p>bridge 模式</p>
+<p>bridge 模式是 Docker 默认的网络设置，此模式会为每一个容器分配 Network Namespace、设置 IP 等，并将一个主机上的 Docker 容器连接到一个虚拟网桥上。下面着重介绍一下此模式。</p>
+</li>
+</ol>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/05/24/node-img/"><span>node图像库</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/05/24/node-img/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-05-23T16:00:00.000Z">
+          2018-05-24
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h1 id="image-demo"><a href="#image-demo" class="headerlink" title="image-demo"></a>image-demo</h1><ul>
+<li>需要一个能在图片上写汉字色图片处理库</li>
+</ul>
+<h2 id="图片库比较"><a href="#图片库比较" class="headerlink" title="图片库比较"></a>图片库比较</h2><h4 id="1-node-images"><a href="#1-node-images" class="headerlink" title="1.node-images"></a>1.node-images</h4><ul>
+<li>国产图片处理库node-images，已经停止维护，缺乏某些功能，比如图片上加文字，并且在nodejs 8.0版本下无法使用</li>
+</ul>
+<h4 id="2-Jimp"><a href="#2-Jimp" class="headerlink" title="2.Jimp"></a>2.Jimp</h4><ul>
+<li>Jimp无需第三方依赖，安装简单，基本无坑，Github star4200多，npm周下载量7万多次，算是比较优秀的第三方处理库。支持常见的图片处理操作，也可以加文字，但是如果要在图片上加中文文字的话，有点麻烦，需要自制.fnt位图字体文件，然后导入。但CJK字库文字太多，制作出来文件很大。我就是因为这个，放弃了使用jimp。</li>
+</ul>
+<h4 id="3-node-lwip"><a href="#3-node-lwip" class="headerlink" title="3.node-lwip"></a>3.node-lwip</h4><ul>
+<li>和jimp类似，无第三方依赖。没有提供图片上写文字的方法。</li>
+</ul>
+<h4 id="4-sharp"><a href="#4-sharp" class="headerlink" title="4.sharp"></a>4.sharp</h4><ul>
+<li>目前nodejs中最快的图片处理库，和其他图片处理库相比，遥遥领先。无需第三方依赖，性能超好，就是安装比较麻烦，但最后还是安装成功了！一次性处理200张图片，sharp图片处理库的速度明显最快。按照官方说明，至少是5到10倍于ImageMagick and GraphicsMagick 。<br>可惜，翻遍文档api也没有找到图片写文字的方法，就是说，没有提供图片直接写文字的方法。</li>
+<li>关于sharp在windows 10 64位的安装，直接npm install sharp，基本都不会成功的。</li>
+<li>Sharp的安装，需要三个前提条件：</li>
+<li>Node v4.5.0+</li>
+<li>C++11 compatible compiler such as gcc 4.8+, clang 3.0+ or MSVC 2013+</li>
+<li>node-gyp and its dependencies (includes Python)</li>
+<li>对于windows10 64位来说，可以运行以下两条命令，一劳永逸解决sharp的安装问题：</li>
+<li>先运行：</li>
+<li>npm install –global –production windows-build-tools</li>
+<li>然后：</li>
+<li>npm config set msvs_version 2015 –global</li>
+<li>就可以把所有的环境配置搞定。最后关掉所有cmd或者shell窗口，然后再用</li>
+<li>npm install sharp安装就OK了。</li>
+<li>速度超快，api好用，基本等于完美，可惜刚好我缺乏我需要的一个功能。</li>
+</ul>
+<h4 id="5-基于GraphicsMagick和ImageMagick的gm"><a href="#5-基于GraphicsMagick和ImageMagick的gm" class="headerlink" title="5.基于GraphicsMagick和ImageMagick的gm"></a>5.基于GraphicsMagick和ImageMagick的gm</h4><ul>
+<li>如果不需要在图片上加中文文字，只需要安装GraphicsMagick就可以了。如果需要在图片上加【中文文字】，要同时安装GraphicsMagick 和 ImageMagick。然后使用gm subclass子类话的方法来调用。</li>
+<li>注意：中文需要指定中文字体的.ttf文件，并且字体文件名不能是中文，如”msyh.ttf”，OK；“微软雅黑.ttf”，BAD!</li>
+<li>gm提供了超级强悍的api，基本上你需要对图片做的任何处理都能实现！并且它是基于命令行的，可以直接在命令行中调用。</li>
+<li>GraphicsMagick和ImageMagick在windows10 64位下的安装都比较傻瓜式，直接下载对应的exe文件，不分32位和64位，setup 一路next就行。</li>
+<li>总结，gm的速度仅仅比sharp慢，比其他的几个图片库都要快的多，并且提供的api很丰富，链式调用写法很爽，安装配置也相对简单的多，支持在图片上直接添加中文文字。其他的几个图片库，对于&rdquo;在图片上添加文字&ldquo;这个功能，有些不提供，有些提供了但很难用。</li>
+</ul>
+<h4 id="提供一段gm的示例代码（demo文件夹中）"><a href="#提供一段gm的示例代码（demo文件夹中）" class="headerlink" title="提供一段gm的示例代码（demo文件夹中）"></a>提供一段gm的示例代码（demo文件夹中）</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">var gm = require(&apos;gm&apos;);</span><br><span class="line">var fs = require(&apos;fs&apos;);</span><br><span class="line">var _name = &quot;China中文&quot;;</span><br><span class="line">gm(&apos;./0.jpg&apos;)</span><br><span class="line">    .font(&apos;./st_black.ttf&apos;,30)</span><br><span class="line">    .drawText(20, 30,&quot;你&quot;)</span><br><span class="line">    .drawText(50, 50, &quot;好&quot;)</span><br><span class="line">    .drawText(70, 70,&quot;色&quot;)</span><br><span class="line">    .drawText(110, 110, &quot;彩&quot;)</span><br><span class="line">    //.resize(240, 240)</span><br><span class="line">    .toBuffer(&quot;jpg&quot;,(err, buffer)=&gt; &#123;</span><br><span class="line">        fs.writeFileSync(&quot;./4.jpg&quot;, buffer);</span><br><span class="line">        if (!err)&#123;</span><br><span class="line">            console.log(&apos;done&apos;);</span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            console.log(err.message || &quot;出错了！&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure>
+<h1 id="red-hat-安装gm"><a href="#red-hat-安装gm" class="headerlink" title="red-hat 安装gm"></a>red-hat 安装gm</h1><h2 id="ImageMagick-安装"><a href="#ImageMagick-安装" class="headerlink" title="ImageMagick 安装"></a>ImageMagick 安装</h2><ul>
+<li>安装    yum install ImageMagick</li>
+<li>查看是否安装成功   rpm -qa | grep ImageMagick</li>
+</ul>
+<h2 id="gm-安装"><a href="#gm-安装" class="headerlink" title="gm 安装"></a>gm 安装</h2><ul>
+<li>npm install gm –save</li>
+</ul>
+<h2 id="测试代码"><a href="#测试代码" class="headerlink" title="测试代码"></a>测试代码</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var gm = require(&quot;gm&quot;);</span><br><span class="line">var imageMagick = gm.subClass(&#123; imageMagick : true &#125;);</span><br><span class="line">var fs = require(&apos;fs&apos;);</span><br><span class="line">imageMagick(300, 300, &quot;pink&quot;).toBuffer(&quot;jpg&quot;, (err, buffer)=&gt;&#123;</span><br><span class="line">    fs.writeFileSync(&quot;./fill.jpg&quot;, buffer);</span><br><span class="line">    console.log(&quot;image create success!&quot;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>会生成一个300*300，背景色为粉色的图片</li>
+</ul>
+<p>#环境配置</p>
+<ul>
+<li><h1 id="代码运行环境"><a href="#代码运行环境" class="headerlink" title="代码运行环境"></a>代码运行环境</h1><h3 id="1-node"><a href="#1-node" class="headerlink" title="1.node"></a>1.node</h3><ul>
+<li>开发时用的 8.9.0, node直接更新到最新的版本即可，没有太多限制</li>
+</ul>
+<h3 id="2-gm的依赖环境"><a href="#2-gm的依赖环境" class="headerlink" title="2.gm的依赖环境"></a>2.gm的依赖环境</h3><h4 id="mac下环境配置"><a href="#mac下环境配置" class="headerlink" title="mac下环境配置"></a>mac下环境配置</h4><ul>
+<li><ol>
+<li>安装Xcode软件 <strong>很重要</strong> 在mac的应用中心就可以安装</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>安装imagemagick        brew install imagemagick</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>安装graphicsmagick     brew install graphicsmagick</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>以上3步之后 npm install gm 基本就没什么问题了</li>
+</ol>
+</li>
+</ul>
+<h4 id="centos下环境配置"><a href="#centos下环境配置" class="headerlink" title="centos下环境配置"></a>centos下环境配置</h4><ul>
+<li><ol>
+<li>安装 imagemagick graphicsmagick的依赖</li>
+</ol>
+</li>
+<li>yum install -y gcc libpng libjpeg libpng-devel libjpeg-devel ghostscript libtiff libtiff-devel freetype freetype-devel</li>
+<li><ol start="2">
+<li>安装imagemagick</li>
+</ol>
+</li>
+<li>yum install ImageMagick</li>
+<li><ol start="3">
+<li>安装graphicsmagick</li>
+</ol>
+</li>
+<li>wget <a href="ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/1.3/GraphicsMagick-1.3.25.tar.gz" target="_blank" rel="noopener">ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/1.3/GraphicsMagick-1.3.25.tar.gz</a></li>
+<li>tar -zxvf GraphicsMagick-1.3.25.tar.gz</li>
+<li>cd GraphicsMagick-1.3.25</li>
+<li>./configure</li>
+<li>make</li>
+<li>make install</li>
+<li>4.以上步骤之后 gm基本就能使用</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/05/14/pki/"><span>pki 体系</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/05/14/pki/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-05-13T16:00:00.000Z">
+          2018-05-14
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h2 id="PKI"><a href="#PKI" class="headerlink" title="PKI"></a>PKI</h2><h3 id="CA-自建-ca"><a href="#CA-自建-ca" class="headerlink" title="CA 自建 ca"></a>CA 自建 ca</h3><p><a href="https://www.jianshu.com/p/79c284e826fa" target="_blank" rel="noopener">https://www.jianshu.com/p/79c284e826fa</a><br><a href="https://www.barretlee.com/blog/2016/04/24/detail-about-ca-and-certs/" target="_blank" rel="noopener">https://www.barretlee.com/blog/2016/04/24/detail-about-ca-and-certs/</a></p>
+<ol>
+<li><p>生成秘钥(可选，因为后面的步骤也可以自动生成秘钥)<br>openssl genrsa</p>
+</li>
+<li><p>生成 CA 证书请求<br>openssl req [-key 使用已生成的秘钥][-keyout 未声明秘钥需自动生成]</p>
+</li>
+<li><p>自签发 ca 根证书<br>openssl ca -selfsign（需使用上述的请求证书）</p>
+</li>
+<li><p>2,3 两步可以合在一起<br>openssl req -new -x509(关键是-x509 生成 509 的根证书)</p>
+</li>
+</ol>
+<p>签发证书也是上述的步骤只是签发证书时不需要-selfsign 选项</p>
+<h3 id="证书发放"><a href="#证书发放" class="headerlink" title="证书发放"></a>证书发放</h3><p>向 CA 请求证书时需要先生成一个 CSR(certificate signing request), 证书签发的请求。包括一些申请者的信息，申请者的公钥，还有 Distinguished Name(专有名称类似于发放者的唯一标示)用来标识证书时发给谁的。</p>
+<h3 id="pem-代表-Privacy-enhanced-Electronic-Mail-一种文件格式-base64-编码显示"><a href="#pem-代表-Privacy-enhanced-Electronic-Mail-一种文件格式-base64-编码显示" class="headerlink" title="pem 代表 Privacy-enhanced Electronic Mail 一种文件格式 base64 编码显示"></a>pem 代表 Privacy-enhanced Electronic Mail 一种文件格式 base64 编码显示</h3><h3 id="CA-DN-distinguished-name"><a href="#CA-DN-distinguished-name" class="headerlink" title="CA DN distinguished name"></a>CA DN distinguished name</h3><ul>
+<li>.cer/.crt 是用于存放证书，它是 2 进制形式存放的，不含私钥。</li>
+<li>X.509 DER 编码(ASCII)的后缀是： .DER .CER .CRT</li>
+<li>X.509 PAM 编码(Base64)的后缀是： .PEM .CER .CRT</li>
+<li>.pem 跟 crt/cer 的区别是它以 Ascii 来表示</li>
+</ul>
+<h3 id="CSR-文件-包含了公钥和标识名称（Distinguished-Name）"><a href="#CSR-文件-包含了公钥和标识名称（Distinguished-Name）" class="headerlink" title="CSR 文件 包含了公钥和标识名称（Distinguished Name）"></a>CSR 文件 包含了公钥和标识名称（Distinguished Name）</h3><h3 id="intermediate-ca"><a href="#intermediate-ca" class="headerlink" title="intermediate ca"></a><a href="What is an intermediate certificate?">intermediate ca</a></h3><h3 id="证书链"><a href="#证书链" class="headerlink" title="证书链"></a><a href="what-is-ssl-certificate-chain">证书链</a></h3><p>root ca -&gt; intermediate ca -&gt; end user</p>
+<h3 id="数字证书"><a href="#数字证书" class="headerlink" title="数字证书"></a><a href="http://www.ruanyifeng.com/blog/2011/08/what_is_a_digital_signature.html" target="_blank" rel="noopener">数字证书</a></h3><h3 id="tsl-认证"><a href="#tsl-认证" class="headerlink" title="tsl 认证"></a>tsl 认证</h3><ul>
+<li>单向认证时，客户端需要有 server 的根证书来验证 server 的证书是否 ok</li>
+<li>双向时，服务端也得有客户端的根证书来验证 client 的证书是否 ok</li>
+</ul>
+<h3 id="私钥使用来解密公钥加密的数据，证书用来验证身份的，而证书又包含公钥，因此证书和私钥永远是一对儿。"><a href="#私钥使用来解密公钥加密的数据，证书用来验证身份的，而证书又包含公钥，因此证书和私钥永远是一对儿。" class="headerlink" title="私钥使用来解密公钥加密的数据，证书用来验证身份的，而证书又包含公钥，因此证书和私钥永远是一对儿。"></a>私钥使用来解密公钥加密的数据，证书用来验证身份的，而证书又包含公钥，因此证书和私钥永远是一对儿。</h3><p>流程就是把证书发给对方，对方验证证书是否 ok，然后取出证书中的公钥，用公钥加密数据然后发回来，此时再用私钥解密即可获得数据。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/05/10/gomap实战/"><span>go map实战</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/05/10/gomap实战/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-05-09T16:00:00.000Z">
+          2018-05-10
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h3 id="go-maps-实践"><a href="#go-maps-实践" class="headerlink" title="go maps 实践"></a>go maps 实践</h3><ul>
+<li><p>简介<br>在cs中hash table是一种经常使用的数据结构。许多hash table的实现都拥有很多的属性。但总的来说，他们都会提供快速查询，添加以及删除等功能。go 提供了一个内置的实现了hash table的map 类型。</p>
+</li>
+<li><p>声明和初始化<br>go map类型的签名如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">map[KeyType]ValueType</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>KeyType要求是能够<a href="https://golang.org/ref/spec#Comparison_operators" target="_blank" rel="noopener">comparable</a>的类型, 而ValueType则可以是任意的类型，甚至是另一个map</p>
+<p>如下一个key为string,value是int的map<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">var m map[string]int</span><br></pre></td></tr></table></figure></p>
+<p>map类型也是引用类型，就像指针或者切片一样，因此上面的声明的m是nil;我们还没有实例化map。一个值是nil的map再读取的时候就像是个空map你啥都读不到<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">value, ok := m[&quot;c&quot;]</span><br><span class="line">// value is 0, ok is false</span><br></pre></td></tr></table></figure></p>
+<p>但是写入nil map是会报错的。千万记得不要这么做要记得初始化map，请使用内置的make function(make 专门用来分配内存，初始化map, slice, channel)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">m = make(map[string]int)</span><br></pre></td></tr></table></figure></p>
+<p>make会分配内存并且初始化然后返回一个map值，注意make不生成指针new才是返回指针但是new只分配内存，而不初始化。make的实现底层是基于的c的实现，本文只关注怎么使用，就不分析他的实现了。</p>
+<ul>
+<li>使用maps<br>go 提供了便捷的语法来操作map例如赋值<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">m[&quot;route&quot;] = 66</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>加下来取值<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">i := m[&quot;route&quot;]</span><br></pre></td></tr></table></figure></p>
+<p>若是我们取得值不存在那么我们取到的会是值相应类型的默认值（zero value）。在我们的例子中我们读到的就是0：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">j := m[&quot;root&quot;]</span><br><span class="line">// j == 0</span><br></pre></td></tr></table></figure></p>
+<p>内置的len函数可以得到map中的元素个数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">n := len(m)</span><br><span class="line">// n == 1</span><br></pre></td></tr></table></figure></p>
+<p>内置的delete函数是用来删除map中的元素<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">delete(m, &quot;route&quot;)</span><br></pre></td></tr></table></figure></p>
+<p>delete没有返回值，并且若是删除的key不存在则啥都不处理</p>
+<p>还有一种读取的语法如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">i, ok := m[&quot;route&quot;]</span><br></pre></td></tr></table></figure></p>
+<p>这个语法是：i取得是m中route对应的数据，若是不存在route对应的数据则i会是对应类型的零值，而ok代表的是route在m是否存在，false即是不存在也就是说没有读到i值。</p>
+<p>当我们只是为了验证是否存在相应的key时可以使用下划线来忽略key对应的数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">_, ok := m[&quot;route&quot;]</span><br></pre></td></tr></table></figure></p>
+<p>为了遍历map，我们可以使用range关键字<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">for key, value := range m &#123;</span><br><span class="line">    fmt.Println(&quot;Key:&quot;, key, &quot;Value:&quot;, value)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>若是不使用make,我们也可以使用map的字面量来初始化一个map<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">commits := map[string]int &#123;</span><br><span class="line">    &quot;rsc&quot;: 3711,</span><br><span class="line">    &quot;r&quot;, 2138,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>我们还可以初始化一个空map，和使用make是一样的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">var m = map[string]int&#123;&#125;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>对默认值的利用<br>当我们读取的key不存在时返回默认值有的是很方便的。</li>
+</ul>
+<p>比如，一个值为bool类型的map就可以看做是一个set类型的数据结构（要知道，布尔类型的默认值是false）。这个例子遍历一个linked list of nodes, 并且打印他们的值。他使用值类型是Node 指针的map来检测list是否有环。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">type Node struct &#123;</span><br><span class="line">    Next *Node</span><br><span class="line">    Value interface&#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line">var first *Node</span><br><span class="line"></span><br><span class="line">visited := make(map[*Node]bool)</span><br><span class="line">for n := first; n != nil; n = n.Next &#123;</span><br><span class="line">    if visited[n] &#123;</span><br><span class="line">        fmt.Println(&quot;cycle detected&quot;)</span><br><span class="line">        break</span><br><span class="line">    &#125;</span><br><span class="line">    visited[n] = true</span><br><span class="line">    fmt.Println(n.Value)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>若Node n已经被访问过了，则visited[n]的值是true, 若值是false则说明Node n没有被访问过。我们不需要再用其他数据来判断node在map中的存在性，map默认值已经帮我们处理了。</p>
+<p>另一个有用的例子是slices的map, 我们知道当我们想一个nil slice append数据的时候是会分配新的内存的。因此当我们向slice的map中append 数据的时候，是不需要检查key是否存在的。可以看看下面的例子<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">type Person struct &#123;</span><br><span class="line">    Name string</span><br><span class="line">    Likes []string</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var people []*Person</span><br><span class="line"></span><br><span class="line">likes := make(map[string][]*Person)</span><br><span class="line">for _, p := range people &#123;</span><br><span class="line">    for _, l := range p.Likes &#123;</span><br><span class="line">        likes[l] = append(likes[l], p)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>我们开一个打印出喜欢cheese的人：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">for _, p := range likes[&quot;cheese&quot;] &#123;</span><br><span class="line">    fmt.Println(p.Name, &quot;likes cheese.&quot;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>打印出有多少人喜欢bacon<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fmt.Println(len(likes[&quot;bacon&quot;]), &quot; people like bacon.&quot;)</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>range 和 len都把nil slice当做长度是0的slice, 因此我们最后两个数据是不会出错的。</p>
+</blockquote>
+<ul>
+<li>key的类型<br>前面提到过了，就是map的keys必须是可比较的。语言规范已经详细定义了<a href="http://golang.org/ref/spec#Comparison_operators" target="_blank" rel="noopener">可比较</a>。 总的来说可比较的类型就是boolean, numeric, string, pointer, channel 以及接口类型，还有只包含上述类型的结构体和数据。不在上述范围的类型有map, slice 和 functions; 这些类型是不能用==，也不能当做map的keys的。</li>
+</ul>
+<p>很明显strings， ints, 以及一些其他的类型可以做key,但是结构体就有点而出乎意料了。<br>让我们看这个<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hits := make(map[string]map[string]int)</span><br></pre></td></tr></table></figure></p>
+<p>这是一个页面访问的次数的map，key对应二级url<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">n := hits[&quot;/doc/&quot;][&quot;au&quot;]</span><br></pre></td></tr></table></figure></p>
+<p>但我们这么访问是错的，因为map是需要实例化的，我们可以这么读，但是当我们添加的时就会有问题，我们需要去初始化内部的map。如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">func add(m map[string]map[string]int, path, country string) &#123;</span><br><span class="line">    mm, ok := m[path]</span><br><span class="line">    if !ok &#123;</span><br><span class="line">        mm = make(map[string]int)</span><br><span class="line">        m[path] = mm</span><br><span class="line">    &#125;</span><br><span class="line">    mm[country]++</span><br><span class="line">&#125;</span><br><span class="line">add(hits, &quot;/doc/&quot;, &quot;au&quot;)</span><br></pre></td></tr></table></figure></p>
+<p>但是我们可以采用另一种设计如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">type Key struct &#123;</span><br><span class="line">    Path, Country string</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">hits := make(map[Key]int)</span><br></pre></td></tr></table></figure></p>
+<p>此时我们可以一步添加<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hits[Key&#123;&quot;/&quot;, &quot;vn&quot;&#125;]++</span><br></pre></td></tr></table></figure></p>
+<p>另外读取也是非常方便的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">n := hits[Key&#123;&quot;/ref/spec/&quot;, &quot;ch&quot;&#125;]</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>并发<br>Maps不是并发安全的：当我们同时读写时map的行为是未定义的。通常我们可以使用sync.RWMutex来保护map</li>
+</ul>
+<p>看个例子<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">var counter = struct &#123;</span><br><span class="line">    sync.RWMutex</span><br><span class="line">    m map[string]int</span><br><span class="line">&#125;&#123;m: make(map[string]int)&#125;</span><br></pre></td></tr></table></figure></p>
+<p>读取的时候就可以使用读锁<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">couter.RLock()</span><br><span class="line">n := counter.m[&quot;some_key&quot;]</span><br><span class="line">counter.RUnlock()</span><br><span class="line">fmt.Println(&quot;some_key:&quot;, n)</span><br></pre></td></tr></table></figure></p>
+<p>写时用写锁<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">couter.Lock()</span><br><span class="line">counter.m[&quot;some_key&quot;]++</span><br><span class="line">counter.Unlock()</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>sync.Mutex第一次被使用后，千万不可以复制，要传指针。因为sync.Mutex是结构体而非指针数据，接下来回来一篇文章分析一下的。</p>
+</blockquote>
+<ul>
+<li><p>迭代顺序<br>map的迭代顺序是不包证的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">import &quot;sort&quot;</span><br><span class="line"></span><br><span class="line">var m map[int]string</span><br><span class="line">var keys []int</span><br><span class="line">for k := range m &#123;</span><br><span class="line">    keys = append(keys, k)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">sort.Ints(keys)</span><br><span class="line">for _, k := range keys &#123;</span><br><span class="line">    fmt.Println(&quot;Key:&quot;, k, &quot;value:&quot;, m[k])</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>注意点<br>map element是不可以addressable的意味着, 其实是可以预料的，因为map会扩容，那么扩容后map元素是否还在原地址就不一定了，所以&amp;map[“x”]这个操作是不被允许的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">type data struct &#123;</span><br><span class="line">    name string</span><br><span class="line">&#125;</span><br><span class="line">var a = map[string]data &#123;&quot;x&quot;: &#123;&quot;one&quot;&#125;&#125;</span><br><span class="line">m[&quot;x&quot;].name = &quot;two&quot; // error</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>错误的，除非他的类型是指针<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">type data struct &#123;  </span><br><span class="line">    name string</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func main() &#123;  </span><br><span class="line">    m := map[string]*data &#123;&quot;x&quot;:&#123;&quot;one&quot;&#125;&#125;</span><br><span class="line">    m[&quot;x&quot;].name = &quot;two&quot; //ok</span><br><span class="line">    fmt.Println(m[&quot;x&quot;]) //prints: &amp;&#123;two&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>但是要注意不要写入空的了指针，是会panic的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">package main</span><br><span class="line"></span><br><span class="line">type data struct &#123;  </span><br><span class="line">    name string</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func main() &#123;  </span><br><span class="line">    m := map[string]*data &#123;&quot;x&quot;:&#123;&quot;one&quot;&#125;&#125;</span><br><span class="line">    m[&quot;z&quot;].name = &quot;what?&quot; //???</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>很显然，指针的默认值是nil,当然无法访问nil的name了。</p>
+<p>但是slice element就可以addressable<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">type data struct &#123;  </span><br><span class="line">    name string</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func main() &#123;  </span><br><span class="line">    s := []data &#123;&#123;&quot;one&quot;&#125;&#125;</span><br><span class="line">    s[0].name = &quot;two&quot; //ok</span><br><span class="line">    fmt.Println(s)    //prints: [&#123;two&#125;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/go-map/">go map</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/05/07/css的一些基础知识/"><span>css的一些基础知识</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/05/07/css的一些基础知识/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-05-06T16:00:00.000Z">
+          2018-05-07
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <blockquote>
+<p>随时会更新</p>
+</blockquote>
+<h3 id="生成-BFC"><a href="#生成-BFC" class="headerlink" title="生成 BFC"></a>生成 BFC</h3><ul>
+<li><p>根元素</p>
+</li>
+<li><p>float 属性不为 none</p>
+</li>
+<li><p>position 为 absolute 或 fixed</p>
+</li>
+<li><p>display 为 inline-block, table-cell, table-caption, flex, inline-flex</p>
+</li>
+<li><p>overflow 不为 visible</p>
+</li>
+</ul>
+<p>记忆规则： absolute, fixed, inline-block, overflow</p>
+<h3 id="BFC-布局规则"><a href="#BFC-布局规则" class="headerlink" title="BFC 布局规则"></a>BFC 布局规则</h3><ul>
+<li>非 BFC 盒子内的第一个元素的 margin-top 设置为正值是不会撑开父元素的，而是紧贴着把父元素的兄弟元素给撑开。</li>
+<li><p>内部的 Box 会在垂直方向，一个接一个地放置。</p>
+</li>
+<li><p>Box 垂直方向的距离由 margin 决定。属于同一个 BFC 的两个相邻 Box 的 margin 会发生重叠</p>
+</li>
+<li><p>每个元素的左外边缘（margin-left)， 与包含块的左边（contain box left）相接触(对于从左往右的格式化，否则相反)。即使存在浮动也是如此。除非这个元素自己形成了一个新的 BFC。</p>
+</li>
+<li><p>BFC 的区域不会与 float box 重叠。(不会被兄弟float元素覆盖)</p>
+</li>
+<li><p>BFC 就是页面上的一个隔离的独立容器，容器里面的子元素不会影响到外面的元素。反之也如此。</p>
+</li>
+<li><p>计算 BFC 的高度时，浮动元素也参与计算</p>
+</li>
+</ul>
+<h3 id="IFC-布局规则"><a href="#IFC-布局规则" class="headerlink" title="IFC 布局规则"></a>IFC 布局规则</h3><ul>
+<li>框会从包含块的顶部开始，一个接一个地水平摆放。</li>
+<li>摆放这些框的时候，它们在水平方向上的外边距、边框、内边距所占用的空间都会被考虑在内。在垂直方向上，这些框可能会以不同形式来对齐：它们可能会把底部或顶部对齐，也可能把其内部的文本基线对齐。能把在一行上的框都完全包含进去的一个矩形区域，被称为该行的行框。水平的 margin、padding、border 有效，垂直无效。不能指定宽高。</li>
+<li>行框的宽度是由包含块和存在的浮动来决定。行框的高度由行高计算这一章所描述的规则来决定。</li>
+</ul>
+<h3 id="IFC-结论"><a href="#IFC-结论" class="headerlink" title="IFC 结论"></a>IFC 结论</h3><ul>
+<li>一个 line box 总是足够高对于包含在它内的所有盒子。然后，它也许比包含在它内最高的盒子高。(比如，盒子对齐导致基线提高了)。</li>
+<li>当盒子 B 的高度比包含它的 line box 的高度低，在 line box 内的 B 的垂值对齐线通过’vertical align’属性决定。当几个行内级盒子在一个单独的 line box 内不能很好的水平放置，则他们被分配成了 2 个或者更多的垂直重叠的 line boxs.因此,一个段落是很多个 line boxs 的垂直叠加。Line boxs 被叠加没有垂直方向上的分离(特殊情况除外)，并且他们也不重叠。</li>
+<li>通常，line box 的左边缘挨着它的包含块的左边缘，右边缘挨着它的包含块的右边缘。然而，浮动盒子也许会在包含块边缘和 line box 边缘之间。因此，尽管 line boxs 在同样的行内格式上下文中通常都有相同的宽度(就是他的包含块的宽度)，但是水平方向上的空间因为浮动被减少了，它的宽度也会变得复杂。Line boxs 在同样的行内格式上下文中通常在高度上是多样的(比如，一行也许包含了一个最高的图片然后其他的也可以仅仅只包含文字)</li>
+<li>当在一行中行内级盒子的总宽度比包含他们的 line box 的宽度小，他们的在 line box 中的水平放置位置由’text align’属性决定。如果属性是’justify’，用户代理可能会拉伸空间和文字在 inline boxs 内。</li>
+<li>当一个行内盒子超过了 line box 的宽度，则它被分割成几个盒子并且这些盒子被分配成几个横穿过的 line boxs。如果一个行内盒子不能被分割。则行内盒子溢出 line box。</li>
+<li>当一个行内盒子被分割，分割发生则 margins,borders,和 padding 便没有了视觉效果。</li>
+<li>在同样的 line box 内的行内盒子也许会被分割成几个盒子因为双向的文字。Line boxs 在行内格式上下文中档需要包含行内级内容时被创造。Line boxs 包含没有文字，没有空格，没有带着 margins,padding 和 borders，以及没有其他在流中的内容(比如图片，行内盒子和行内表格)，也不会以新起一行结尾。对于在他们内的任何盒子的位置都以他们决定并且必须将他们视作没有高度的 line boxs。</li>
+</ul>
+<h3 id="IFC-的-css"><a href="#IFC-的-css" class="headerlink" title="IFC 的 css"></a>IFC 的 css</h3><ul>
+<li>font-size</li>
+<li>line-height</li>
+<li>height</li>
+<li>vertical-aligin</li>
+</ul>
+<h3 id="block-ele-块级元素"><a href="#block-ele-块级元素" class="headerlink" title="block ele 块级元素"></a>block ele 块级元素</h3><blockquote>
+<p>a block-level box is also a block container box. A block container box either contains only block-level boxes or establishes an inline formatting context and thus contains only inline-level boxes. Not all block container boxes are block-level boxes: non-replaced inline blocks and non-replaced table cells are block containers but not block-level boxes. Block-level boxes that are also block containers are called block boxes.<br>解释一下 块级盒子也是一个块级包含块盒子， 他要么只包含块级盒子要么建立一个 IFC 并且只包含行级盒子。并不是所有的块级包含快盒子都是块级盒子，也有不可替换的 inline-block 或者其他的。</p>
+</blockquote>
+<ul>
+<li><p>解释 1 只包含块级元素或者是创建一个 IFC</p>
+<ol>
+<li>只包含块级元素,就是说若是一个块级盒子里面包含了一个块级元素，那么它里面就只有块级元素！你在骗我吧，你看我是可以这么写的？<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;div&gt;</span><br><span class="line">  &lt;p&gt;I love you&lt;/p&gt;</span><br><span class="line">  &lt;span&gt;真逗我不love你&lt;/span&gt;</span><br><span class="line">  那我来爱你吧</span><br><span class="line">&lt;div&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>问：你看我这个 div 里不止有 p,还有 span 还有 text,你咋说？答：没错但是你看<a href="https://www.w3.org/TR/CSS2/visuren.html#block-level" target="_blank" rel="noopener">规范</a> 9.2.1.1 Anonymous block boxes<br>就是说像你这种情况他是会生成一个匿名块级盒子的，那么你的代码就是这样的了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"> &lt;div&gt;</span><br><span class="line">  &lt;p&gt;I love you&lt;/p&gt;</span><br><span class="line">  &lt;anonymous-block-boxes&gt;&lt;span&gt;真逗我不love你&lt;/span&gt;</span><br><span class="line">  那我来爱你吧&lt;/anonymous-block-boxes&gt;</span><br><span class="line">&lt;div&gt;</span><br></pre></td></tr></table></figure>
+<p>我觉得这也是合理的就像规范里说的，这种方式也易于实现，要不浏览器的实现不得费劲啊。这样规定就意味着，块级元素只包含块级元素或者是创建一个 IFC<br>IFC 的栗子</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;div&gt;i love you&lt;/div&gt;</span><br></pre></td></tr></table></figure>
+<p>但事实上，这里不止创建 IFC 还有一个这个 Anonymous inline boxes，因为 html 里所有的东西都是被盒子包裹的文本也不例外，你没写盒子，并不代表就没有，其实是有匿名盒子生成的。</p>
+</li>
+</ul>
+<h3 id="tricks"><a href="#tricks" class="headerlink" title="tricks"></a>tricks</h3><ul>
+<li><p><a href="https://segmentfault.com/a/1190000010698609" target="_blank" rel="noopener">两栏布局</a></p>
+</li>
+<li><p><a href="http://www.zhangxinxu.com/wordpress/2010/03/%E7%BA%AFcss%E5%AE%9E%E7%8E%B0%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%88%86%E6%A0%8F%E9%AB%98%E5%BA%A6%E8%87%AA%E5%8A%A8%E7%9B%B8%E7%AD%89/" target="_blank" rel="noopener">分栏高度自动相等</a></p>
+<ul>
+<li>使用 margin-bottom 负边距，padding-bottom 正边距, 原理是 padding-bottom 足够大让人误以为你的高度是在自动增加而实际是你增加的高度不能超过 padding-bottom 的值，否则就会看到白框了，margin-bottom 负边距是为了让后面的元素能够上移到 content 元素的后面，而不是被 padding 给撑开。</li>
+</ul>
+</li>
+<li><p><a href="http://louiszhai.github.io/2016/03/12/css-center/" target="_blank" rel="noopener">水平垂直居中的方式</a></p>
+</li>
+<li><p><a href="http://www.zhangxinxu.com/wordpress/2016/01/understand-css-stacking-context-order-z-index/" target="_blank" rel="noopener">层叠上下文</a> 背景&lt;布局&lt;内容</p>
+</li>
+</ul>
+<h3 id="层叠准则：-务必牢记的层叠准则"><a href="#层叠准则：-务必牢记的层叠准则" class="headerlink" title="层叠准则： 务必牢记的层叠准则"></a>层叠准则： 务必牢记的层叠准则</h3><p>下面这两个是层叠领域的黄金准则。当元素发生层叠的时候，其覆盖关系遵循下面 2 个准则：</p>
+<ul>
+<li>谁大谁上：当具有明显的层叠水平标示的时候，如识别的 z-indx 值，在同一个层叠上下文领域，层叠水平值大的那一个覆盖小的那一个。通俗讲就是官大的压死官小的。</li>
+<li>后来居上：当元素的层叠水平一致、层叠顺序相同的时候，在 DOM 流中处于后面的元素会覆盖前面的元素。</li>
+</ul>
+<h3 id="层叠上下文的特性"><a href="#层叠上下文的特性" class="headerlink" title="层叠上下文的特性"></a>层叠上下文的特性</h3><p>层叠上下文元素有如下特性：</p>
+<ol>
+<li>层叠上下文的层叠水平要比普通元素高（原因后面会说明）；</li>
+<li>层叠上下文可以阻断元素的混合模式（见此文第二部分说明）；</li>
+<li>层叠上下文可以嵌套，内部层叠上下文及其所有子元素均受制于外部的层叠上下文。</li>
+<li>每个层叠上下文和兄弟元素独立，也就是当进行层叠变化或渲染的时候，只需要考虑后代元素。</li>
+<li>每个层叠上下文是自成体系的，当元素发生层叠的时候，整个元素被认为是在父层叠上下文的层叠顺序中。</li>
+</ol>
+<h3 id="翻译成真实世界语言就是："><a href="#翻译成真实世界语言就是：" class="headerlink" title="翻译成真实世界语言就是："></a>翻译成真实世界语言就是：</h3><ol>
+<li>当官的比老百姓更有机会面见圣上；</li>
+<li>领导下去考察，会被当地官员阻隔只看到繁荣看不到真实民情；</li>
+<li>一个家里，爸爸可以当官，孩子也是可以同时当官的。但是，孩子这个官要受爸爸控制。</li>
+<li>自己当官，兄弟不占光。有什么福利或者变故只会影响自己的孩子们。</li>
+<li>每个当官的都有属于自己的小团体，当家眷管家发生摩擦磕碰的时候（包括和其他官员的家眷管家），都是要优先看当官的也就是主子的脸色。</li>
+</ol>
+<h3 id="层叠上下文的创建"><a href="#层叠上下文的创建" class="headerlink" title="层叠上下文的创建"></a>层叠上下文的创建</h3><ol>
+<li>根元素（很厉害的，本身是 BFC,还是具有层叠上下文）</li>
+<li>定位元素对于包含有 position:relative/position:absolute 的定位元素，以及 FireFox/IE 浏览器（不包括 Chrome 等 webkit 内核浏览器）（目前，也就是 2016 年初是这样）下含有 position:fixed 声明的定位元素，当其 z-index 值不是 auto 的时候，会创建层叠上下文。典型的栗子，猜猜谁上谁下</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;div style=&quot;position:relative; z-index:auto;&quot;&gt;</span><br><span class="line">    &lt;img src=&quot;mm1.jpg&quot; style=&quot;position:absolute; z-index:2;&quot;&gt;    &lt;-- 横妹子 --&gt;</span><br><span class="line">&lt;/div&gt;</span><br><span class="line">&lt;div style=&quot;position:relative; z-index:auto;&quot;&gt;</span><br><span class="line">    &lt;img src=&quot;mm2.jpg&quot; style=&quot;position:relative; z-index:1;&quot;&gt;    &lt;-- 竖妹子 --&gt;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure>
+<p>还有这个</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;div style=&quot;position:relative; z-index:auto;&quot;&gt;</span><br><span class="line">    &lt;img src=&quot;mm1.jpg&quot; style=&quot;position:absolute; z-index:2;&quot;&gt;    &lt;-- 横妹子 --&gt;</span><br><span class="line">&lt;/div&gt;</span><br><span class="line">&lt;div style=&quot;position:relative; z-index:auto;&quot;&gt;</span><br><span class="line">    &lt;img src=&quot;mm2.jpg&quot; style=&quot;position:relative; z-index:1;&quot;&gt;    &lt;-- 竖妹子 --&gt;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>CSS3 与新时代的层叠上下文</li>
+<li>z-index 值不为 auto 的 flex 项(父元素 display:flex|inline-flex).<br>注意，这里的规则有些负责复杂。要满足两个条件才能形成层叠上下文：条件 1 是父级需要是 display:flex 或者 display:inline-flex 水平，条件 2 是子元素的 z-index 不是 auto，必须是数值。此时，这个子元素为层叠上下文元素，没错，注意了，是子元素，不是 flex 父级元素。</li>
+<li>元素的 opacity 值不是 1.</li>
+<li>元素的 transform 值不是 none.</li>
+<li>元素 mix-blend-mode 值不是 normal.</li>
+<li>元素的 filter 值不是 none.</li>
+<li>元素的 isolation 值是 isolate.</li>
+<li>will-change 指定的属性值为上面任意一个。</li>
+<li>元素的-webkit-overflow-scrolling 设为 touch.</li>
+</ol>
+<p>再具体的请参见原文</p>
+<h3 id="同时设置-margin-left-和-margin-right-参见"><a href="#同时设置-margin-left-和-margin-right-参见" class="headerlink" title="同时设置 margin-left 和 margin-right 参见"></a>同时设置 margin-left 和 margin-right <a href="https://segmentfault.com/a/1190000007184954" target="_blank" rel="noopener">参见</a></h3><p>更正： 第二种情况中若是没有设置宽度也是和第一种情况一样，设置负值会增加相应方向的宽度。</p>
+<h3 id="内容的包裹性，如何让你的盒子的宽度自适应内容呢？"><a href="#内容的包裹性，如何让你的盒子的宽度自适应内容呢？" class="headerlink" title="内容的包裹性，如何让你的盒子的宽度自适应内容呢？"></a>内容的包裹性，如何让你的盒子的宽度自适应内容呢？</h3><ol>
+<li>行内元素肯定是可以的可是我们没办法控制行内元素的高度等属性</li>
+<li>float, inline-block，其实还有 position:absolute<br>但是这真的可以么？也不是<a href="http://jsbin.com/mamigevolo/2/edit?html,css,output" target="_blank" rel="noopener">参见</a><br>为什么还那么宽呢？因为我们里面放了两个 inline 元素，而第二个太长有放不下，于是挪到下一行了，但他占的位置依然在。so…</li>
+</ol>
+<h3 id="float-的一些规则"><a href="#float-的一些规则" class="headerlink" title="float 的一些规则"></a>float 的一些<a href="http://dev.dafan.info/detail/513780?p=" target="_blank" rel="noopener">规则</a></h3><p><a href="https://zhanglun.github.io/2014/10/15/%E8%A7%84%E8%8C%83%E4%B9%8B%E8%B7%AF-%E9%87%8D%E6%96%B0%E8%AE%A4%E8%AF%86%E4%BA%86Float/" target="_blank" rel="noopener">另一个</a><br>还有鑫空间的不贴了，一搜就有</p>
+<h3 id="宽度计算法则"><a href="#宽度计算法则" class="headerlink" title="宽度计算法则"></a><a href="http://f2ecouple.github.io/2014/03/16/css%E5%AE%BD%E5%BA%A6%E8%AE%A1%E7%AE%97%E7%AE%97%E6%B3%95/" target="_blank" rel="noopener">宽度计算法则</a></h3><h3 id="position：absolute-的定位参考是包含块，若是没有定位为非-static-的父元素，则是依据的是-viewport-定位（是根元素的包含块）。"><a href="#position：absolute-的定位参考是包含块，若是没有定位为非-static-的父元素，则是依据的是-viewport-定位（是根元素的包含块）。" class="headerlink" title="position：absolute 的定位参考是包含块，若是没有定位为非 static 的父元素，则是依据的是 viewport 定位（是根元素的包含块）。"></a>position：absolute 的定位参考是包含块，若是没有定位为非 static 的父元素，则是依据的是 viewport 定位（是根元素的包含块）。</h3><h3 id="基本上来说，reflow-有如下的几个原因："><a href="#基本上来说，reflow-有如下的几个原因：" class="headerlink" title="基本上来说，reflow 有如下的几个原因："></a>基本上来说，reflow 有如下的几个原因：</h3><ul>
+<li>Initial。网页初始化的时候。</li>
+<li>Incremental。一些 Javascript 在操作 DOM Tree 时。</li>
+<li>Resize。其些元件的尺寸变了。</li>
+<li>StyleChange。如果 CSS 的属性发生变化了。</li>
+<li>Dirty。几个 Incremental 的 reflow 发生在同一个 frame 的子树上。我们来看一个示例：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">var bstyle = document.body.style; // cache</span><br><span class="line">bstyle.padding = &quot;20px&quot;; // reflow, repaint</span><br><span class="line">bstyle.border = &quot;10px solid red&quot;; //  再一次的 reflow 和 repaint</span><br><span class="line"></span><br><span class="line">bstyle.color = &quot;blue&quot;; // repaint</span><br><span class="line">bstyle.backgroundColor = &quot;#fad&quot;; // repaint</span><br><span class="line"></span><br><span class="line">bstyle.fontSize = &quot;2em&quot;; // reflow, repaint</span><br><span class="line"></span><br><span class="line">// new DOM element - reflow, repaint</span><br><span class="line">document.body.appendChild(document.createTextNode(&apos;dude!&apos;));</span><br></pre></td></tr></table></figure>
+<p>当然，我们的浏览器是聪明的，它不会像上面那样，你每改一次样式，它就 reflow 或 repaint 一次。一般来说，浏览器会把这样的操作积攒一批，然后做一次 reflow，这又叫异步 reflow 或增量异步 reflow。但是有些情况浏览器是不会这么做的，比如：resize 窗口，改变了页面默认的字体，等。对于这些操作，浏览器会马上进行 reflow。</p>
+<p>但是有些时候，我们的脚本会阻止浏览器这么干，比如：如果我们请求下面的一些 DOM 值：</p>
+<ul>
+<li>offsetTop(定位距离+margin-top), offsetLeft, offsetWidth(dom 对象的可见宽度包括滚动条等), offsetHeight</li>
+<li>scrollTop(顶部已经滚动的距离)/Left/Width(元素完整的高度和宽度包括 overflow: hidden 的部分)/Height</li>
+<li>clientTop(就是 border-top)/Left/Width(dom 内容的宽度)/Height</li>
+<li>IE 中的 getComputedStyle(), 或 currentStyle</li>
+</ul>
+<p>因为，如果我们的程序需要这些值，那么浏览器需要返回最新的值，而这样一样会 flush 出去一些样式的改变，从而造成频繁的 reflow/repaint。</p>
+<h3 id="各种-top-height-http-www-cnblogs-com-gagarinwjj-p-conflict-client-offset-scroll-html，-https-github-com-pramper-Blog-issues-10"><a href="#各种-top-height-http-www-cnblogs-com-gagarinwjj-p-conflict-client-offset-scroll-html，-https-github-com-pramper-Blog-issues-10" class="headerlink" title="各种 top,height(http://www.cnblogs.com/gagarinwjj/p/conflict_client_offset_scroll.html， https://github.com/pramper/Blog/issues/10)"></a>各种 top,height(<a href="http://www.cnblogs.com/gagarinwjj/p/conflict_client_offset_scroll.html，" target="_blank" rel="noopener">http://www.cnblogs.com/gagarinwjj/p/conflict_client_offset_scroll.html，</a> <a href="https://github.com/pramper/Blog/issues/10" target="_blank" rel="noopener">https://github.com/pramper/Blog/issues/10</a>)</h3><ul>
+<li>offet 的 top, left 就是距离定位系统的父元素的距离(比如是相对父元素的定位那么算出来的就是距离父元素的距离)</li>
+</ul>
+<h3 id="event-对象中有"><a href="#event-对象中有" class="headerlink" title="event 对象中有"></a>event 对象中有</h3><p>offsetX/Y, clientX/Y, pageX/Y, screenX/Y 等。</p>
+<p>screenX:鼠标位置相对于用户屏幕水平偏移量，而 screenY 也就是垂直方向的，此时的参照点也就是原点是屏幕的左上角。</p>
+<p>clientX:跟 screenX 相比就是将参照点改成了浏览器内容区域的左上角，该参照点会随之滚动条的移动而移动。</p>
+<p>pageX：参照点也是浏览器内容区域的左上角，但它不会随着滚动条而变动</p>
+<h3 id="flex-布局（https-zhuanlan-zhihu-com-p-25303493）"><a href="#flex-布局（https-zhuanlan-zhihu-com-p-25303493）" class="headerlink" title="flex 布局（https://zhuanlan.zhihu.com/p/25303493）"></a>flex 布局（<a href="https://zhuanlan.zhihu.com/p/25303493）" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/25303493）</a></h3><ul>
+<li>当设置了 display: flex 时， 子元素的 float、clear、vertical-align 都会失效</li>
+<li>并且当设置了 flex-basis 时 width 设置就不起作用了</li>
+</ul>
+<h3 id="getComputedStyle-可以获取伪类元素的样式"><a href="#getComputedStyle-可以获取伪类元素的样式" class="headerlink" title="getComputedStyle 可以获取伪类元素的样式"></a>getComputedStyle 可以获取伪类元素的样式</h3><h3 id="可以通过-parentNode-来获取-node-的-parent-元素"><a href="#可以通过-parentNode-来获取-node-的-parent-元素" class="headerlink" title="可以通过 parentNode 来获取 node 的 parent 元素"></a>可以通过 parentNode 来获取 node 的 parent 元素</h3><h3 id="offsetParent-https-www-cnblogs-com-xiaohuochai-p-5828369-html-是指元素的定位父元素（只有有-position-不为-static-才能成为-offsetParent-元素，-若是没有-position-定位的父级元素那么-offsetParent-就是-body-而-fixed-元素的-offsetParent-是-null）"><a href="#offsetParent-https-www-cnblogs-com-xiaohuochai-p-5828369-html-是指元素的定位父元素（只有有-position-不为-static-才能成为-offsetParent-元素，-若是没有-position-定位的父级元素那么-offsetParent-就是-body-而-fixed-元素的-offsetParent-是-null）" class="headerlink" title="offsetParent (https://www.cnblogs.com/xiaohuochai/p/5828369.html) 是指元素的定位父元素（只有有 position 不为 static 才能成为 offsetParent 元素， 若是没有 position 定位的父级元素那么 offsetParent 就是 body, 而 fixed 元素的 offsetParent 是 null）"></a>offsetParent (<a href="https://www.cnblogs.com/xiaohuochai/p/5828369.html" target="_blank" rel="noopener">https://www.cnblogs.com/xiaohuochai/p/5828369.html</a>) 是指元素的定位父元素（只有有 position 不为 static 才能成为 offsetParent 元素， 若是没有 position 定位的父级元素那么 offsetParent 就是 body, 而 fixed 元素的 offsetParent 是 null）</h3><p>offsetParent 是用来计算 offsetTop 等值 的。他和 parentNode 是不同的，parentNode 父亲节点 HTML 结构层级关系中的上一级元素。因为所有的元素最后计算偏移都是和 body 元素的偏移。</p>
+<h3 id="offsetTop-offsetLeft-当前元素距离父级参照物上-左边距偏移量-我们要注意-offsetTop-可不是-scrollTop-一个偏移距离，一个是滚动距离"><a href="#offsetTop-offsetLeft-当前元素距离父级参照物上-左边距偏移量-我们要注意-offsetTop-可不是-scrollTop-一个偏移距离，一个是滚动距离" class="headerlink" title=".offsetTop/offsetLeft:当前元素距离父级参照物上/左边距偏移量, 我们要注意 offsetTop 可不是 scrollTop, 一个偏移距离，一个是滚动距离"></a>.offsetTop/offsetLeft:当前元素距离父级参照物上/左边距偏移量, 我们要注意 offsetTop 可不是 scrollTop, 一个偏移距离，一个是滚动距离</h3><p>-&gt;offset():等同于 jQuery 中的 offset 方法，实现获取页面中任意一个元素距离 body 的偏移（包含左偏移和上偏移），不管当前元素的父级参照物是谁。<br>-&gt;获取的结果是一个对象{left:距离 body 的左偏移量，top:距离 body 上偏移}<br>-&gt;在标准的 ie8 浏览器中，我们使用 offsetLeft/offsetTop 其实是把父级参照物的边框也计算在内了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">function offset(curEle)&#123;</span><br><span class="line">var totalLeft = null,totalTop = null,par = curEle.offsetParent;</span><br><span class="line">//首先把自己本身的进行累加</span><br><span class="line">totalLeft += curEle.offsetLeft;</span><br><span class="line">totalTop += curEle.offsetTop;</span><br><span class="line"></span><br><span class="line">    //只要没有找到body，我们就把父级参照物的边框和偏移量累加</span><br><span class="line">    while(par)&#123;</span><br><span class="line">                if(navigator.userAgent.indexOf(&quot;MSIE 8.0&quot;) === -1)&#123;</span><br><span class="line">                    //不是标准的ie8浏览器，才进行边框累加</span><br><span class="line">                    //累加父级参照物边框</span><br><span class="line">                    totalLeft += par.clientLeft;</span><br><span class="line">                    totalTop += par.clientTop;</span><br><span class="line">                &#125;</span><br><span class="line">            //累加父级参照物本身的偏移</span><br><span class="line">            totalLeft += par.offsetLeft;</span><br><span class="line">            totalTop += par.offsetTop;</span><br><span class="line">            par = par.offsetParent;</span><br><span class="line">    &#125;</span><br><span class="line">    return &#123;left:totalLeft,top:totalTop&#125;;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">console.log(offset(box).top);</span><br></pre></td></tr></table></figure>
+<h3 id="getBoundingClientRect"><a href="#getBoundingClientRect" class="headerlink" title="getBoundingClientRect"></a>getBoundingClientRect</h3><p>DOMRect 对象包含了一组用于描述边框的只读属性——left、top、right 和 bottom，单位为像素。除了 width 和 height 外的属性都是相对于视口(viewPort)的左上角位置而言的。</p>
+<h3 id="getClientRects-对于-块级元素-来说，这两个其实没有什么区别的，关键是对于-内联元素-这两个有明显的区别。简单的说就是-内联元素-不在一行的时候每行都会产生一个矩形范围，而-getBoundingClientRect-并不会。"><a href="#getClientRects-对于-块级元素-来说，这两个其实没有什么区别的，关键是对于-内联元素-这两个有明显的区别。简单的说就是-内联元素-不在一行的时候每行都会产生一个矩形范围，而-getBoundingClientRect-并不会。" class="headerlink" title="getClientRects, 对于 块级元素 来说，这两个其实没有什么区别的，关键是对于 内联元素 这两个有明显的区别。简单的说就是 内联元素 不在一行的时候每行都会产生一个矩形范围，而 getBoundingClientRect 并不会。"></a>getClientRects, 对于 块级元素 来说，这两个其实没有什么区别的，关键是对于 内联元素 这两个有明显的区别。简单的说就是 内联元素 不在一行的时候每行都会产生一个矩形范围，而 getBoundingClientRect 并不会。</h3><p>getClientRects 返回的是数组，对于行内元素及其有用，尤其是当行内元素不在一行的时候</p>
+<p><a href="http://f2ecouple.github.io/2014/03/16/css%E5%AE%BD%E5%BA%A6%E8%AE%A1%E7%AE%97%E7%AE%97%E6%B3%95/" target="_blank" rel="noopener">宽度计算</a></p>
+<h3 id="transform-origin-以及-transform：-scale-的妙用"><a href="#transform-origin-以及-transform：-scale-的妙用" class="headerlink" title="transform-origin 以及 transform： scale 的妙用"></a>transform-origin 以及 transform： scale 的妙用</h3><p>transform-orgin 默认是 50%， 50%</p>
+<p>中间向两端延伸动画</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">div &#123;</span><br><span class="line"></span><br><span class="line">    position: absolute;</span><br><span class="line"></span><br><span class="line">    width: 200px;</span><br><span class="line"></span><br><span class="line">    height: 60px;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">div::before &#123;</span><br><span class="line"></span><br><span class="line">    content: &quot;&quot;;</span><br><span class="line"></span><br><span class="line">    position: absolute;</span><br><span class="line"></span><br><span class="line">    left: 0;</span><br><span class="line"></span><br><span class="line">    bottom: 0;</span><br><span class="line"></span><br><span class="line">    width: 200px;</span><br><span class="line"></span><br><span class="line">    height: 2px;</span><br><span class="line"></span><br><span class="line">    background: deeppink;</span><br><span class="line"></span><br><span class="line">    transition: transform .5s;</span><br><span class="line"></span><br><span class="line">    transform: scaleX(0);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">div:hover::before &#123;</span><br><span class="line"></span><br><span class="line">    transform: scaleX(1);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从左侧出来再右侧消失的动画</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">div &#123;</span><br><span class="line"></span><br><span class="line">    position: absolute;</span><br><span class="line"></span><br><span class="line">    width: 200px;</span><br><span class="line"></span><br><span class="line">    height: 60px;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">div::before &#123;</span><br><span class="line"></span><br><span class="line">    content: &quot;&quot;;</span><br><span class="line"></span><br><span class="line">    position: absolute;</span><br><span class="line"></span><br><span class="line">    left: 0;</span><br><span class="line"></span><br><span class="line">    bottom: 0;</span><br><span class="line"></span><br><span class="line">    width: 200px;</span><br><span class="line"></span><br><span class="line">    height: 2px;</span><br><span class="line"></span><br><span class="line">    background: deeppink;</span><br><span class="line"></span><br><span class="line">    transition: transform .5s;</span><br><span class="line"></span><br><span class="line">    transform: scaleX(0);</span><br><span class="line"></span><br><span class="line">    transform-origin: 100% 0;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">div:hover::before &#123;</span><br><span class="line"></span><br><span class="line">    transform: scaleX(1);</span><br><span class="line"></span><br><span class="line">    transform-origin: 0 0;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>结合 transform-orgin 和 scale 可以做出很多初始位置与结束位置不同的动画<br><a href="https://codepen.io/Chokcoco/pen/ELxmwE" target="_blank" rel="noopener">demo</a></p>
+<h3 id="使用-css-接收页面点击事件"><a href="#使用-css-接收页面点击事件" class="headerlink" title="使用 css 接收页面点击事件"></a>使用 css 接收页面点击事件</h3><ol>
+<li>:target 是 CSS3 新增的一个伪类，可用于选取当前活动的目标元素。当然 URL 末尾带有锚名称 #，就可以指向文档内某个具体的元素。这个被链接的元素就是目标元素(target element)。它需要一个 id 去匹配文档中的 target 。</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;ul class=&apos;nav&apos;&gt;</span><br><span class="line">    &lt;li&gt;&lt;a href=&quot;#content1&quot;&gt;列表1&lt;/a&gt;&lt;/li&gt;</span><br><span class="line">    &lt;li&gt;&lt;a href=&quot;#content2&quot;&gt;列表2&lt;/a&gt;&lt;/li&gt;</span><br><span class="line">&lt;/ul&gt;</span><br><span class="line">&lt;div id=&quot;content1&quot;&gt;列表1内容:123456&lt;/div&gt;</span><br><span class="line">&lt;div id=&quot;content2&quot;&gt;列表2内容:abcdefgkijkl&lt;/div&gt;</span><br></pre></td></tr></table></figure>
+<p>的那我们点击 a 标签时，如下的类选择器就会被触发</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#content1:target,</span><br><span class="line">#content2:target &#123;</span><br><span class="line">    color: black;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>input[radio|checkbox] 点击可以触发 inpu:check 选择器， <label for=""> for 指定 input id 可以绑定 input,就是说点击 label 就相当于点击 input</label></li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;div class=&quot;container&quot;&gt;</span><br><span class="line">    &lt;input class=&quot;nav1&quot; id=&quot;li1&quot; type=&quot;radio&quot; name=&quot;nav&quot;&gt;</span><br><span class="line">    &lt;input class=&quot;nav2&quot; id=&quot;li2&quot; type=&quot;radio&quot; name=&quot;nav&quot;&gt;</span><br><span class="line">    &lt;ul class=&apos;nav&apos;&gt;</span><br><span class="line">        &lt;li class=&apos;active&apos;&gt;&lt;label for=&quot;li1&quot;&gt;列表1&lt;/label&gt;&lt;/li&gt;</span><br><span class="line">        &lt;li&gt;&lt;label for=&quot;li2&quot;&gt;列表2&lt;/label&gt;&lt;/li&gt;</span><br><span class="line">    &lt;/ul&gt;</span><br><span class="line">    &lt;div class=&quot;content&quot;&gt;</span><br><span class="line">        &lt;div class=&quot;content1&quot;&gt;列表1内容:123456&lt;/div&gt;</span><br><span class="line">        &lt;div class=&quot;content1&quot;&gt;列表2内容:abcdefgkijkl&lt;/div&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="多个元素的边界线问题，最后一个不要"><a href="#多个元素的边界线问题，最后一个不要" class="headerlink" title="多个元素的边界线问题，最后一个不要"></a>多个元素的边界线问题，最后一个不要</h3><p>消失的边界线问题，《css 设计指南》看到过，有一种巧妙的方法。<br>li+li{border-left: 1px solid #000;} // 单行 li</p>
+<h3 id="字体定义顺序是一门学问，通常而言，我们定义字体的时候，会定义多个字体或字体系列。举个栗子："><a href="#字体定义顺序是一门学问，通常而言，我们定义字体的时候，会定义多个字体或字体系列。举个栗子：" class="headerlink" title="字体定义顺序是一门学问，通常而言，我们定义字体的时候，会定义多个字体或字体系列。举个栗子："></a>字体定义顺序是一门学问，通常而言，我们定义字体的时候，会定义多个字体或字体系列。举个栗子：</h3><p>body {<br>font-family: tahoma, arial, ‘Hiragino Sans GB’, ‘\5b8b\4f53’, sans-serif;<br>}<br>别看短短 5 个字体名，其实其中门道很深。解释一下：</p>
+<ol>
+<li>使用 tahoma 作为首选的西文字体，小字号下结构清晰端整、阅读辨识容易；</li>
+<li>用户电脑未预装 tohoma，则选择 arial 作为替代的西文字体，覆盖 windows 和 MAC OS；</li>
+<li>Hiragino Sans GB 为冬青黑体，首选的中文字体，保证了 MAC 用户的观看体验；</li>
+<li>Windows 下没有预装冬青黑体，则使用 ‘\5b8b\4f53’ 宋体为替代的中文字体方案，小字号下有着不错的效果；</li>
+<li>最后使用无衬线系列字体 sans-serif 结尾，保证旧版本操作系统用户能选中一款电脑预装的无衬线字体，向下兼容。嗯，其实上面的 font-family 就是淘宝首页 body 的字体定义，非常的规范，每一个字体的定义都有它的意义。综上，总结一下，我觉得字体 font-family 定义的原则大概遵循：</li>
+</ol>
+<p>1、兼顾中西中文或者西文（英文）都要考虑到。</p>
+<p>2、西文在前，中文在后由于大部分中文字体也是带有英文部分的，但是英文部分又不怎么好看，同理英文字体中大多不包含中文。</p>
+<p>所以通常会先进行英文字体的声明，选择最优的英文字体，这样不会影响到中文字体的选择，中文字体声明则紧随其次。</p>
+<p>3、兼顾多操作系统选择字体的时候要考虑多操作系统。例如 MAC OS 下的很多中文字体在 Windows 都没有预装，为了保证 MAC 用户的体验，在定义中文字体的时候，先定义 MAC 用户的中文字体，再定义 Windows 用户的中文字体；</p>
+<p>4、兼顾旧操作系统，以字体族系列 serif 和 sans-serif 结尾当使用一些非常新的字体时，要考虑向下兼容，兼顾到一些极旧的操作系统，使用字体族系列 serif 和 sans-serif 结尾总归是不错的选择。</p>
+<h3 id="hover-的使用"><a href="#hover-的使用" class="headerlink" title="hover 的使用"></a>hover 的使用</h3><p><a href="http://linxz.github.io/CSS_Skills/demo/other/about_hover_pseudo_class.html#demo2_1_a_2" target="_blank" rel="noopener">hover</a></p>
+<h3 id="当-button-被点击时的状态变化-初始-gt-hover-直到鼠标离开都是-hover-gt-focus-点击后获取焦点，再点击其他或者-tab-键时会失去-focus-gt-active-点击松开后就失去了-，-因此-active-应当放到最后，否则会被作用时长比他长的样式覆盖，比如-hover-的样式"><a href="#当-button-被点击时的状态变化-初始-gt-hover-直到鼠标离开都是-hover-gt-focus-点击后获取焦点，再点击其他或者-tab-键时会失去-focus-gt-active-点击松开后就失去了-，-因此-active-应当放到最后，否则会被作用时长比他长的样式覆盖，比如-hover-的样式" class="headerlink" title="当 button 被点击时的状态变化 初始 -&gt; hover(直到鼠标离开都是 hover) -&gt; focus(点击后获取焦点，再点击其他或者 tab 键时会失去 focus) -&gt; active(点击松开后就失去了)， 因此 active 应当放到最后，否则会被作用时长比他长的样式覆盖，比如 hover 的样式"></a>当 button 被点击时的状态变化 初始 -&gt; hover(直到鼠标离开都是 hover) -&gt; focus(点击后获取焦点，再点击其他或者 tab 键时会失去 focus) -&gt; active(点击松开后就失去了)， 因此 active 应当放到最后，否则会被作用时长比他长的样式覆盖，比如 hover 的样式</h3><h3 id="css-loader-简单实现，border-radius-boder-top-color-透明"><a href="#css-loader-简单实现，border-radius-boder-top-color-透明" class="headerlink" title="css loader 简单实现，border-radius, boder-top-color: 透明"></a>css loader 简单实现，border-radius, boder-top-color: 透明</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">.loader &#123;</span><br><span class="line"></span><br><span class="line">    display: none;</span><br><span class="line">    width: 50px;</span><br><span class="line">    height: 50px;</span><br><span class="line">    border: 4px solid #fff;</span><br><span class="line">    border-top-color: transparent;</span><br><span class="line">    border-radius: 50%;</span><br><span class="line">    margin: 0 auto;</span><br><span class="line">    animation: spin 400ms linear infinite;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="居中的方式"><a href="#居中的方式" class="headerlink" title="居中的方式"></a>居中的方式</h3><p><a href="http://www.html-js.com/article/4613" target="_blank" rel="noopener">http://www.html-js.com/article/4613</a></p>
+<h3 id="图片预览的方式"><a href="#图片预览的方式" class="headerlink" title="图片预览的方式"></a><a href="https://www.cnblogs.com/rubylouvre/p/4597344.html" target="_blank" rel="noopener">图片预览的方式</a></h3><p>基本原则就是造一个img标签</p>
+<h3 id="domReady"><a href="#domReady" class="headerlink" title="domReady"></a><a href="https://www.cnblogs.com/rubylouvre/p/4536334.html" target="_blank" rel="noopener">domReady</a></h3><h3 id="两栏布局"><a href="#两栏布局" class="headerlink" title="两栏布局"></a>两栏布局</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">.wrapper &#123;</span><br><span class="line">    display: flex;</span><br><span class="line">    justify-content: space-between;</span><br><span class="line">&#125;</span><br><span class="line">.left &#123;</span><br><span class="line">    background: blue;</span><br><span class="line">    width: 200px;</span><br><span class="line">    height: 400px;</span><br><span class="line">&#125;</span><br><span class="line">.right &#123;</span><br><span class="line">    width: calc(100% - 200px);</span><br><span class="line">    height: 400px;</span><br><span class="line">    background: green;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">.left &#123;</span><br><span class="line">    background: blue;</span><br><span class="line">    float: left;</span><br><span class="line">    width: 200px;</span><br><span class="line">    height: 400px;</span><br><span class="line">&#125;</span><br><span class="line">.right &#123;</span><br><span class="line">    width: calc(100% - 200px);</span><br><span class="line">    height: 400px;</span><br><span class="line">    background: green;</span><br><span class="line">    display: inline-block;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="CSS深入理解流体特性和BFC特性下多栏自适应布局"><a href="#CSS深入理解流体特性和BFC特性下多栏自适应布局" class="headerlink" title="CSS深入理解流体特性和BFC特性下多栏自适应布局"></a><a href="http://www.zhangxinxu.com/wordpress/2015/02/css-deep-understand-flow-bfc-column-two-auto-layout/" target="_blank" rel="noopener">CSS深入理解流体特性和BFC特性下多栏自适应布局</a></h3><h3 id="waterfall-布局"><a href="#waterfall-布局" class="headerlink" title="waterfall 布局"></a>waterfall 布局</h3><ol>
+<li>我先入为主以为waterfall 布局就是得横向一个一个布局的，但是若是所有的宽度一致的话，我们可以认为是按照列布局的啊！！！<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">&lt;div class=&quot;1&quot;&gt;</span><br><span class="line">    &lt;div class=&quot;ele&quot;&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">    &lt;div class=&quot;ele&quot;&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">    &lt;div class=&quot;ele&quot;&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">&lt;/div&gt;</span><br><span class="line">&lt;div class=&quot;2&quot;&gt;</span><br><span class="line">    &lt;div class=&quot;ele&quot;&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">    &lt;div class=&quot;ele&quot;&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">&lt;/div&gt;</span><br><span class="line">&lt;div class=&quot;3&quot;&gt;</span><br><span class="line">    &lt;div class=&quot;ele&quot;&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">    &lt;div class=&quot;ele&quot;&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">&lt;/div&gt;</span><br><span class="line">&lt;div class=&quot;4&quot;&gt;</span><br><span class="line">    &lt;div class=&quot;ele&quot;&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">    &lt;div class=&quot;ele&quot;&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">    &lt;div class=&quot;ele&quot;&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>如上我们就把一个一个的横向布局计算absolute位置，变为了，多列等宽布局（只需检测是否要改变列数）每列内部以此顺序布局即可。</p>
+<p><a href="">参见</a></p>
+<h3 id="流体特性"><a href="#流体特性" class="headerlink" title="流体特性"></a>流体特性</h3><p>块状水平元素，如div元素（下同），在默认情况下（非浮动、绝对定位等），水平方向会自动填满外部的容器；如果有margin-left/margin-right, padding-left/padding-right, border-left-width/border-right-width等，实际内容区域会响应变窄。<br>对于浏览器的元素布局来说最基础的就是一个一个的横向排列，放不下了就另换一行继续进行。</p>
+<h3 id="包含块-（http-w3help-org-zh-cn-kb-008-）"><a href="#包含块-（http-w3help-org-zh-cn-kb-008-）" class="headerlink" title="包含块 （http://w3help.org/zh-cn/kb/008/）"></a><a href="https://www.w3.org/TR/CSS2/visudet.html#containing-block-details" target="_blank" rel="noopener">包含块</a> （<a href="http://w3help.org/zh-cn/kb/008/）" target="_blank" rel="noopener">http://w3help.org/zh-cn/kb/008/）</a></h3><p>Notably, a containing block is not a box (it is a rectangle), however it is often derived from the dimensions of a box</p>
+<p>值得注意的是，一个包含块不是一个盒子（它是一个矩形），然而它通常是从盒子的尺寸派生的</p>
+<h3 id="containing-block-chain"><a href="#containing-block-chain" class="headerlink" title="containing block chain"></a>containing block chain</h3><p>A sequence of successive containing blocks that form an ancestor-descendant chain through the containing block relation. For example, an inline box’s containing block is the content box of its closest block container ancestor; if that block container is an in-flow block, then its containing block is formed by its parent block container; if that grandparent block container is absolutely positioned, then its containing block is the padding edges of its closest positioned ancestor (not necessarily its parent), and so on up to the initial containing block.</p>
+<ol>
+<li>position: static/relative 找的是最近的block containers, block container 是包含IFC或者是BFC的</li>
+</ol>
+<h3 id="CSS3-transform使position-fixed元素absolute化实例页面"><a href="#CSS3-transform使position-fixed元素absolute化实例页面" class="headerlink" title="CSS3 transform使position:fixed元素absolute化实例页面"></a>CSS3 transform使position:fixed元素absolute化实例页面</h3><p><a href="http://www.zhangxinxu.com/study/201505/css3-transform-position-fixed-to-absolute.html" target="_blank" rel="noopener">http://www.zhangxinxu.com/study/201505/css3-transform-position-fixed-to-absolute.html</a></p>
+<h3 id="宽度计算的另一种和containing-block有关"><a href="#宽度计算的另一种和containing-block有关" class="headerlink" title="宽度计算的另一种和containing block有关"></a>宽度计算的另一种和containing block有关</h3><p>‘margin-left’ + ‘border-left-width’ + ‘padding-left’ + ‘width’ + ‘padding-right’ + ‘border-right-width’ + ‘margin-right’ = width of containing block</p>
+<p>其中margin-left/width/margin-right可为auto，且具有以下规则：</p>
+<ol>
+<li>若width为auto，则其他设置为auto的属性的实际值为0，并让width的实际值满足等式；</li>
+<li>若width为数值，而margin-left/right均为auto，且除marin-left/right外其他属性值总和小于containing block的宽度，那么margin-left == margin-right == (‘border-left-width’ + ‘padding-left’ + ‘width’ + ‘padding-right’ + ‘border-right-width’)/2；否则margin-left == margin-right == 0.</li>
+</ol>
+<h3 id="尺寸"><a href="#尺寸" class="headerlink" title="尺寸"></a>尺寸</h3><p>相对定位元素的尺寸，会保持它在常规流中的尺寸。包括换行以及原来为它保留的位置。</p>
+<p>定位及计算偏移后的值</p>
+<p>‘left’ 和 ‘right’ 的特性值</p>
+<p>对于一个相对定位的元素，’left’ 和 ‘right’ 会水平的位移框而不会改变它的大小。’left’ 会将框向右移动，’right’ 会将框向左移动。 由于 ‘left’ 或者 ‘right’ 不会造成框被拆分或者拉伸，所以，计算后的值( computed value )总是：left = -right。</p>
+<ol>
+<li>‘left’ 和 ‘right’ 的设定值都是 “auto”</li>
+</ol>
+<p>如果 ‘left’ 和 ‘right’ 的值都是 “auto” （它们的初始值），计算后的值( computed value )为 0（例如，框区留在其原来的位置）。</p>
+<ol start="2">
+<li>‘left’ 或 ‘right’ 其一的设定值为 “auto”</li>
+</ol>
+<p>如果 left 为 ‘auto’，计算后的值(computed value)为 right 的负值（例如，框区根据 right 值向左移）。 如果 right 被指定为 ‘auto’，其计算后的值(computed value)为 left 值的负值。</p>
+<p>示例代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;div style=&quot;width:20px; height:20px; background-color:red; position:relative; left:100px;&quot;&gt;&lt;/div&gt;</span><br></pre></td></tr></table></figure></p>
+<p>上述代码中，DIV 元素是相对定位的元素，它的 ‘left’ 值是 “100px”， ‘right’ 没有设置，默认为 “auto”，那么，’right’ 特性计算后的值应该是 -left，即 “right:-100px”。</p>
+<ol start="3">
+<li>‘left’ 和 ‘right’ 设定值都不是 “auto”</li>
+</ol>
+<p>如果 ‘left’ 和 ‘right’ 都不是 “auto”，那么定位就显得很牵强，其中一个不得不被舍弃。如果包含块的 ‘direction’ 属性是 “ltr”， 那么 ‘left’ 将获胜，’right’ 值变成 -left。如果包含块的 ‘direction’ 属性是 ‘rtl’，那么 ‘right’ 获胜，’left’ 值将被忽略。</p>
+<p>示例代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;div style=&quot;width:100px; height:100px; overflow:auto; border:1px solid blue;&quot;&gt;</span><br><span class="line">    &lt;div style=&quot;width:20px; height:20px; background-color:red; position:relative; left:60px; right:60px;&quot;&gt;&lt;/div&gt;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure></p>
+<p>最后，’left’ 应该比较强悍才对。</p>
+<h3 id="float"><a href="#float" class="headerlink" title="float"></a>float</h3><p><a href="http://efe.baidu.com/blog/float/" target="_blank" rel="noopener">http://efe.baidu.com/blog/float/</a></p>
+<ol>
+<li>float时 position是fixed和absolute则浮动相对于失效</li>
+<li>其他float有效，position失效</li>
+</ol>
+<p>浮动元素的特点</p>
+<ol>
+<li><p>元素被视作块级元素，相当于display设置为“block”；</p>
+</li>
+<li><p>元素具备包裹性，会根据它所包含的元素实现宽度、高度自适应；</p>
+</li>
+<li><p>浮动元素前后的 ###<em>块级兄弟元素</em>### 忽视浮动元素的而占据它的位置，并且元素会处在浮动元素的下层（并且无法通过z-index属性改变他们的层叠位置），但它的内部文字和其他行内元素都会环绕浮动元素；</p>
+</li>
+<li><p>浮动元素前后的行内元素环绕浮动元素排列；</p>
+</li>
+<li><p>浮动元素之前的元素如果也是浮动元素，且方向相同，它会紧跟在它们后面；父元素宽度不够，换行展示；</p>
+</li>
+<li><p>浮动元素之间的水平间距不会重叠；</p>
+</li>
+<li><p>当包含元素中只有浮动元素时，包含元素将会高度塌陷；</p>
+</li>
+<li><p>浮动元素的父元素的非浮动兄弟元素，忽视浮动元素存在，覆盖浮动元素；</p>
+</li>
+<li><p>浮动元素的父元素的浮动兄弟元素，会跟随浮动元素布局，仿佛处在同一父元素中。</p>
+</li>
+</ol>
+<p>浮动对兄弟元素的影响</p>
+<p>Since a float is not in the flow, non-positioned block boxes created before and after the float box flow vertically as if the float did not exist. However, the current and subsequent line boxes created next to the float are shortened as necessary to make room for the margin box of the float.</p>
+<p>块级非定位元素自动排列就好像没有浮动元素似的，行内元素则需要为浮动元素腾出位置(对于层级上下文来说，浮动元素高于块级盒子)</p>
+<p>浮动元素之间不重叠；尽可能像边缘漂浮，但不越界。</p>
+<p>那么第八条、第九条为什么？看CSS标准中的下面的描述：</p>
+<p>References to other elements in these rules refer only to other elements in the same block formatting context as the float.</p>
+<p>也就是说，float对同一个BFC内的元素有效。如果父元素没有触发生成新的BFC，那么父元素的兄弟元素都算是跟父元素中的元素处于同一BFC，也就会受浮动的影响，并且行为规则与同处于同一个父元素之中的元素的规则相同：块级元素重叠(和float元素重叠)；行内元素环绕；浮动元素跟随。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">&lt;div id=&quot;a&quot;&gt;</span><br><span class="line">  &lt;div id=&quot;b&quot;&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/div&gt;</span><br><span class="line"></span><br><span class="line">&lt;div id=&quot;c&quot;&gt;</span><br><span class="line">&lt;/div&gt;</span><br><span class="line"></span><br><span class="line">#a &#123;</span><br><span class="line">  width: 300px;</span><br><span class="line"></span><br><span class="line">  background: blue;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#b &#123;</span><br><span class="line">  width: 200px;</span><br><span class="line">  height: 10px;</span><br><span class="line">  background: red;</span><br><span class="line">  float: left;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#c &#123;</span><br><span class="line">  width: 200px;</span><br><span class="line">  height: 100px;</span><br><span class="line">  background: green;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>正是因为浮动元素的这三条特点，因此，在使用了浮动元素以后，通常都要做“清除浮动“或”闭合浮动“的操作，来避免浮动元素对其他元素的影响</p>
+<h3 id="flexbox"><a href="#flexbox" class="headerlink" title="flexbox"></a>flexbox</h3><p>flex: flex-grow(相对于其他元素的增长比例) flex-shrink(相对于其他元素的缩小比例) flex-baisis(基础大小)</p>
+<ol>
+<li>flexbox 无法使用float</li>
+<li>其他定位元素照用</li>
+<li>overflow 可以使用</li>
+<li>flex-container 回创建一个containing-block</li>
+<li>vertical-align无法使用在flex-item</li>
+</ol>
+<h3 id="block-container"><a href="#block-container" class="headerlink" title="block container"></a>block container</h3><p>Except for table boxes, which are described in a later chapter, and replaced elements, a block-level box is also a block container box. A block container box either contains only block-level boxes or establishes an inline formatting context and thus contains only inline-level boxes. Not all block container boxes are block-level boxes: non-replaced inline blocks and non-replaced table cells are block containers but not block-level boxes. Block-level boxes that are also block containers are called block boxes.</p>
+<p>块级盒子都是block container, 但block container不都是块级盒子，还有非替换行内块级盒子等</p>
+<h3 id="indeterminate-属性-只能通过js操作，半赋值"><a href="#indeterminate-属性-只能通过js操作，半赋值" class="headerlink" title="indeterminate 属性 只能通过js操作，半赋值"></a>indeterminate 属性 只能通过js操作，半赋值</h3><p><a href="https://imququ.com/post/native-tri-state-checkbox.html" target="_blank" rel="noopener">https://imququ.com/post/native-tri-state-checkbox.html</a></p>
+<h3 id="svg-多色图标-https-css-tricks-com-icon-fonts-vs-svg"><a href="#svg-多色图标-https-css-tricks-com-icon-fonts-vs-svg" class="headerlink" title="svg 多色图标 https://css-tricks.com/icon-fonts-vs-svg/"></a><a href="https://juejin.im/post/5a8409e06fb9a063342672b6" target="_blank" rel="noopener">svg 多色图标</a> <a href="https://css-tricks.com/icon-fonts-vs-svg/" target="_blank" rel="noopener">https://css-tricks.com/icon-fonts-vs-svg/</a></h3><h3 id="css-hack各个浏览器的方法"><a href="#css-hack各个浏览器的方法" class="headerlink" title="css hack各个浏览器的方法"></a><a href="https://github.com/pod4g/tool/wiki/CSS-HACK" target="_blank" rel="noopener">css hack各个浏览器的方法</a></h3><h3 id="对内-css-api"><a href="#对内-css-api" class="headerlink" title="对内 css api"></a>对内 css api</h3><h3 id="css-in-js"><a href="#css-in-js" class="headerlink" title="css in js"></a>css in js</h3><p>props(react 社区的 style components):</p>
+<ol>
+<li>local namespace &amp; scoped</li>
+<li>Smarter critical css extraction // 更精细的加载 css</li>
+<li>Dynamic styles</li>
+<li>Shared style values</li>
+<li>Manageable API(对外提供了可控的 api)</li>
+</ol>
+<p>cons:</p>
+<ol>
+<li>runtime 级别的无法使用现有的静态 css 处理器</li>
+<li>重新开发工具链</li>
+</ol>
+<h3 id="对外的-api，扩展某一个组件"><a href="#对外的-api，扩展某一个组件" class="headerlink" title="对外的 api，扩展某一个组件"></a>对外的 api，扩展某一个组件</h3><ol>
+<li>css in js: 预定义样式（className）, 以 enum 方式开放， 就可以修改这些 className 的样式</li>
+<li>css out of js: 让使用者写 css 样式，这样就无法修改 htmL 结构</li>
+</ol>
+<h3 id="全局-样式"><a href="#全局-样式" class="headerlink" title="全局 样式"></a>全局 样式</h3><h3 id="样式代码尽可能少的-hard-code"><a href="#样式代码尽可能少的-hard-code" class="headerlink" title="样式代码尽可能少的 hard code"></a>样式代码尽可能少的 hard code</h3><h3 id="互操作的-api"><a href="#互操作的-api" class="headerlink" title="互操作的 api"></a>互操作的 api</h3><h3 id="web-本身是开放的"><a href="#web-本身是开放的" class="headerlink" title="web 本身是开放的"></a>web 本身是开放的</h3><h3 id="BEM-amp-atomic"><a href="#BEM-amp-atomic" class="headerlink" title="BEM &amp; atomic"></a>BEM &amp; atomic</h3><h3 id="css-hover-子元素时-父元素也处于-hover-状态"><a href="#css-hover-子元素时-父元素也处于-hover-状态" class="headerlink" title="css hover 子元素时 父元素也处于 hover 状态"></a>css hover 子元素时 父元素也处于 hover 状态</h3><p>典型的就是菜单，当我们 hover 父元素显示出菜单然后挪到子元素时子元素依然在（采用父元素 hover 子元素 来显示）反例是当你把菜单子元素挪出去放到作为父元素的兄弟元素然后继续使用 hover 显示，你在去挪动就会发现兄弟元素不会再显示了。<br>()[<a href="https://codepen.io/dengshen/pen/erGyaP]" target="_blank" rel="noopener">https://codepen.io/dengshen/pen/erGyaP]</a></p>
+<h3 id="mouseout-mouseleave"><a href="#mouseout-mouseleave" class="headerlink" title="mouseout/mouseleave"></a>mouseout/mouseleave</h3><p>mouseout 当从父元素移到子元素时即使没有出父元素也会触发 mouseout<br>mousleave 即使从父元素移到子元素时 在子元素上移动也不会触发 mouseleave</p>
+<h3 id="视差滚动"><a href="#视差滚动" class="headerlink" title="视差滚动"></a>视差滚动</h3><ol>
+<li>background-attachment: fixed 滚动背景固定不跟随滚动，改变 background-position 来滚动</li>
+<li>onscroll: 改变各个元素的 style.top 来滚动（同上 chrome 会有跳动，因为 chrome 对滚动做了优化，很多次滚动才触发一次 scroll 事件, 相当于多帧时间只有一帧动画）</li>
+<li>mousewheel： 同上</li>
+</ol>
+<h3 id="滚动性能优化-https-www-cnblogs-com-coco1s-p-5499469-html"><a href="#滚动性能优化-https-www-cnblogs-com-coco1s-p-5499469-html" class="headerlink" title="滚动性能优化(https://www.cnblogs.com/coco1s/p/5499469.html)"></a>滚动性能优化(<a href="https://www.cnblogs.com/coco1s/p/5499469.html" target="_blank" rel="noopener">https://www.cnblogs.com/coco1s/p/5499469.html</a>)</h3><h3 id="img-标签多三像素的问题（https-github-com-muwenzi-Program-Blog-issues-121）"><a href="#img-标签多三像素的问题（https-github-com-muwenzi-Program-Blog-issues-121）" class="headerlink" title="img 标签多三像素的问题（https://github.com/muwenzi/Program-Blog/issues/121）"></a>img 标签多三像素的问题（<a href="https://github.com/muwenzi/Program-Blog/issues/121）" target="_blank" rel="noopener">https://github.com/muwenzi/Program-Blog/issues/121）</a></h3><p>原因是因为 img 标签是 inline 元素对齐方式是 base-line 和文字的对齐方式一致， 因此设置 font-size: 0</p>
+<h3 id="getBoundingClientRect-来获取页面元素的位置（https-juejin-im-entry-59c1fd23f265da06594316a9）"><a href="#getBoundingClientRect-来获取页面元素的位置（https-juejin-im-entry-59c1fd23f265da06594316a9）" class="headerlink" title="getBoundingClientRect() 来获取页面元素的位置（https://juejin.im/entry/59c1fd23f265da06594316a9）"></a>getBoundingClientRect() 来获取页面元素的位置（<a href="https://juejin.im/entry/59c1fd23f265da06594316a9）" target="_blank" rel="noopener">https://juejin.im/entry/59c1fd23f265da06594316a9）</a></h3><p>使用</p>
+<ol>
+<li>获取元素在视窗的位置</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">let box = document.getElementId(&apos;box&apos;)</span><br><span class="line">const rect = box.getBoundingClientRect()</span><br><span class="line">rect.left 就是元素左边距距离视窗的距离</span><br><span class="line">rect.top 就是元素上边距距离视窗的距离</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>获取元素在页面的位置</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">let box = document.getElementId(&apos;box&apos;)</span><br><span class="line">const rect = box.getBoundingClientRect()</span><br><span class="line">rect.left + document.documentElement.scrollLeft</span><br><span class="line">rect.top + document.docuemntElement.scrollTop</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>判断元素是否在可见区域</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">function isElementInViewport (el) &#123;</span><br><span class="line">    var rect = el.getBoundingClientRect();</span><br><span class="line">    return (</span><br><span class="line">        rect.top &gt;= 0 &amp;&amp;</span><br><span class="line">        rect.left &gt;= 0 &amp;&amp;</span><br><span class="line">        rect.bottom &lt;= (window.innerHeight || document.documentElement.clientHeight) &amp;&amp; /_or(window.height() _/</span><br><span class="line">        rect.right &lt;= (window.innerWidth || document.documentElement.clientWidth) /_or $(window.width() _/</span><br><span class="line">    );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="获取元素的各种高度-https-blog-csdn-net-woxueliuyun-article-details-8638427"><a href="#获取元素的各种高度-https-blog-csdn-net-woxueliuyun-article-details-8638427" class="headerlink" title="获取元素的各种高度(https://blog.csdn.net/woxueliuyun/article/details/8638427)"></a>获取元素的各种高度(<a href="https://blog.csdn.net/woxueliuyun/article/details/8638427" target="_blank" rel="noopener">https://blog.csdn.net/woxueliuyun/article/details/8638427</a>)</h3><ul>
+<li><h4 id="clientHeight"><a href="#clientHeight" class="headerlink" title="clientHeight"></a>clientHeight</h4><p>大部分浏览器对 clientHeight 都没有什么异议，认为是元素可视区域的高度，也就是说元素或窗口中可以看到内容的这个区域的高度，即然是指可看到内容的区域，滚动条不算在内。但要注意 padding 是算在内。其计算方式为 clientHeight = topPadding + bottomPadding+ height - 水平滚动条高度。</p>
+</li>
+<li><h4 id="offsetHeight"><a href="#offsetHeight" class="headerlink" title="offsetHeight"></a>offsetHeight</h4><p>在 IE6，IE7，IE8， IE9 以及最新的的 FF, Chrome 中，对于一般元素，都是 offsetHeight = padding + height + border = clientHeight + 滚动条 + 边框</p>
+</li>
+<li><h3 id="scrollHeight"><a href="#scrollHeight" class="headerlink" title="scrollHeight"></a>scrollHeight</h3><p>scrollHeight 的争议比较大，有些浏览器认为 scrollHeight 可以小于 clientHeight，有些认为 scrollHeight 至少应该等于 clientHeight。但有一点是一样的，就是 scrollHeight &gt;= topPadding + bottomPadding + 内容 margin box 的高度。</p>
+<p>在浏览器中的区别在于：<br>IE6、IE7 认为 scrollHeight 是内容高度，可以小于 clientHeight。</p>
+<p>FF 认为 scrollHeight 是内容高度，不过最小值是 clientHeight。</p>
+<p>注： 以上都是对于一般元素而方言的，body 和 documentElement 的 clientHeight, offsetHeight 和 scrollHeight 在各个浏览器中的计算方式又不同。</p>
+<p>在所有的浏览器中，如果你想获取视窗可见部分的高度，应该使用 documentElement.clientHeight，因为 body.clientHeight 是由它的内容决定的。</p>
+</li>
+</ul>
+<h3 id="viewport-通常被称作视口（视窗-），是指设备的屏幕上能用来显示网页的那一块区域"><a href="#viewport-通常被称作视口（视窗-），是指设备的屏幕上能用来显示网页的那一块区域" class="headerlink" title="viewport 通常被称作视口（视窗 ），是指设备的屏幕上能用来显示网页的那一块区域"></a>viewport 通常被称作视口（视窗 ），是指设备的屏幕上能用来显示网页的那一块区域</h3><h3 id="如何获取设备像素（屏幕尺寸）？"><a href="#如何获取设备像素（屏幕尺寸）？" class="headerlink" title="如何获取设备像素（屏幕尺寸）？"></a>如何获取设备像素（屏幕尺寸）？</h3><pre><code>通常我们可以从 BOM(Browser Object Model) 中通过 screen.width/screen.height 获取。
+</code></pre><h3 id="如何获取窗口尺寸？"><a href="#如何获取窗口尺寸？" class="headerlink" title="如何获取窗口尺寸？"></a>如何获取窗口尺寸？</h3><pre><code>如果你想知道用户访问的页面中有多少空间可以用来 CSS 布局，那么你需要获取浏览器窗口的内部尺寸。可以通过 window.innerWidth/window.innerHeight 来获取这些尺寸。注意度量的宽度和高度是包括滚动条的。它们也被视为内部窗口的一部分。（这大部分是因为历史原因造成的。）
+</code></pre><h3 id="如何获取-HTML-文档的尺寸？"><a href="#如何获取-HTML-文档的尺寸？" class="headerlink" title="如何获取 HTML 文档的尺寸？"></a>如何获取 HTML 文档的尺寸？</h3><pre><code>可见宽度：document.documentElement.clientWidth
+
+实际宽度：document.documentElement.offsetWidth
+
+实际上，document.documentElement 指的是 &lt;html&gt; 元素：即任何 HTML 文档的根元素。
+</code></pre><h3 id="layout-viewport-和-visual-viewport"><a href="#layout-viewport-和-visual-viewport" class="headerlink" title="layout viewport 和 visual viewport"></a>layout viewport 和 visual viewport</h3><pre><code>当我们比较移动浏览器和桌面浏览器的时候，它们最显而易见的不同就是屏幕尺寸。当我们打开一个未针对移动端做任何 CSS 适配的页面时，我们会不由的慨叹：viewport 太窄了！viewport 并不能按照写给桌面浏览器的 CSS 正确布局。明显的解决方案是使 viewport 变宽一些。聪明的人们想到了一个解决办法：把 viewport 分成两部分：visual viewport 和 layout viewport。
+
+两个 viewport 都是以 CSS 像素度量的。但是当进行缩放（如果你放大，屏幕上的 CSS 像素会变少）的时候，visual viewport 的尺寸会发生变化，layout viewport 的尺寸仍然跟之前的一样。
+
+George Cummins 在 Stack Overflow 上对基本概念给出了最佳解释：
+
+把 layout viewport 想像成为一张不会变更大小或者形状的大图。现在想像你有一个小一些的框架，你通过它来看这张大图。（译者：可以理解为「管中窥豹」）这个小框架的周围被不透明的材料所环绕，这掩盖了你所有的视线，只留这张大图的一部分给你。你通过这个框架所能看到的大图的部分就是 visual viewport。当你保持框架（缩小）来看整个图片的时候，你可以不用管大图，或者你可以靠近一些（放大）只看局部。你也可以改变框架的方向，但是大图（layout
+viewport）的大小和形状永远不会变。
+
+我们工作中所谓的 CSS 布局，尤其是百分比宽度，是以 layout viewport 做为参照系来计算的，它被认为要比 visual viewport 宽。即：&lt;html&gt; 元素在初始情况下用的是 layout viewport 的宽度，这使得站点布局的行为与其在桌面浏览器上的一样。
+
+layout viewport 有多宽？每个浏览器都不一样。Safari iPhone 为 980px，Opera 为 850px，Android WebKit 800px，最后 IE 为 974px。
+</code></pre><h3 id="如何获取两个-viewport-的宽度？如果理解了上面讲述的内容，不难理解下面获取-viewport-的方式："><a href="#如何获取两个-viewport-的宽度？如果理解了上面讲述的内容，不难理解下面获取-viewport-的方式：" class="headerlink" title="如何获取两个 viewport 的宽度？如果理解了上面讲述的内容，不难理解下面获取 viewport 的方式："></a>如何获取两个 viewport 的宽度？如果理解了上面讲述的内容，不难理解下面获取 viewport 的方式：</h3><ol>
+<li><p>layout viewport: document.documentElement.clientWidth/document.documentElement.clientHeight</p>
+</li>
+<li><p>visual viewport: window.innerWidth/window.innerHeight</p>
+</li>
+</ol>
+<h3 id="canvas-适配retina"><a href="#canvas-适配retina" class="headerlink" title="canvas 适配retina"></a>canvas <a href="http://www.dengzhr.com/frontend/html/1050" target="_blank" rel="noopener">适配retina</a></h3>
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/css/">css</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/05/04/关于react/"><span>关于react</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/05/04/关于react/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-05-03T16:00:00.000Z">
+          2018-05-04
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h3 id="什么-jsx"><a href="#什么-jsx" class="headerlink" title="什么 jsx"></a>什么 jsx</h3><p>Fundamentally, JSX just provides syntactic sugar for the React.createElement(component, props, …children) function. The JSX code:</p>
+<h3 id="react-element-vs-component"><a href="#react-element-vs-component" class="headerlink" title="react element vs component"></a>react element vs component</h3><h4 id="element"><a href="#element" class="headerlink" title="element"></a>element</h4><blockquote>
+<p>Simply put, a React element describes what you want to see on the screen. Not so simply put, a React element is an object representation of a DOM node.’</p>
+</blockquote>
+<h3 id="react-element-简单说就是描述了你在屏幕上所看到的，复杂点说就是一个-DOM-node-的-js-object-表现代理"><a href="#react-element-简单说就是描述了你在屏幕上所看到的，复杂点说就是一个-DOM-node-的-js-object-表现代理" class="headerlink" title="react element 简单说就是描述了你在屏幕上所看到的，复杂点说就是一个 DOM node 的 js object 表现代理"></a>react element 简单说就是描述了你在屏幕上所看到的，复杂点说就是一个 DOM node 的 js object 表现代理</h3><blockquote>
+<p>In order to create our object representation of a DOM node (aka React element), we can use React’s createElement method.</p>
+</blockquote>
+<h3 id="为了创建一个-DOM-node-的-js-object-表现代理，我们需要使用-react-的-createElement-方法"><a href="#为了创建一个-DOM-node-的-js-object-表现代理，我们需要使用-react-的-createElement-方法" class="headerlink" title="为了创建一个 DOM node 的 js object 表现代理，我们需要使用 react 的 createElement 方法"></a>为了创建一个 DOM node 的 js object 表现代理，我们需要使用 react 的 createElement 方法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">const element = React.createElement(</span><br><span class="line">  &apos;div&apos;,</span><br><span class="line">  &#123;id: &apos;login-btn&apos;&#125;,</span><br><span class="line">  &apos;Login&apos;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h3 id="而我们所看到的所有如图片里的写法都是-jsx-当他们被-babel-转义后就是这个"><a href="#而我们所看到的所有如图片里的写法都是-jsx-当他们被-babel-转义后就是这个" class="headerlink" title="而我们所看到的所有如图片里的写法都是 jsx, 当他们被 babel 转义后就是这个"></a>而我们所看到的所有如图片里的写法都是 jsx, 当他们被 babel 转义后就是这个</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">React.createElement(Icon, null)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>So finally, what do we call it when we write out our component like this, <icon>? We can call it “creating an element” because after the JSX is transpiled, that’s exactly what’s happening.<br>也就是我们在 jsx 文件里的所有的类似的写法都是在写 createElement()方法（jsx 会被 babel 转义）</icon></p>
+</blockquote>
+<h3 id="如下"><a href="#如下" class="headerlink" title="如下"></a>如下</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">function Button (&#123; addFriend &#125;) &#123;</span><br><span class="line">  return (</span><br><span class="line">    &lt;button onClick=&#123;addFriend&#125;&gt;Add Friend&lt;/button&gt;</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function User (&#123; name, addFriend &#125;) &#123;</span><br><span class="line">  return (</span><br><span class="line">    &lt;div&gt;</span><br><span class="line">      &lt;p&gt;&#123;name&#125;&lt;/p&gt;</span><br><span class="line">      &lt;Button addFriend=&#123;addFriend&#125;/&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="会被转为"><a href="#会被转为" class="headerlink" title="会被转为"></a>会被转为</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">function Button (&#123; addFriend &#125;) &#123;</span><br><span class="line">  return React.createElement(</span><br><span class="line">    &quot;button&quot;,</span><br><span class="line">    &#123; onClick: addFriend &#125;,</span><br><span class="line">    &quot;Add Friend&quot;</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function User(&#123; name, addFriend &#125;) &#123;</span><br><span class="line">  return React.createElement(</span><br><span class="line">    &quot;div&quot;,</span><br><span class="line">    null,</span><br><span class="line">    React.createElement(</span><br><span class="line">      &quot;p&quot;,</span><br><span class="line">      null,</span><br><span class="line">      name</span><br><span class="line">    ),</span><br><span class="line">    React.createElement(Button, &#123; addFriend &#125;)</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="component"><a href="#component" class="headerlink" title="component"></a>component</h3><blockquote>
+<p>“Components are the building blocks of React”. Notice, however, that we started this post with elements. The reason for this is because once you understand elements, understanding components is a smooth transition. A component is a function or a Class which optionally accepts input and returns a React element.</p>
+</blockquote>
+<h3 id="理解了上面的-react-element-就知道-component-了，对上段英文翻译一下就是，-component-是构建-react-应用的基础，理解了-element-就知道了，component-就是一个类或者是一个函数，他接收输入-并且返回一个-element-以供-react-使用"><a href="#理解了上面的-react-element-就知道-component-了，对上段英文翻译一下就是，-component-是构建-react-应用的基础，理解了-element-就知道了，component-就是一个类或者是一个函数，他接收输入-并且返回一个-element-以供-react-使用" class="headerlink" title="理解了上面的 react element 就知道 component 了，对上段英文翻译一下就是， component 是构建 react 应用的基础，理解了 element 就知道了，component 就是一个类或者是一个函数，他接收输入 并且返回一个 element 以供 react 使用"></a>理解了上面的 react element 就知道 component 了，对上段英文翻译一下就是， component 是构建 react 应用的基础，理解了 element 就知道了，component 就是一个类或者是一个函数，他接收输入 并且返回一个 element 以供 react 使用</h3><ol>
+<li>createElement(type, props, […children])<br>type 是 tagName string, 或者 component(class, function) 又或者是 fragment</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">createElement -&gt; 解析props, 生成key或者ref, -&gt;生成vnode</span><br></pre></td></tr></table></figure>
+<h3 id="http-blog-csdn-net-liangklfang-article-details-72782920"><a href="#http-blog-csdn-net-liangklfang-article-details-72782920" class="headerlink" title="http://blog.csdn.net/liangklfang/article/details/72782920"></a><a href="http://blog.csdn.net/liangklfang/article/details/72782920" target="_blank" rel="noopener">http://blog.csdn.net/liangklfang/article/details/72782920</a></h3><h3 id="getSnapshotBeforeUpdate（https-reactjs-org-blog-2018-03-27-update-on-async-rendering-html-reading-dom-properties-b-】、【"><a href="#getSnapshotBeforeUpdate（https-reactjs-org-blog-2018-03-27-update-on-async-rendering-html-reading-dom-properties-b-】、【" class="headerlink" title="getSnapshotBeforeUpdate（https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#reading-dom-properties-b=】、【"></a>getSnapshotBeforeUpdate（<a href="https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#reading-dom-properties-b=】、【" target="_blank" rel="noopener">https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#reading-dom-properties-b=】、【</a></h3><p>这个生命周期函数是在 render 之后 DOM 更新之前调用的</p>
+<p>若是想要获取 DOM 更新之前的 DOM 数据可以在这个函数里获取</p>
+<h3 id="react-关于-props-和-state-的函数或属性"><a href="#react-关于-props-和-state-的函数或属性" class="headerlink" title="react 关于 props 和 state 的函数或属性"></a>react 关于 props 和 state 的函数或属性</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">static defaultProps = &#123;&#125; // 默认属性</span><br><span class="line">getDefaultProps , 函数的形式获取默认属性</span><br><span class="line">getInitialState , 函数的形式获取初始state</span><br></pre></td></tr></table></figure>
+<h3 id="ts中的keyof-是展示一个对象中的-key"><a href="#ts中的keyof-是展示一个对象中的-key" class="headerlink" title="ts中的keyof 是展示一个对象中的 key"></a>ts中的keyof 是展示一个对象中的 key</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">keyof &#123;a: 3&#125; // a</span><br><span class="line"></span><br><span class="line">type Partial&lt;T&gt; = &#123;</span><br><span class="line">    [P in keyof T]?: T[P];  // P是T中的key, 且加了？ 就是可选的意思</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">type Required&lt;T&gt; = &#123;</span><br><span class="line">    [P in keyof T]-?: T[P]; // -? 就是去掉 ？ 去掉可选性， 也可以使+？添加可选属性</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">type Readonly&lt;T&gt; = &#123;</span><br><span class="line">    readonly [P in keyof T]: T[P]; // 全部加上readonly属性</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/react/">react</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/04/30/分布式基础/"><span>分布式基础</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/04/30/分布式基础/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-04-29T16:00:00.000Z">
+          2018-04-30
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h3 id="分布式的三个状态"><a href="#分布式的三个状态" class="headerlink" title="分布式的三个状态"></a>分布式的三个状态</h3><ol>
+<li>成功</li>
+<li>失败</li>
+<li>超时(未响应)<ol>
+<li>当超时了可以发起读数据操作，验证是否成功，就好比银行转账，转失败了，他会让你去看看是否成功了，避免多次操作</li>
+<li>操作幂等则可以发起重试操作</li>
+</ol>
+</li>
+</ol>
+<h3 id="tcp-不可靠就是说网络不可靠"><a href="#tcp-不可靠就是说网络不可靠" class="headerlink" title="tcp 不可靠就是说网络不可靠"></a>tcp 不可靠就是说网络不可靠</h3><ol>
+<li>应用程序的消息发给 tcp 协议栈，宕机了，消息没法出去，可是对于应用程序来说它认为消息是发出去了的。</li>
+</ol>
+<h3 id="异常处理黄金原则-任何在设计阶段考虑到的情况都会在实际系统中发生；在实际运行中发生的异常反而没有在设计阶段想到。因此不要放过，设计阶段想到的任何异常。"><a href="#异常处理黄金原则-任何在设计阶段考虑到的情况都会在实际系统中发生；在实际运行中发生的异常反而没有在设计阶段想到。因此不要放过，设计阶段想到的任何异常。" class="headerlink" title="异常处理黄金原则: 任何在设计阶段考虑到的情况都会在实际系统中发生；在实际运行中发生的异常反而没有在设计阶段想到。因此不要放过，设计阶段想到的任何异常。"></a>异常处理黄金原则: 任何在设计阶段考虑到的情况都会在实际系统中发生；在实际运行中发生的异常反而没有在设计阶段想到。因此不要放过，设计阶段想到的任何异常。</h3><h3 id="副本"><a href="#副本" class="headerlink" title="副本"></a>副本</h3><p>副本(replica/copy)指在分布式系统中为数据或服务提供的冗余。</p>
+<h4 id="副本一致性"><a href="#副本一致性" class="headerlink" title="副本一致性"></a>副本一致性</h4><p>系统通过副本控制协议，是得从系统外部读取内部各个副本的数据在一定条件下，读到的数据相同称之为副本一致性(consistency)。</p>
+<ol>
+<li>强一致性(strong consistency) 无论怎么读都 ok</li>
+<li>单调一致性(monotonic consistency)：任何时刻，任何用户一旦读到某个数据在某次更新后的数据，这个用户就不会再读到比这个值更旧的值。单调一致性弱于强一致性。确实非常实用的一种一致性。因为通常来说，用户只关心自己读到的数据，而不会关心其他人的情况。</li>
+<li>会话一致性(session consistency)：任何用户在某一次会话内一旦读到某个数据某次更新后的值，在此次会话中就不会再读到比这个值更旧的值。这个一致性比单调一致性再稍弱一些。会话一致性只保护了单个用户在单次会话内的数据一致性，不同永不不同会话之间的一致性没有保障。例如 php 中的 session 概念。可以将数据版本号等信息保存在 session 中，读取数据时验证副本的版本号，只读取版本号大于等于 session 中版本号的副本，从而实现会话一致性</li>
+<li>最终一致性(eventual consistency)：就是一旦更新了数据，各个副本最终将达到完全一致。若用户在一个副本上一直读取可以达到类似单调一致性的效果，但若是换个副本去读取就无法保证了。</li>
+<li>弱一致性(week consistency)：一旦某个更新成功，用户无法在一个确定时间内读到这次更新的 值，且即使在某个副本上读到了新的值，也不能保证在其他副本上可以读到新的值。弱一致性系统 一般很难在实际中使用，使用弱一致性系统需要应用方做更多的工作从而使得系统可用。</li>
+</ol>
+<h3 id="衡量分布式系统的指标"><a href="#衡量分布式系统的指标" class="headerlink" title="衡量分布式系统的指标"></a>衡量分布式系统的指标</h3><ol>
+<li>性能</li>
+</ol>
+<ul>
+<li>系统的吞吐能力，指系统在某一时间可以处理的数据总量，通常可以用系统每秒处理的总的数据量来衡量;</li>
+<li>系统的响应延迟，指系统完成某一功能需要使用的时间;</li>
+<li>系统的并发能力，指系统可以同时完成某一功能的能力，通常 也用 QPS(query per second)来衡量。上述三个性能指标往往会相互制约，追求高吞吐的系统，往往 很难做到低延迟;系统平均响应时间较长时，也很难提高 QPS</li>
+</ul>
+<ol start="2">
+<li>可用性</li>
+<li>可扩展性</li>
+<li>一致性</li>
+</ol>
+<h3 id="分布式系统原理"><a href="#分布式系统原理" class="headerlink" title="分布式系统原理"></a>分布式系统原理</h3><h4 id="数据分布方式"><a href="#数据分布方式" class="headerlink" title="数据分布方式"></a>数据分布方式</h4><ol>
+<li><p>哈希方式</p>
+<ul>
+<li>缺点：1.哈希分布数据的缺点同样明显，突出表现为可扩展性不高，一旦集群规模需要扩展，则几乎所 有的数据需要被迁移并重新分布，因为所有的数据都需要再次进行哈希，而哈希的结果则有可能就不同了。工程中，扩展哈希分布数据的系统时，往往使得集群规模成倍扩 展，按照数据重新计算哈希，这样原本一台机器上的数据只需迁移一半到另一台对应的机器上即可 完成扩展。2.哈希分布数据的另一个缺点是，一旦某数据特征值的数据严重不均，容易出现“数据倾斜”(data skew)问题。导致某些机器上的数据过多</li>
+</ul>
+</li>
+<li><p>按数据范围分布，比如用户 id[0-100],30 个一分区，工程中，为了数据迁移等负载均衡操作的方便， 往往利用动态划分区间的技术，使得每个区间中服务的数据量尽量的一样多。一般的，往往需要使用专门的服务器在内存中维护数据分布信息， 称这种数据的分布信息为一种元信息。实际工程中，一般也不按照某一维度划分数据范围，而是使用全部数据划分范围，从而避免数 据倾斜的问题。</p>
+</li>
+<li>按数据量分布，就是把固定大小的数据放在一起，好比 linux 中的 page，一个 page 一管理</li>
+<li>一致性哈希，一致性哈希的基本方式是使用一个哈希函数计算数据或数据特征的哈希值，令该哈希函数的输出值域为一个封闭的环，即哈希 函数输出的最大值是最小值的前序。将节点随机分布到这个环上，每个节点负责处理从自己开始顺 时针至下一个节点的全部哈希值域上的数据。一致性哈希 的优点在于可以任意动态添加、删除节点，每次添加、删除一个节点仅影响一致性哈希环上相邻的 节点。</li>
+</ol>
+<p>为此一种常见的改进算法是引入虚节点(virtual node)的概念，系统初始时就创建许多虚节点， 虚节点的个数一般远大于未来集群中机器的个数，将虚节点均匀分布到一致性哈希值域环上，其功能与基本一致性哈希算法中的节点相同。为每个节点分配若干虚节点。操作数据时，首先通过数据 的哈希值在环上找到对应的虚节点，进而查找元数据找到对应的真实节点。使用虚节点改进有多个 优点。首先，一旦某个节点不可用，该节点将使得多个虚节点不可用，从而使得多个相邻的真实节 点负载失效节点的压里。同理，一旦加入一个新节点，可以分配多个虚节点，从而使得新节点可以 负载多个原有节点的压力，从全局看，较容易实现扩容时的负载均衡。(原理是增加很多的虚拟节点，再将虚拟节点对应到真实节点<a href="http://blog.csdn.net/bluishglc/article/details/52847591" target="_blank" rel="noopener">参见</a>)</p>
+<h4 id="副本与数据分布"><a href="#副本与数据分布" class="headerlink" title="副本与数据分布"></a>副本与数据分布</h4><ol>
+<li>以机器为单位进行数据冗余，就是有 a,b,c 三台机器，b,c 分别有 a 的全量数据，但是有缺点 1.宕机恢复，若 b 挂了，就得从 a，或 c 进行全量数据同步，效率低下。2.b 挂了以后，a，c 的负载就高了，b 的负载就全到了 a,c 上了</li>
+<li>以数据块为单位进行数据冗余，将数据拆为较合理的数据段，以数据段为单位作为副本。实践中，常常使得每个数据段的大小尽量相等且控制在一定的大小以内。数据段有很多不同的称谓，segment，fragment，chunk，partition 等等。以数据段为单位的副本一旦副本分布与机器无关，数据丢失后的恢复效率将非常高，可以同时从多太物理机 copy 数据。工程中，完全按照数据段建立副本会引起需要管理的元数据的开销增大，副本维护的难度也相 应增大。一种折中的做法是将某些数据段组成一个数据段分组，按数据段分组为粒度进行副本管理。 这样做可以将副本粒度控制在一个较为合适的范围内。</li>
+</ol>
+<h4 id="本地化计算-移动数据不如移动计算"><a href="#本地化计算-移动数据不如移动计算" class="headerlink" title="本地化计算 移动数据不如移动计算"></a>本地化计算 <code>移动数据不如移动计算</code></h4><h4 id="基本副本协议"><a href="#基本副本协议" class="headerlink" title="基本副本协议"></a>基本副本协议</h4><ol>
+<li>中心化副本协议<ol>
+<li>primary-secondary 协议 * Primary-secondary 协议的数据更新流程 1. 数据更新都由 primary 节点协调完成。 2. 外部节点将更新操作发给 primary 节点 3. primary 节点进行并发控制即确定并发更新操作的先后顺序 4. primary 节点将更新操作发送给 secondary 节点 5. primary 根据 secondary 节点的完成情况决定更新是否成功并将结果返回外部节点有些系统(例如，GFS)，使用接力的方式同步数据, primary 同步给 secondary1, secondary1 同步给 secondary2</li>
+</ol>
+</li>
+<li>去中心化副本控制协议,与中心化副本系统协议最大的不同是，去中心化副本控制协议没有中心节点，协议中所有的节点都是完全对等的，节点之间通过平等协商 达到一致</li>
+</ol>
+<h3 id="Lease-机制-租赁机制"><a href="#Lease-机制-租赁机制" class="headerlink" title="Lease 机制 (租赁机制)"></a>Lease 机制 (租赁机制)</h3><p>lease 机 制最重要的应用:判定节点状态。</p>
+<h4 id="基于-lease-的分布式-cache-系统"><a href="#基于-lease-的分布式-cache-系统" class="headerlink" title="基于 lease 的分布式 cache 系统"></a>基于 lease 的分布式 cache 系统</h4><p>基本的问题背景如下:在一个分布式系统中，有一个中心服务器节点，中心服务器存储、维护 着一些数据，这些数据是系统的元数据。系统中其他的节点通过访问中心服务器节点读取、修改其 上的元数据。由于系统中各种操作都依赖于元数据，如果每次读取元数据的操作都访问中心服务器 节点，那么中心服务器节点的性能成为系统的瓶颈。为此，设计一种元数据 cache，在各个节点上 cache 元数据信息，从而减少对中心服务器节点的访问，提高性能。另一方面，系统的正确运行严 格依赖于元数据的正确，这就要求各个节点上 cache 的数据始终与中心服务器上的数据一致，cache 中的数据不能是旧的脏数据。最后，设计的 cache 系统要能最大可能的处理节点宕机、网络中断等 异常，最大程度的提高系统的可用性。</p>
+<h4 id="lease-cache-的实现原理"><a href="#lease-cache-的实现原理" class="headerlink" title="lease cache 的实现原理"></a>lease cache 的实现原理</h4><ol>
+<li><p>首先假设中心服务器与节点之间的时间同步。中心服务器向 cache 节点发送数据的同时下发一个 lease,每个 lease 都一个过期时间，并且这个过期时间是一个明确的时间点，例如 12：00 一旦过了这个时间，那么所有的缓存数据都将过期，lease 失效。这也意味着 lease 的过期时间与发放时间无关，也就是说有可能节点收到数据时 lease 就已经过期了。中心发出的 lease 的含义是：在 lease 时间内服务器保证不修改数据。</p>
+<ol>
+<li>cache 节点收到 lease 以及数据后，把数据加入 cache，所有的在 lease 时间内的读请求都可以直接返回</li>
+<li>当 lease 到期后，清掉本地缓存，并向中心服务器发出获取数据的请求，此时到 cache 节点的请求都会被阻塞，直到中心服务器返回新的数据以及 lease</li>
+<li>当修改数据时，修改请求发到中心服务器，此时应当等到所有发出的 lease 都过期后，再修改中心服务器，并且再把数据发给 cache 节点。此时若是有 cache 的读请求，应当阻塞</li>
+</ol>
+<p>读流程：判断元数据是否已经处于本地 cache 且 lease 处于有效期内<br>1.1 是:直接返回 cache 中的元数据<br>1.2 否:向中心服务器节点请求读取元数据信息<br>1.2.1 服务器收到读取请求后，返回元数据及一个对应的 lease<br>1.2.2 客户端是否成功收到服务器返回的数据<br>1.2.2.1 失败或超时:退出流程，读取失败，可重试<br>1.2.2.2 成功:将元数据与该元数据的 lease 记录到内存中，返回元数据</p>
+<p>修改流程：</p>
+<ol>
+<li>节点向中心服务器发起修改元数据请求。</li>
+<li>服务器收到修改请求后，阻塞所有新的来自 cache 的读数据请求，即接收读请求，但不返回数据。</li>
+<li>服务器等待所有与该元数据相关的 lease 超时。</li>
+<li>服务器修改元数据并向客户端节点返回修改成功。优化</li>
+<li>中心服务器收到修改请求时，会阻塞所有的新的来自 cache 节点。这么做是为了防止一直在发放 lease, 导致一直无法等到所有的 lease 过期。但是我们可以不阻塞，直接返回新的数据却不发放 lease。</li>
+<li>中心服务器可以不等待，而是主动通知各个 cache 节点数据过期，让 lease 失效，若是所有节点均返回 true，则可以进行更新，若有一个返回 false 则不可以更新。经过这两个优化，则可以大大提高性能，cache 的数据可以随时丢弃，可是副本的数据却不可以丢弃。</li>
+</ol>
+</li>
+</ol>
+<h4 id="lease-机制的分析"><a href="#lease-机制的分析" class="headerlink" title="lease 机制的分析"></a>lease 机制的分析</h4><p>首先给出本文对 lease 的定义:Lease 是由颁发者授予的在某一有效期内的承诺。颁发者一旦发 出 lease，则无论接受方是否收到，也无论后续接收方处于何种状态，只要 lease 不过期，颁发者一 定严守承诺;另一方面，接收方在 lease 的有效期内可以使用颁发者的承诺，但一旦 lease 过期，接 收方一定不能继续使用颁发者的承诺。</p>
+<p>由于 lease 是一种承诺，具体的承诺内容可以非常宽泛，可以是上节的例子中数据的正确性;也 可以是某种权限，例如当需要做并发控制时，同一时刻只给某一个节点颁发 lease，只有持有 lease 的节点才可以修改数据;也可以是某种身份，例如在 primary-secondary(2.2.2 )架构中，给节点颁发 lease，只有持有 lease 的节点才具有 primary 身份。Lease 的承诺的内涵还可以非常宽泛，这里不再 一一列举。</p>
+<p>关于时钟同步问题可以让 client 在申请 lease 时带上自己的时间戳，server 判断若是相差太大就不允许接入</p>
+<h4 id="基于-lease-机制确定节点状态"><a href="#基于-lease-机制确定节点状态" class="headerlink" title="基于 lease 机制确定节点状态"></a>基于 lease 机制确定节点状态</h4><h4 id="分布式主要是-3-点"><a href="#分布式主要是-3-点" class="headerlink" title="分布式主要是 3 点"></a>分布式主要是 3 点</h4><ol>
+<li>节点 – 系统中按照协议完成计算工作的一个逻辑实体，可能是执行某些工作的进程或机器</li>
+<li>网络 – 系统的数据传输通道，用来彼此通信。通信是具有方向性的。</li>
+<li>存储 – 系统中持久化数据的数据库或者文件存储。</li>
+</ol>
+<h4 id="心跳无法解决节点状态问题"><a href="#心跳无法解决节点状态问题" class="headerlink" title="心跳无法解决节点状态问题"></a>心跳无法解决节点状态问题</h4><p>是指分布式系统的状态，点对点的还是可以使用的</p>
+<h4 id="lease-的有效期时间选择"><a href="#lease-的有效期时间选择" class="headerlink" title="lease 的有效期时间选择"></a>lease 的有效期时间选择</h4><p>Lease 的有效期虽然是一个确定的时间点，当颁发者在发布 lease 时通常都是将当前时间加上一 个固定的时长从而计算出 lease 的有效期。如何选择 Lease 的时长在工程实践中是一个值得讨论的问 题。如果 lease 的时长太短，例如 1s，一旦出现网络抖动 lease 很容易丢失，从而造成节点失去 lease， 使得依赖 lease 的服务停止;如果 lease 的时长太大，例如 1 分钟，则一旦接受者异常，颁发者需要 过长的时间收回 lease 承诺。例如，使用 lease 确定节点状态时，若 lease 时间过短，有可能造成网络 瞬断时节点收不到 lease 从而引起服务不稳定，若 lease 时间过长，则一旦某节点宕机异常，需要较 大的时间等待 lease 过期才能发现节点异常。工程中，常选择的 lease 时长是 10 秒级别，这是一个经 过验证的经验值，实践中可以作为参考并综合选择合适的时长。</p>
+<h3 id="一致性种类"><a href="#一致性种类" class="headerlink" title="一致性种类"></a>一致性种类</h3><p>于是就有人提出相对弱一点的一致性模型，这些模型包括：线性一致性，原子一致性，顺序一致性，缓存一致性，静态一致性，处理器一致性，PRAM一致性，释放一致性，因果一致性，TSO一致性，PSO一致性，弱序一致性，本地一致性，连续一致性等等，当然，也包括我们要详细介绍的最终一致性。</p>
+<p><a href="https://pure-earth-7284.herokuapp.com/2016/02/14/talk-about-consistency/" target="_blank" rel="noopener">https://pure-earth-7284.herokuapp.com/2016/02/14/talk-about-consistency/</a></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/04/30/quicksort/"><span>quicksort</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/04/30/quicksort/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-04-29T16:00:00.000Z">
+          2018-04-30
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h3 id="快速排序时为什么一定要把pivot放到头或尾最后在放回去呢？"><a href="#快速排序时为什么一定要把pivot放到头或尾最后在放回去呢？" class="headerlink" title="快速排序时为什么一定要把pivot放到头或尾最后在放回去呢？"></a>快速排序时为什么一定要把pivot放到头或尾最后在放回去呢？</h3><p>因为我们在把头尾index往里缩时我们判断的是小于和不小于(大于同理)，比如我们把pivot 5 放在中间，当我们的头index判断不小于时，若是到了pivot条件也是成立的就跳到了pivot右侧，此时若是尾index也在右边发现了小于pivot的值在交换时就会出现，小于pivot的值出现在pivot的右侧，当然我们也可以做额外操作，判断若是头index到了pivot的位置时则不再继续<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">1. </span><br><span class="line">   |     | </span><br><span class="line">   V     V</span><br><span class="line">4, 5, 8, 2</span><br><span class="line">  头      尾</span><br><span class="line"></span><br><span class="line">2. </span><br><span class="line">      |  | </span><br><span class="line">      V  V</span><br><span class="line">4, 5, 2, 8</span><br><span class="line">      头 尾</span><br><span class="line"></span><br><span class="line">3. 此时找到了大于以及小于的pivot的值交换</span><br><span class="line">4，5，2，8， 显然出问题了</span><br><span class="line">、、、、、、</span><br><span class="line">但是若是5在头部</span><br><span class="line">5，4，8，2， 交换就没事了，因为接下来会有把pivot和low或者high交换的过程</span><br></pre></td></tr></table></figure></p>
+<h3 id="我们每进行一次交换就会找到一个元素的正确位置，此时接下来再排序时就不要再把他算进去了"><a href="#我们每进行一次交换就会找到一个元素的正确位置，此时接下来再排序时就不要再把他算进去了" class="headerlink" title="我们每进行一次交换就会找到一个元素的正确位置，此时接下来再排序时就不要再把他算进去了"></a>我们每进行一次交换就会找到一个元素的正确位置，此时接下来再排序时就不要再把他算进去了</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2,1,2,1,3,4,5</span><br></pre></td></tr></table></figure>
+<p>上述3已经在正确位置了，再接下来的排序应当是4,5和2，1，2，1两组进行排序而不是3，4，5和2，1，2，1或者4，5和2，1，2，1, 3进行排序, 因为3已经是在正确位置了，没必要再排一次。</p>
+<h3 id="我们可看看golang源码的排序"><a href="#我们可看看golang源码的排序" class="headerlink" title="我们可看看golang源码的排序"></a>我们可看看golang源码的排序</h3><ol>
+<li>若是小于12个元素时它采用shell希尔排序</li>
+<li>他会计算一个深度2 * lg(n+1), 然后采用快速排序，没进行一次就深度减一，当为0时就用堆排序,至于这个数字咋算出来的可以查查</li>
+</ol>
+<p>解析：元素较少时，大家都差不多，反而是希尔排序这样的好一些，好在哪啊？<br>我们都知道快排在元素基本有序时是最慢的最坏能达到o(n^2),所以当序列基本有序时我们可以采用堆排序</p>
+<h3 id="一个简单的快排版本"><a href="#一个简单的快排版本" class="headerlink" title="一个简单的快排版本"></a>一个简单的快排版本</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">package main</span><br><span class="line">import (</span><br><span class="line">	&quot;fmt&quot;</span><br><span class="line">)</span><br><span class="line"> </span><br><span class="line">// threads 线程标识创建线程的个数</span><br><span class="line">func quicksort(nums []int, length int) &#123;</span><br><span class="line">	if length &lt;= 1 &#123;</span><br><span class="line">		return</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	left := 1</span><br><span class="line">	right := length - 1</span><br><span class="line">	</span><br><span class="line">	pivot := nums[0]</span><br><span class="line">	</span><br><span class="line">  for&#123;</span><br><span class="line">		for; left &lt; right &amp;&amp; nums[right] &gt; pivot; right--&#123; &#125;</span><br><span class="line">		for; left &lt; right &amp;&amp; nums[left] &lt;= pivot; left++ &#123; &#125;</span><br><span class="line">		if left &gt;= right &#123;</span><br><span class="line">			break</span><br><span class="line">		&#125;</span><br><span class="line">		nums[left], nums[right] = nums[right], nums[left]</span><br><span class="line">	&#125;</span><br><span class="line">	nums[0], nums[left] = nums[left], nums[0]</span><br><span class="line"></span><br><span class="line">	quicksort(nums[0:left], left) //分任务</span><br><span class="line">	temp := nums[left + 1: length]</span><br><span class="line">  quicksort(temp, len(temp))</span><br><span class="line">  return</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func main() &#123;</span><br><span class="line">	x := []int&#123;3, 41, 24, 76, 11, 45, 3, 3, 64, 21, 69, 19, 36&#125;</span><br><span class="line">	quicksort(x[:], len(x))</span><br><span class="line">	fmt.Println(x);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/golang/">golang</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/04/10/hyperledger-fabric基础/"><span>hyperledger-fabric基础</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/04/10/hyperledger-fabric基础/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-04-09T16:00:00.000Z">
+          2018-04-10
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h3 id="流程问题"><a href="#流程问题" class="headerlink" title="流程问题"></a><a href="http://rdcqii.hundsun.com/portal/article/661.html" target="_blank" rel="noopener">流程问题</a></h3><h3 id="关于使用-kafka-实现共识"><a href="#关于使用-kafka-实现共识" class="headerlink" title="关于使用 kafka 实现共识"></a><a href="https://www.jianshu.com/p/f1a671be69a4" target="_blank" rel="noopener">关于使用 kafka 实现共识</a></h3><h3 id="重新部署-chaincode-时要删除-chaincode-生成的-docker-镜像"><a href="#重新部署-chaincode-时要删除-chaincode-生成的-docker-镜像" class="headerlink" title="重新部署 chaincode 时要删除 chaincode 生成的 docker 镜像"></a>重新部署 chaincode 时要删除 chaincode 生成的 docker 镜像</h3><h3 id="fabric-ca-就是发证方，类似于银行发行信用卡。http-hyperledger-fabric-readthedocs-io-en-latest-identity-identity-html"><a href="#fabric-ca-就是发证方，类似于银行发行信用卡。http-hyperledger-fabric-readthedocs-io-en-latest-identity-identity-html" class="headerlink" title="fabric-ca 就是发证方，类似于银行发行信用卡。http://hyperledger-fabric.readthedocs.io/en/latest/identity/identity.html"></a>fabric-ca 就是发证方，类似于银行发行信用卡。<a href="http://hyperledger-fabric.readthedocs.io/en/latest/identity/identity.html" target="_blank" rel="noopener">http://hyperledger-fabric.readthedocs.io/en/latest/identity/identity.html</a></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">A PKI is like a card provider – it dispenses many different types of verifiable identities. An MSP, on the other hand, is like the list of card providers accepted by the store – determining which identities are the trusted members (actors) of the store payment network. MSPs turn verifiable identities into the members of a blockchain network.</span><br></pre></td></tr></table></figure>
+<p>MSPs 把可验证的身份证明集成到了区块链网络的成员中。</p>
+<h3 id="anchor-peer"><a href="#anchor-peer" class="headerlink" title="anchor peer"></a>anchor peer</h3><p>channel 上的其他节点都能够发现他并和他进行交流，并且 channel 上的每个 member 都会有 anchor peers(注意复数可以不只有一个 anchor peer)，这样所有的 peer(注意所有的 peer 就是指所属不同的 memer 的 peer 也是可以相互发现的) 之间可以通过 anchor peer 互相发现。</p>
+<h3 id="只读的-chaincode-调用客户端一般是不会将其记录进-ledger-的，除非客户端明确要求。"><a href="#只读的-chaincode-调用客户端一般是不会将其记录进-ledger-的，除非客户端明确要求。" class="headerlink" title="只读的 chaincode 调用客户端一般是不会将其记录进 ledger 的，除非客户端明确要求。"></a>只读的 chaincode 调用客户端一般是不会将其记录进 ledger 的，除非客户端明确要求。</h3><h3 id="transaction"><a href="#transaction" class="headerlink" title="transaction"></a>transaction</h3><p>我们的 invoke(显然 query 也是 invoke 就意味着 query 也是可以提交到 ledger 的)和 instantiate 都成为 transaction 客户端从背书节点收集返回结果并将其打包提交到 ledger。</p>
+<h3 id="configtx-yml"><a href="#configtx-yml" class="headerlink" title="configtx.yml"></a>configtx.yml</h3><ul>
+<li>Consortium 联盟</li>
+</ul>
+<h3 id="系统链码"><a href="#系统链码" class="headerlink" title="系统链码"></a>系统链码</h3><ul>
+<li>cscc：负责 joinchannel／config update 等</li>
+<li>escc：负责对传入数据进行签名（msp 管理）</li>
+<li>lccc：负责 deploy invoke</li>
+<li>vscc：负责签名验证／策略验证（这里如何进行策略验证？）</li>
+<li>qscc：负责 ledger 查询</li>
+</ul>
+<h3 id="A-principal-is-described-in-terms-of-the-MSP-that-is-tasked-to-validate-the-identity-of-the-signer-and-of-the-role-that-the-signer-has-within-that-MSP-Currently-two-roles-are-supported-member-and-admin-Principals-are-described-as-MSP-ROLE-where-MSP-is-the-MSP-ID-that-is-required-and-ROLE-is-either-one-of-the-two-strings-member-and-admin-Examples-of-valid-principals-are-‘Org0-admin’-any-administrator-of-the-Org0-MSP-or-‘Org1-member’-any-member-of-the-Org1-MSP-http-hyperledger-fabric-readthedocs-io-en-latest-endorsement-policies-html"><a href="#A-principal-is-described-in-terms-of-the-MSP-that-is-tasked-to-validate-the-identity-of-the-signer-and-of-the-role-that-the-signer-has-within-that-MSP-Currently-two-roles-are-supported-member-and-admin-Principals-are-described-as-MSP-ROLE-where-MSP-is-the-MSP-ID-that-is-required-and-ROLE-is-either-one-of-the-two-strings-member-and-admin-Examples-of-valid-principals-are-‘Org0-admin’-any-administrator-of-the-Org0-MSP-or-‘Org1-member’-any-member-of-the-Org1-MSP-http-hyperledger-fabric-readthedocs-io-en-latest-endorsement-policies-html" class="headerlink" title="A principal is described in terms of the MSP that is tasked to validate the identity of the signer and of the role that the signer has within that MSP. Currently, two roles are supported: member and admin. Principals are described as MSP.ROLE, where MSP is the MSP ID that is required, and ROLE is either one of the two strings member and admin. Examples of valid principals are ‘Org0.admin’ (any administrator of the Org0 MSP) or ‘Org1.member’ (any member of the Org1 MSP).(http://hyperledger-fabric.readthedocs.io/en/latest/endorsement-policies.html)"></a>A principal is described in terms of the MSP that is tasked to validate the identity of the signer and of the role that the signer has within that MSP. Currently, two roles are supported: member and admin. Principals are described as MSP.ROLE, where MSP is the MSP ID that is required, and ROLE is either one of the two strings member and admin. Examples of valid principals are ‘Org0.admin’ (any administrator of the Org0 MSP) or ‘Org1.member’ (any member of the Org1 MSP).(<a href="http://hyperledger-fabric.readthedocs.io/en/latest/endorsement-policies.html" target="_blank" rel="noopener">http://hyperledger-fabric.readthedocs.io/en/latest/endorsement-policies.html</a>)</h3><h3 id="configtx-yml-1"><a href="#configtx-yml-1" class="headerlink" title="configtx.yml"></a>configtx.yml</h3><ul>
+<li>Profiles</li>
+<li>Organizations</li>
+<li>Application</li>
+<li>Orderer</li>
+<li>Capabilities</li>
+<li>Resources</li>
+</ul>
+<h3 id="policy-The-primary-purpose-of-this-document-is-to-explain-how-policies-are-defined-in-and-interact-with-the-channel-configuratio"><a href="#policy-The-primary-purpose-of-this-document-is-to-explain-how-policies-are-defined-in-and-interact-with-the-channel-configuratio" class="headerlink" title="policy The primary purpose of this document is to explain how policies are defined in and interact with the channel configuratio"></a>policy <a href="http://hyperledger-fabric.readthedocs.io/en/latest/policies.html" target="_blank" rel="noopener">The primary purpose of this document is to explain how policies are defined in and interact with the channel configuratio</a></h3><ul>
+<li>UNKNOWN = 0; // Reserved to check for proper initialization</li>
+<li>SIGNATURE = 1; 使用</li>
+<li>MSP = 2;</li>
+<li>IMPLICIT_META = 3; 使用</li>
+</ul>
+<h3 id="MSP-OU-organizationalUnitName"><a href="#MSP-OU-organizationalUnitName" class="headerlink" title="MSP OU organizationalUnitName"></a>MSP OU organizationalUnitName</h3><h3 id="msp-config"><a href="#msp-config" class="headerlink" title="msp config"></a>msp config</h3><ul>
+<li>a folder admincerts to include PEM files each corresponding to an administrator certificate</li>
+<li>a folder cacerts to include PEM files each corresponding to a root CA’s certificate</li>
+<li>(optional) a folder intermediatecerts to include PEM files each corresponding to an intermediate CA’s certificate</li>
+<li>(optional) a file config.yaml to configure the supported Organizational Units and identity classifications (see respective sections below).</li>
+<li>(optional) a folder crls to include the considered CRLs</li>
+<li>a folder keystore to include a PEM file with the node’s signing key; we emphasise that currently RSA keys are not supported</li>
+<li>a folder signcerts to include a PEM file with the node’s X.509 certificate</li>
+<li>(optional) a folder tlscacerts to include PEM files each corresponding to a TLS root CA’s certificate</li>
+<li>(optional) a folder tlsintermediatecerts to include PEM files each corresponding to an intermediate TLS CA’s certificate</li>
+</ul>
+<h4 id="Unlike-today’s-systems-where-a-participant’s-private-programs-are-used-to-update-their-private-ledgers-a-blockchain-system-has-shared-programs-to-update-shared-ledgers"><a href="#Unlike-today’s-systems-where-a-participant’s-private-programs-are-used-to-update-their-private-ledgers-a-blockchain-system-has-shared-programs-to-update-shared-ledgers" class="headerlink" title="Unlike today’s systems, where a participant’s private programs are used to update their private ledgers, a blockchain system has shared programs to update shared ledgers."></a>Unlike today’s systems, where a participant’s private programs are used to update their private ledgers, a blockchain system has shared programs to update shared ledgers.</h4><p>不像现在的那些系统，参与者用他们私有的程序修改他们私有的账本，而区块链系统则是使用共享的程序修改共享的账本。</p>
+<h4 id="hyperledger-是由他们的参与者管理他们的交易"><a href="#hyperledger-是由他们的参与者管理他们的交易" class="headerlink" title="hyperledger 是由他们的参与者管理他们的交易"></a>hyperledger 是由他们的参与者管理他们的交易</h4><p>participants manage their transactions</p>
+<h4 id="hyperledger-不是一个公开的任何人都可以进行交易的系统，他是需要登录管理的，依靠-Membership-Service-Provider（MSP）来管理。"><a href="#hyperledger-不是一个公开的任何人都可以进行交易的系统，他是需要登录管理的，依靠-Membership-Service-Provider（MSP）来管理。" class="headerlink" title="hyperledger 不是一个公开的任何人都可以进行交易的系统，他是需要登录管理的，依靠 Membership Service Provider（MSP）来管理。"></a>hyperledger 不是一个公开的任何人都可以进行交易的系统，他是需要登录管理的，依靠 Membership Service Provider（MSP）来管理。</h4><h4 id="多-channel-机制可以对参与者的信息进行隔离管理。"><a href="#多-channel-机制可以对参与者的信息进行隔离管理。" class="headerlink" title="多 channel 机制可以对参与者的信息进行隔离管理。"></a>多 channel 机制可以对参与者的信息进行隔离管理。</h4><h4 id="hyperledger-fabric-账本子系统包括-world-state-和-transaction-log-两部分。"><a href="#hyperledger-fabric-账本子系统包括-world-state-和-transaction-log-两部分。" class="headerlink" title="hyperledger fabric 账本子系统包括 world state 和 transaction log 两部分。"></a>hyperledger fabric 账本子系统包括 world state 和 transaction log 两部分。</h4><ul>
+<li>world state 用来描述某一指定时间点时 ledger 的状态。他是 ledger 的数据库。</li>
+<li>transaction log 记录了所有导致 world state 状态发生改变的 transaction</li>
+</ul>
+<h4 id="smart-contracts"><a href="#smart-contracts" class="headerlink" title="smart contracts"></a>smart contracts</h4><p>只能合约是以 chaincode 的形式体现的，当外部 application 想和 blockchain 交互时都是通过 chaincode, chaincode 和 blockchain 交互则是通过 world state 来进行的。并不是直接和 transaction log 交互的。</p>
+<h4 id="区域内信任即私链"><a href="#区域内信任即私链" class="headerlink" title="区域内信任即私链"></a>区域内信任即私链</h4><h4 id="The-ledger-is-the-sequenced-tamper-resistant-record-of-all-state-transitions-in-the-fabric"><a href="#The-ledger-is-the-sequenced-tamper-resistant-record-of-all-state-transitions-in-the-fabric" class="headerlink" title="The ledger is the sequenced, tamper-resistant record of all state transitions in the fabric"></a>The ledger is the sequenced, tamper-resistant record of all state transitions in the fabric</h4><p>防篡改记录</p>
+<h4 id="features"><a href="#features" class="headerlink" title="features"></a>features</h4><p>每一个 channel 有一个 ledger, 对于参与到 channel 的 peer 他们都是这个 channel 的 member 并且会有一份 ledger 的 copy</p>
+<ul>
+<li>查询更新可以基于 key, 范围查询，组合 key 查询</li>
+<li>只读的查询可以提供丰富的查询语句(world state 使用 CouchDB)</li>
+<li>当启用数据来源功能时，可以查询某一 key 的历史数据</li>
+<li>交易包括了 chaincode read set 和 write set 中 key/value 的版本号</li>
+<li>transaction 包含所有 peer 的签名，并且提交给 ordering service</li>
+<li>transaction 在 blocks 中是有序的</li>
+<li>peers 使用背书策略验证交易并执行这些策略</li>
+<li>采用多版本管理，执行 chaincode 操作时会验证在执行时间内状态是否被改变过</li>
+<li>交易一旦通过并且提交，则不允许在被改变</li>
+<li>一个 channel 的 ledger 会有一个配置块来定以策略，acl 以及其他信息</li>
+<li>channel 有 MSP 来</li>
+</ul>
+<h3 id="msp-目录"><a href="#msp-目录" class="headerlink" title="msp 目录"></a>msp 目录</h3><ul>
+<li>组织<ul>
+<li>ca 组织的根证书和对应的私钥</li>
+<li>msp 代表该组织的身份信息<ul>
+<li>admincerts 组织管理员的身份验证证书，被根证书签名</li>
+<li>cacerts 组织的根证书</li>
+<li>tlscacerts 用于 tls 的 ca 证书，自签名</li>
+</ul>
+</li>
+<li>peers<ul>
+<li>peer0 第一个 peer 的信息<ul>
+<li>msp<ul>
+<li>admincerts 组织管理员的身份验证证书。peer 将基于这些证书来验证交易签署者是否为管理员</li>
+<li>keystore 本节点自己的身份私钥，用来签名</li>
+<li>signcerts 验证本节点签名的证书，被组织更证书签名</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>users<ul>
+<li>存放属于该组织用户的实体</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="configtx-yml-2"><a href="#configtx-yml-2" class="headerlink" title="configtx.yml"></a>configtx.yml</h3><ul>
+<li>Consortiums Order 所服务的联盟列表</li>
+<li>Consortium 该应用通道锁关联的联盟的名称</li>
+</ul>
+<h3 id="MSP-分为-local-msp-和-channel-msp"><a href="#MSP-分为-local-msp-和-channel-msp" class="headerlink" title="MSP 分为 local msp 和 channel msp"></a>MSP 分为 local msp 和 channel msp</h3><ul>
+<li>local msp 就是给 peer, orderer and users 使用的只针对其自身</li>
+<li>channel msp 则是 channel 使用的多个组织都回去使用的，每个 peer 节点都会有一个 copy</li>
+</ul>
+<h3 id="identity"><a href="#identity" class="headerlink" title="identity"></a>identity</h3><ul>
+<li>cert</li>
+<li>public key</li>
+<li>IdentityIdentifier: { msg.name, 以及一个唯一 id }</li>
+</ul>
+<p>一个区块链网络拥有不同的参与者，包括 peer, orderer, client applications, administrators 等等。每一个参与者都会有一个身份证（Identity）以 x.509 数字证书的形式封装。这些身份证很重要，因为他决定了你对于整个区块链网络资源的权限。hyperledger 使用参与者身份证中的一些属性来确定权限，hyperledger 给他们定了一个特殊的名字：principal。Pricipals 就好比是 userIDs 或者是 groupIDs,但是他更灵活，因为他可以包含很多关于参与者身份的属性。当我们说 principals 的时候，我们就是在参与者在系统中的决定参与者权限的身份属性。这些属性通常是 organization, organizational unit, role 或者就是参与者的身份证。</p>
+<p>还有参与者的身份证得是合法的被验证过的，并且是来自被系统所信任的权威组织。MSP(memebership service provider)就是用来验证 Identity 的是否是被信任的，更详细的说就是，MSP 是用来表示组织中成员关系规则的模块。MSP 定义了组织中成员身份（Identity）是否有效的规则。默认的 MSP 使用 X.509 证书来作为身份证，并且整个体系结构采用传统的 PKI 模型。</p>
+<p>Identity 是身份证，CA 是发放身份证的，MSP 是验证身份证的。</p>
+<h4 id="msp-最多包含-9-项"><a href="#msp-最多包含-9-项" class="headerlink" title="msp 最多包含 9 项"></a>msp 最多包含 9 项</h4><ul>
+<li>root CAs(cacerts): 包含根证书，不只一个，可以有多个，对具体的 node 来说可能只有一个，就是 orgs 的根证书而对于一些 orgs 来说则有可能有很多个根证书，他标识了哪些 CAs 是属于相同的 orgs。（必有）</li>
+<li>Intermediate CAs(intermediatecerts): 同上中间级的 CA</li>
+<li><p>Organizational Units (config.yaml): 是用来严格指定 orgs 成员，若是没有则所有可以通过根 CA 认证的都被认为是相同组织的。</p>
+<blockquote>
+<p>是需要在根证书中有体现的, 也就是在下发证书时是要表明你是属于哪个 ou 的, 这里还有问题就是可以根据具体的 node 的类型来设置 ou, 只有两类： client 和 peer</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">OrganizationalUnitIdentifiers:</span><br><span class="line"></span><br><span class="line">    Certificate: &quot;cacerts/cacert.pem&quot;</span><br><span class="line">    OrganizationalUnitIdentifier: &quot;COP&quot;</span><br><span class="line"></span><br><span class="line">NodeOUs:</span><br><span class="line"></span><br><span class="line">    Enable: false</span><br><span class="line"></span><br><span class="line">    ClientOUIdentifier: # if Certificate is empty, then the certifier identifier will not be enforced</span><br><span class="line"></span><br><span class="line">        Certificate: &quot;cacerts/cacert.pem&quot;</span><br><span class="line">        OrganizationalUnitIdentifier: &quot;OU_client&quot;</span><br><span class="line"></span><br><span class="line">    PeerOUIdentifier:</span><br><span class="line">        Certificate: &quot;cacerts/cacert.pem&quot;</span><br><span class="line">        OrganizationalUnitIdentifier: &quot;OU_peer&quot;</span><br><span class="line">```</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Administrators(admincerts): 管理的证书（必选）</p>
+</li>
+<li>Revoked Certificates(crls): 被撤销的证书</li>
+<li>Node Identity(signcerts): 自身的身份识别证书，被组织根证书签过名的（必选）</li>
+<li>keystore(keystore): 上述证书身份认证证书的私钥（必选）</li>
+<li>tls root CA(tlscacerts): tls 链接使用的证书（必选）</li>
+<li>TLS Intermediate CA(tlsintermediatecerts):未见到是 tls 中间层的证书</li>
+</ul>
+<h3 id="资源权限的确认是用-principal-来确定"><a href="#资源权限的确认是用-principal-来确定" class="headerlink" title="资源权限的确认是用 principal 来确定"></a>资源权限的确认是用 principal 来确定</h3><p>一共有以下几类 pricinpal</p>
+<ul>
+<li><p>MSPPrincipal_ROLE：角色类, 参与者在网络的角色</p>
+<ul>
+<li>admin</li>
+<li>member</li>
+<li>peer</li>
+<li>client</li>
+</ul>
+</li>
+<li><p>MSPPrincipal_ORGANIZATION_UNIT：组织类，参与者在网络中的组织</p>
+</li>
+<li><p>MSPPrincipal_IDENTITY：身份证类，具体到某一个参与者的权限设置</p>
+</li>
+</ul>
+<h3 id="application-与-fabric-的交互"><a href="#application-与-fabric-的交互" class="headerlink" title="application 与 fabric 的交互"></a>application 与 fabric 的交互</h3><p>app 要和 fabric 交互是需要通过 peer 的</p>
+<ol>
+<li>connect to peer</li>
+<li>invoke chaincode(proposal)<ol>
+<li>peer invokes chaincode with proposal</li>
+<li>chaincode generates query or update proposal response</li>
+</ol>
+</li>
+<li>proposal response</li>
+<li>request that transaction is ordered<ol>
+<li>transactions sent to peers in blocks( from order to peers)</li>
+<li>peer updates ledger using transaction blocks</li>
+</ol>
+</li>
+<li>ledger update event</li>
+</ol>
+<blockquote>
+<p>通过以上我们得出 我们的客户端想要和 fabric 交互是先连接到 peer, 可 MSP 还记得否，因此 app 必须得有和 MSP 同一个 CA 下发的证书。</p>
+</blockquote>
+<blockquote>
+<p>还有我们知道同一个组织的 peer 的证书是被同一个根证书所信任的，意味着，同一个组织间的 peer 的才可以进行 gossip 通信。不同组织间的通信通过 anchor peer 进行。</p>
+</blockquote>
+<h3 id="configtxgen"><a href="#configtxgen" class="headerlink" title="configtxgen"></a>configtxgen</h3><p>configtx.yml</p>
+<h4 id="顶层"><a href="#顶层" class="headerlink" title="顶层"></a>顶层</h4><ul>
+<li>Profiles map[string]*Profile： 包括 order 以及 channel 配置</li>
+<li><p>Organizations []*Organization：各个组织的配置（公共配置）</p>
+<ul>
+<li>Name string <code>yaml:&quot;Name&quot;</code></li>
+<li>ID string <code>yaml:&quot;ID&quot;</code></li>
+<li>MSPDir string <code>yaml:&quot;MSPDir&quot;</code></li>
+<li>MSPType string <code>yaml:&quot;MSPType&quot;</code></li>
+<li>AdminPrincipal string <code>yaml:&quot;AdminPrincipal&quot;</code><ul>
+<li>AdminRoleAdminPrincipal = “Role.ADMIN”</li>
+<li>MemberRoleAdminPrincipal = “Role.MEMBER”</li>
+</ul>
+</li>
+<li>AnchorPeers []*AnchorPeer <code>yaml:&quot;AnchorPeers&quot;</code></li>
+</ul>
+</li>
+<li><p>Application *Application：应用通道的配置（公共配置）</p>
+</li>
+<li>Orderer *Orderer：order 配置（公共配置）</li>
+<li>Capabilities map[string]map[string]bool （未知）(个人理解绝得他应该是指定 channel 或者其他实体对某项功能是否支持)</li>
+<li>Resources（未知）：权限判定<ul>
+<li>目前看到 Toplevel 有 resource, 还有 application 有 resource, 同以前讲的路径权限类似， /channel/application/admins</li>
+</ul>
+</li>
+</ul>
+<p>configtxgen 工具生成 tx 文件依靠的就是 profile 中的配置项。</p>
+<h4 id="policy-规则"><a href="#policy-规则" class="headerlink" title="policy 规则"></a>policy 规则</h4><ul>
+<li>Policy_UNKNOWN Policy_PolicyType = 0</li>
+<li>Policy_SIGNATURE Policy_PolicyType = 1： n_out_of 规则</li>
+<li>Policy_MSP Policy_PolicyType = 2：就是 msp 证书验证规则（这里又有 MSPPrincipal role 角色规则判定）</li>
+<li><p>Policy_IMPLICIT_META Policy_PolicyType = 3：路径判定规则</p>
+<p>比如：Admins 意味着只有某个实体或者组织的管理员才能操作<br>/channel/order/Admins 意味只有 channel 中的 order 的管理员才能操作</p>
+</li>
+</ul>
+<blockquote>
+<p>ModPolicy 是指对策略的修改权限</p>
+</blockquote>
+<h3 id="国家部门规定药企需要自建追溯系统"><a href="#国家部门规定药企需要自建追溯系统" class="headerlink" title="国家部门规定药企需要自建追溯系统"></a>国家部门规定药企需要自建追溯系统</h3><h3 id="医药（溯源），供应链金融"><a href="#医药（溯源），供应链金融" class="headerlink" title="医药（溯源），供应链金融"></a>医药（溯源），供应链金融</h3><h3 id="群托管的公共交换协议"><a href="#群托管的公共交换协议" class="headerlink" title="群托管的公共交换协议"></a>群托管的公共交换协议</h3><h3 id="专业投资者（专业投资者可以做一些投资策略的事情但也以区块链的形式存储）与普通投资者的交互平台（Dao-以太坊）"><a href="#专业投资者（专业投资者可以做一些投资策略的事情但也以区块链的形式存储）与普通投资者的交互平台（Dao-以太坊）" class="headerlink" title="专业投资者（专业投资者可以做一些投资策略的事情但也以区块链的形式存储）与普通投资者的交互平台（Dao 以太坊）"></a>专业投资者（专业投资者可以做一些投资策略的事情但也以区块链的形式存储）与普通投资者的交互平台（Dao 以太坊）</h3><ul>
+<li>发基金</li>
+<li>购买</li>
+</ul>
+<h3 id="安全的智能合约"><a href="#安全的智能合约" class="headerlink" title="安全的智能合约"></a>安全的智能合约</h3><h3 id="形式化验证技术"><a href="#形式化验证技术" class="headerlink" title="形式化验证技术"></a>形式化验证技术</h3><ul>
+<li>定理证明（定理库）</li>
+<li>模型检测（模型爆炸，程序太长）</li>
+</ul>
+<h3 id="hyperledger-的密码算法应用场景"><a href="#hyperledger-的密码算法应用场景" class="headerlink" title="hyperledger 的密码算法应用场景"></a>hyperledger 的密码算法应用场景</h3><ul>
+<li>数字证书做身份认证</li>
+</ul>
+<h3 id="client-和-peers-之间的节点的交易数据是会被加密的，order-是无发探查到-client-提交的交易信息"><a href="#client-和-peers-之间的节点的交易数据是会被加密的，order-是无发探查到-client-提交的交易信息" class="headerlink" title="client 和 peers 之间的节点的交易数据是会被加密的，order 是无发探查到 client 提交的交易信息"></a>client 和 peers 之间的节点的交易数据是会被加密的，order 是无发探查到 client 提交的交易信息</h3><h3 id="bccsp-统一密码服务入口"><a href="#bccsp-统一密码服务入口" class="headerlink" title="bccsp 统一密码服务入口"></a>bccsp 统一密码服务入口</h3><p>接口描述</p>
+<ul>
+<li>秘钥声明周期管理<ul>
+<li>keyGen</li>
+<li>秘钥派生（通过一个秘钥生成另一个秘钥）</li>
+<li>秘钥导入</li>
+<li>获取秘钥</li>
+</ul>
+</li>
+<li><p>秘钥操作</p>
+<ul>
+<li>验签</li>
+<li>签名</li>
+<li>hash</li>
+</ul>
+</li>
+</ul>
+<p>实现方案</p>
+<ul>
+<li>software</li>
+<li>pkcs11 硬件（保证私钥不出设备）</li>
+<li>plugin(自实现 bccsp)</li>
+</ul>
+<h3 id="msp"><a href="#msp" class="headerlink" title="msp"></a>msp</h3><ul>
+<li>Indentity 接口， 同上所描述的身份</li>
+<li>可以从 channel 中获取其他 org 的 msg 信息</li>
+</ul>
+<h3 id="国密算法（是国内一些领域的准入门槛）"><a href="#国密算法（是国内一些领域的准入门槛）" class="headerlink" title="国密算法（是国内一些领域的准入门槛）"></a>国密算法（是国内一些领域的准入门槛）</h3><ul>
+<li>sm2 椭圆曲线算法</li>
+<li>sm3 hash 算法</li>
+<li>sm4 对称算法</li>
+</ul>
+<h3 id="可以通过扩展-fabric-的-sw-来增加国密算法"><a href="#可以通过扩展-fabric-的-sw-来增加国密算法" class="headerlink" title="可以通过扩展 fabric 的 sw 来增加国密算法"></a>可以通过扩展 fabric 的 sw 来增加国密算法</h3><h3 id="还可以使用硬件的方法实现"><a href="#还可以使用硬件的方法实现" class="headerlink" title="还可以使用硬件的方法实现"></a>还可以使用硬件的方法实现</h3><h3 id="还有-plugin-的方式实现-bccsp-的实现"><a href="#还有-plugin-的方式实现-bccsp-的实现" class="headerlink" title="还有 plugin 的方式实现 bccsp 的实现"></a>还有 plugin 的方式实现 bccsp 的实现</h3><h3 id="国密算法加入-msp-的支持"><a href="#国密算法加入-msp-的支持" class="headerlink" title="国密算法加入-msp 的支持"></a>国密算法加入-msp 的支持</h3><ul>
+<li>go 的运行时环境改造</li>
+<li>go lib 层更改</li>
+<li>重新实现 msp</li>
+<li>也实现 msp 的插件形式</li>
+</ul>
+<h3 id="国密算法的其他支持"><a href="#国密算法的其他支持" class="headerlink" title="国密算法的其他支持"></a>国密算法的其他支持</h3><ul>
+<li><p>工具链支持</p>
+</li>
+<li><p>ca 支持</p>
+</li>
+<li><p>sdk 支持</p>
+</li>
+</ul>
+<h3 id="msp-还可以根据-x-509-的属性来判断"><a href="#msp-还可以根据-x-509-的属性来判断" class="headerlink" title="msp 还可以根据 x.509 的属性来判断"></a>msp 还可以根据 x.509 的属性来判断</h3><ul>
+<li>1.1.0 中 增加了一个新的属性，可以在 chaincode 中调用接口来获取属性</li>
+</ul>
+<h3 id="cryptogen-的工具是没有中间-CA-的"><a href="#cryptogen-的工具是没有中间-CA-的" class="headerlink" title="cryptogen 的工具是没有中间 CA 的"></a>cryptogen 的工具是没有中间 CA 的</h3><h3 id="CA"><a href="#CA" class="headerlink" title="CA"></a>CA</h3><ul>
+<li>推荐加上中间 CA</li>
+<li>使用 fabric-ca</li>
+<li>使用 可信第三方权威 CA 作为根 CA， fabric-ca 作为中间 CA</li>
+<li>全部使用外部 CA,应当支持 fabric 所支持的 rest api，以及 x.509 的实现，添加属性等</li>
+</ul>
+<h3 id="用户操作"><a href="#用户操作" class="headerlink" title="用户操作"></a>用户操作</h3><ul>
+<li>regist 注册</li>
+<li>enroll 登录（登录后需要把返回的 secret 等信息保存在本地）</li>
+<li>reenroll(快到期的是后)</li>
+<li>revoke(吊销证书， 需要把吊销的证书放到 msp 的目录下)</li>
+</ul>
+<h3 id="msp-分为"><a href="#msp-分为" class="headerlink" title="msp 分为"></a>msp 分为</h3><ul>
+<li>localmsp</li>
+<li>channelmsp</li>
+</ul>
+<h3 id="msp-与-创世块"><a href="#msp-与-创世块" class="headerlink" title="msp 与 创世块"></a>msp 与 创世块</h3><ul>
+<li>各个组织的 msp 信息都会被打倒创世块中</li>
+</ul>
+<h3 id="idmex-是另一种-bccsp-的实现"><a href="#idmex-是另一种-bccsp-的实现" class="headerlink" title="idmex 是另一种 bccsp 的实现"></a>idmex 是另一种 bccsp 的实现</h3><h3 id="添加-admins-需要在-fabric-ca-中注册一个新的用户，在把他的证书-copy-到-msp-的-amdincerts-中"><a href="#添加-admins-需要在-fabric-ca-中注册一个新的用户，在把他的证书-copy-到-msp-的-amdincerts-中" class="headerlink" title="添加 admins 需要在 fabric-ca 中注册一个新的用户，在把他的证书 copy 到 msp 的 amdincerts 中"></a>添加 admins 需要在 fabric-ca 中注册一个新的用户，在把他的证书 copy 到 msp 的 amdincerts 中</h3><h3 id="1-1-0-中-Identity-增加了很多借口"><a href="#1-1-0-中-Identity-增加了很多借口" class="headerlink" title="1.1.0 中 Identity 增加了很多借口"></a>1.1.0 中 Identity 增加了很多借口</h3><h3 id="transientMap-是可以被-chaincode-的代码访问到的，可以提供一些加密秘钥或者是其他的一些东西，但他们都不会记录到-ledger-的。"><a href="#transientMap-是可以被-chaincode-的代码访问到的，可以提供一些加密秘钥或者是其他的一些东西，但他们都不会记录到-ledger-的。" class="headerlink" title="transientMap 是可以被 chaincode 的代码访问到的，可以提供一些加密秘钥或者是其他的一些东西，但他们都不会记录到 ledger 的。"></a>transientMap 是可以被 chaincode 的代码访问到的，可以提供一些加密秘钥或者是其他的一些东西，但他们都不会记录到 ledger 的。</h3><h3 id="登录过期问题"><a href="#登录过期问题" class="headerlink" title="登录过期问题"></a>登录过期问题</h3><p>用户登录以后缺少检查登录过期的问题</p>
+<h3 id="背书策略有如下三类，在创建-channel-的时候就确定了"><a href="#背书策略有如下三类，在创建-channel-的时候就确定了" class="headerlink" title="背书策略有如下三类，在创建 channel 的时候就确定了"></a>背书策略有如下三类，在创建 channel 的时候就确定了</h3><ul>
+<li>role: memeber, admin</li>
+<li>ou: 部门名称</li>
+<li>indenti</li>
+</ul>
+<h3 id="初始块解析出来以后可以看到很多的策略权限，但是目前还没看到可以有设置修改的位置"><a href="#初始块解析出来以后可以看到很多的策略权限，但是目前还没看到可以有设置修改的位置" class="headerlink" title="初始块解析出来以后可以看到很多的策略权限，但是目前还没看到可以有设置修改的位置"></a>初始块解析出来以后可以看到很多的策略权限，但是目前还没看到可以有设置修改的位置</h3><h3 id="所有的镜像版本号得一致若是-1-1-0-的那就都得是-1-1-0-的，比如-fabric-ccenv"><a href="#所有的镜像版本号得一致若是-1-1-0-的那就都得是-1-1-0-的，比如-fabric-ccenv" class="headerlink" title="所有的镜像版本号得一致若是 1.1.0 的那就都得是 1.1.0 的，比如 fabric-ccenv"></a>所有的镜像版本号得一致若是 1.1.0 的那就都得是 1.1.0 的，比如 fabric-ccenv</h3><h3 id="客户端链码安装时-go-版本是会去-GOPATH-下面去找的"><a href="#客户端链码安装时-go-版本是会去-GOPATH-下面去找的" class="headerlink" title="客户端链码安装时 go 版本是会去 GOPATH 下面去找的"></a>客户端链码安装时 go 版本是会去 GOPATH 下面去找的</h3><h3 id="history-查询需要开启-history-db"><a href="#history-查询需要开启-history-db" class="headerlink" title="history 查询需要开启 history db"></a>history 查询需要开启 history db</h3><h3 id="一次-chaincode-调用，可以调用多次-putState"><a href="#一次-chaincode-调用，可以调用多次-putState" class="headerlink" title="一次 chaincode 调用，可以调用多次 putState"></a>一次 chaincode 调用，可以调用多次 putState</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">putState(&apos;k1&apos;, &apos;1&apos;);</span><br><span class="line">putState(&apos;k2&apos;, &apos;2&apos;);</span><br><span class="line">putState(&apos;k3&apos;, &apos;3&apos;);</span><br></pre></td></tr></table></figure>
+<h3 id="链码（不同-channel-之间也可以）之间可以互相调用使用-invokeChaincode-但是只能是只读的。"><a href="#链码（不同-channel-之间也可以）之间可以互相调用使用-invokeChaincode-但是只能是只读的。" class="headerlink" title="链码（不同 channel 之间也可以）之间可以互相调用使用 invokeChaincode 但是只能是只读的。"></a>链码（不同 channel 之间也可以）之间可以互相调用使用 invokeChaincode 但是只能是只读的。</h3><h3 id="kafka-排序最少需要-4-个节"><a href="#kafka-排序最少需要-4-个节" class="headerlink" title="kafka 排序最少需要 4 个节"></a>kafka 排序最少需要 4 个节</h3><ul>
+<li><a href="https://zhuanlan.zhihu.com/p/25358" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/25358</a></li>
+<li><a href="https://www.jianshu.com/p/bd00f24a4771" target="_blank" rel="noopener">https://www.jianshu.com/p/bd00f24a4771</a></li>
+<li><a href="https://docs.google.com/document/d/1vNMaM7XhOlu9tB_10dKnlrhy5d7b1u8lSY8a-kVjCO4/edit" target="_blank" rel="noopener">https://docs.google.com/document/d/1vNMaM7XhOlu9tB_10dKnlrhy5d7b1u8lSY8a-kVjCO4/edit</a></li>
+</ul>
+<h3 id="ca-server-需要先初始化，-再启动"><a href="#ca-server-需要先初始化，-再启动" class="headerlink" title="ca-server 需要先初始化， 再启动"></a>ca-server 需要先初始化， 再启动</h3><h3 id="实例化-chaincode-时可以指定，背书策略"><a href="#实例化-chaincode-时可以指定，背书策略" class="headerlink" title="实例化 chaincode 时可以指定，背书策略"></a>实例化 chaincode 时可以指定，背书策略</h3><p>如下，指定 admin 和 member 然后指定由谁来背书</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&apos;endorsement-policy&apos;: &#123;</span><br><span class="line">    identities: [</span><br><span class="line">        &#123; role: &#123; name: &apos;member&apos;, mspId: ORGS[&apos;org1&apos;].mspid &#125; &#125;,</span><br><span class="line">        &#123; role: &#123; name: &apos;member&apos;, mspId: ORGS[&apos;org2&apos;].mspid &#125; &#125;,</span><br><span class="line">        &#123; role: &#123; name: &apos;admin&apos;, mspId: ORGS[&apos;org1&apos;].mspid &#125; &#125;</span><br><span class="line">    ],</span><br><span class="line">    policy: &#123;</span><br><span class="line">        &apos;1-of&apos;: [</span><br><span class="line">            // &#123; &apos;signed-by&apos;: 2&#125;,</span><br><span class="line">            // &#123; &apos;2-of&apos;: [&#123; &apos;signed-by&apos;: 0&#125;, &#123; &apos;signed-by&apos;: 1 &#125;]&#125;</span><br><span class="line">            &#123; &apos;signed-by&apos;: 0 &#125;,</span><br><span class="line">            &#123; &apos;signed-by&apos;: 1 &#125;</span><br><span class="line">        ]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="没有加入-channel-的-peer-是可以安装-chaincode-的但是无法实例化指定-channel-的-chaincode。"><a href="#没有加入-channel-的-peer-是可以安装-chaincode-的但是无法实例化指定-channel-的-chaincode。" class="headerlink" title="没有加入 channel 的 peer 是可以安装 chaincode 的但是无法实例化指定 channel 的 chaincode。"></a>没有加入 channel 的 peer 是可以安装 chaincode 的但是无法实例化指定 channel 的 chaincode。</h3><h3 id="peer-的配置"><a href="#peer-的配置" class="headerlink" title="peer 的配置"></a>peer 的配置</h3><ul>
+<li>CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fixtures_default（当前目录名_network 名字） 很重要关系到 chaincode 容器是否能链接到相应的 peer</li>
+</ul>
+<h3 id="fabric-网络中加入新的-peer，可以不需要再重新配置-config-只需要相应的-org-向他颁发证书即可"><a href="#fabric-网络中加入新的-peer，可以不需要再重新配置-config-只需要相应的-org-向他颁发证书即可" class="headerlink" title="fabric 网络中加入新的 peer，可以不需要再重新配置 config, 只需要相应的 org 向他颁发证书即可"></a>fabric 网络中加入新的 peer，可以不需要再重新配置 config, 只需要相应的 org 向他颁发证书即可</h3><ol>
+<li>msp<ul>
+<li>admincerts 是 org 的 cert</li>
+<li>cacerts 是 org 的 ca 的 cacerts（最顶层的根证书）</li>
+<li>peer 自己的证书由 org 的 ca 签发</li>
+<li>还有对应的私钥</li>
+<li>tlscacerts 是 org 的 tlscacert(最顶层的根证书)</li>
+</ul>
+</li>
+<li>tls<ul>
+<li>ca.crt 由 org 的 tlscacert 颁发</li>
+<li>server.crt 由 ca.crt 颁发</li>
+</ul>
+</li>
+</ol>
+<h3 id="颁发的-x509-证书的域名是要和节点的域名相匹配"><a href="#颁发的-x509-证书的域名是要和节点的域名相匹配" class="headerlink" title="颁发的 x509 证书的域名是要和节点的域名相匹配"></a>颁发的 x509 证书的域名是要和节点的域名相匹配</h3><p>例如我给 order 节点颁发的是 example.com 这个域名那么，order 机器对外的域名就得是 example 的子域名，若 order 对外的是 ip，则证书失效，证书里面必须体现 ip 才可以。</p>
+<h3 id="hyperledger-的-gossip-协议-简介"><a href="#hyperledger-的-gossip-协议-简介" class="headerlink" title="hyperledger 的 gossip 协议 简介"></a>hyperledger 的 gossip 协议 <a href="https://zhuanlan.zhihu.com/p/27989809" target="_blank" rel="noopener">简介</a></h3><ol>
+<li>当我们配置 peer.gossip.orgLeader = true， 那么每个节点启动后都会去和 orderer 连接并接收消息</li>
+<li>当我们配置 peer.gossip.userLeaderElection = true, 那么组织内配的节点启动后， 会参与 leader 的选举，选出一个 leader 和 orderer 进行通信，其他节点则是通过 leader 节点同步小心。</li>
+</ol>
+<p>上面两项属于 bootstrap 配置，与 anchor peer 无关，anchor peer 是用来和其他组织进行通信的接口</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/fabric/">fabric</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+
+<nav class="pagination">
+  
+  <a href="/page/2/" class="pagination-prev">Prev</a>
+  
+  
+  <a href="/page/4/" class="pagination-next">Next</a>
+  
+</nav>
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 hello2dj (dj_amazing@sina.com)
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

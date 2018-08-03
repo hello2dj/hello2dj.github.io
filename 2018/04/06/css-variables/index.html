@@ -1,0 +1,288 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>css 变量(慎重，有大图) | hello2dj | if you can&#39;t explain it simply, you don&#39;t understand it well enough</title>
+
+  
+  <meta name="author" content="hello2dj (dj_amazing@sina.com)">
+  
+
+  
+  <meta name="description" content="每个人都是带着棱角来到世上，只有磨平棱角才能走的更远">
+  
+
+  
+  
+  <meta name="keywords" content="css">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="css 变量(慎重，有大图)"/>
+
+  <meta property="og:site_name" content="hello2dj"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="hello2dj" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">hello2dj</a>
+    </h1>
+    <p class="site-description">if you can&#39;t explain it simply, you don&#39;t understand it well enough</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/categories">Categories</a></li>
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>css 变量(慎重，有大图)</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/04/06/css-variables/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-04-06T02:05:27.000Z">
+          2018-04-06
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p><a href="https://medium.freecodecamp.org/everything-you-need-to-know-about-css-variables-c74d922ea855" target="_blank" rel="noopener">原文地址</a></p>
+<p><img src="https://cdn-images-1.medium.com/max/2000/1*Im5WsB6Y7CubjWRx9hH7Gg.png" alt=""></p>
+<blockquote>
+<p>本文是 CSS Variables 的第一章(<a href="https://gumroad.com/l/lwaUh" target="_blank" rel="noopener">作者的新书</a>)</p>
+</blockquote>
+<p>大多数的语言都有变量，可是 css 里面是没有的（话说 css 是编程语言么？）</p>
+<p>但是像一些 css 预处理器如 sass 等都会提供对变量的支持</p>
+<p>值得高兴的是 css 现在也开始支持变量了(<a href="https://caniuse.com/#search=css%20variables" target="_blank" rel="noopener">can i use</a>)。</p>
+<p>这篇文章里我会介绍一下 css variables 的使用，让我们 css 更利于维护吧！</p>
+<h3 id="我们会学到什么？"><a href="#我们会学到什么？" class="headerlink" title="我们会学到什么？"></a>我们会学到什么？</h3><p>学习基础知识是非常好玩的，尤其是当我们用这些知识构造一个真实的 app。</p>
+<h4 id="Project-1-使用-css-Variables-创建一个可变的组件"><a href="#Project-1-使用-css-Variables-创建一个可变的组件" class="headerlink" title="Project 1: 使用 css Variables 创建一个可变的组件"></a>Project 1: 使用 css Variables 创建一个可变的组件</h4><p><img src="https://cdn-images-1.medium.com/max/1600/1*qElS3I43_SdpdRA8-m2iew.gif" alt=""></p>
+<p><a href="https://codepen.io/ohansemmanuel/full/PQYzvv/" target="_blank" rel="noopener">Codepen</a></p>
+<h4 id="Project2-使用-CSS-Variables-改变主题"><a href="#Project2-使用-CSS-Variables-改变主题" class="headerlink" title="Project2: 使用 CSS Variables 改变主题"></a>Project2: 使用 CSS Variables 改变主题</h4><p><img src="https://cdn-images-1.medium.com/max/1600/1*r2TrlsC-gWRD5Hu6Tp2gjQ.gif" alt=""></p>
+<p><a href="https://codepen.io/ohansemmanuel/full/xYKgwE/" target="_blank" rel="noopener">Codepen</a></p>
+<h4 id="Project3-创建-CSS-Variable-booth"><a href="#Project3-创建-CSS-Variable-booth" class="headerlink" title="Project3: 创建 CSS Variable booth"></a>Project3: 创建 CSS Variable booth</h4><p><img src="https://cdn-images-1.medium.com/max/1600/1*E6H-wT6a0BDR9OJK7Z0dTA.gif" alt=""></p>
+<p><a href="https://codepen.io/ohansemmanuel/full/EoBLgd/" target="_blank" rel="noopener">Codepen</a></p>
+<h3 id="为什么变量这么重要呢？"><a href="#为什么变量这么重要呢？" class="headerlink" title="为什么变量这么重要呢？"></a>为什么变量这么重要呢？</h3><p>这里有几个原因大家可以一起看看</p>
+<ol>
+<li><p>代码可阅读性增强，这个很明显，不会看到的都是字面量比如 #0f0f0f 等等，而可以看到的是 bg-color</p>
+</li>
+<li><p>修改也变得容易了，好比我们的盒子高度都是 40px，我想都修改为 42px，我就不需要一个一个去改了。。。</p>
+</li>
+<li><p>快速定位错误，你写一堆的 42px, 手一抖写了个 41px 咋办? 还有其他的由于不小心敲错的错误等等。。。</p>
+</li>
+</ol>
+<p>我们可以看到 css variables 的 可读性，可维护性都是很好的。</p>
+<h3 id="定义-css-variables"><a href="#定义-css-variables" class="headerlink" title="定义 css variables"></a>定义 css variables</h3><p>在 css 中 css variables 是以–开头的‘property’, 如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">/* can you spot the variable here ? */</span><br><span class="line">.block &#123;</span><br><span class="line">    color: #8cacea;</span><br><span class="line">    --color: blue;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://cdn-images-1.medium.com/max/1600/0*2Pl5qBF8DCTGL_np.png" alt="CSS Variables are also called “Custom Properties”"></p>
+<h3 id="css-variables-的作用域"><a href="#css-variables-的作用域" class="headerlink" title="css variables 的作用域"></a>css variables 的作用域</h3><p>我们都知道在 js 里面，变量都是有作用域的。在 css 里也是一样的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">:root &#123;</span><br><span class="line">    --main-color: red;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>:root 选择器允许我们指定 DOM 中最顶级的元素或者是 document tree</p>
+<p>因此我们在这个范围指定的 css variables 就是在全局范围内都可以使用的了。<br><img src="https://cdn-images-1.medium.com/max/1600/0*GLjARI5CCGA3xJAx.png" alt="Local and Globally scoped variables"></p>
+<h3 id="举个-🌰1："><a href="#举个-🌰1：" class="headerlink" title="举个 🌰1："></a>举个 🌰1：</h3><p>假设你想创建一个 css variable 来存储主题的主色</p>
+<ol>
+<li>先创建:root 选择器来指定‘全局’变量</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">:root &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>定义变量</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">:root &#123;</span><br><span class="line">    --primary-color: red</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>一定要记住 css variable 必须以‘–’开头 eg: –color</p>
+<h3 id="使用-css-variables"><a href="#使用-css-variables" class="headerlink" title="使用 css variables"></a>使用 css variables</h3><p>一旦一个变量被定义了且初始化了，你就可以使用了。</p>
+<p>这里有一些小陷阱。</p>
+<p>如果你用过 css 预处理器，那么你就知道他们的变量的使用方式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$font-size: 20px;</span><br><span class="line"></span><br><span class="line">.test &#123;</span><br><span class="line">    font-size: $font-size</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但是 css variables 的使用时不同的， 你需要是用 var()来使用变量。如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">:root &#123;</span><br><span class="line">    --font-size: 20px</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.test &#123;</span><br><span class="line">    font-size: var(--font-size, 30px)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>注意其中的第二个参数，是的 var 允许设置默认值，若是–font-size 未定义他就会使用默认值</strong></p>
+<p><img src="https://cdn-images-1.medium.com/max/1600/0*Gv8Nci9VTrJBxpBe.png" alt="Remember to use the var function"></p>
+<p>另一个需要注意的地方是，css variables 不想预处理器里的变量那样，可以用在很多的地方以及进行数学运算，css variables 值允许作为属性值来使用。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">/*this is wrong*/</span><br><span class="line">.margin &#123;</span><br><span class="line">    --side: margin-top;</span><br><span class="line">    var(--side): 20px;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://cdn-images-1.medium.com/max/1600/0*vtIhP9EGm_vTxeio.png" alt="The declaration is thrown away as a syntax error for having an invalid property name"></p>
+<p>你也不可以进行数学运算，除非使用 calc()</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">/*this is wrong*/</span><br><span class="line">.margin &#123;</span><br><span class="line">    --space: 20px * 2;</span><br><span class="line">    font-size: var(--space); // not 40px</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>而应该使用下面这种方式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">.margin &#123;</span><br><span class="line">    --space: calc(20px * 2);</span><br><span class="line">    font-size: var(--space); /*equals 40px*/</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="值得一提的地方"><a href="#值得一提的地方" class="headerlink" title="值得一提的地方"></a>值得一提的地方</h3><p>这里还有一些其他需要值得注意的地方</p>
+<ol>
+<li><h4 id="自定义属性（css-variables）就是普通的属性，因此你可以在任何元素中声明他们可以在-p-section-aside-root-设置伪元素中使用。"><a href="#自定义属性（css-variables）就是普通的属性，因此你可以在任何元素中声明他们可以在-p-section-aside-root-设置伪元素中使用。" class="headerlink" title="自定义属性（css variables）就是普通的属性，因此你可以在任何元素中声明他们可以在 p, section, aside, root 设置伪元素中使用。"></a>自定义属性（css variables）就是普通的属性，因此你可以在任何元素中声明他们可以在 p, section, aside, root 设置伪元素中使用。</h4></li>
+</ol>
+<p><img src="https://cdn-images-1.medium.com/max/1600/0*plpQVof3v3JrzC1P.png" alt="They behave like normal properties"></p>
+<ol start="2">
+<li><h4 id="css-variables-也拥有正常继承和层叠规则就像其他属性似的（例如-color-属性可以被继承似的）"><a href="#css-variables-也拥有正常继承和层叠规则就像其他属性似的（例如-color-属性可以被继承似的）" class="headerlink" title="css variables 也拥有正常继承和层叠规则就像其他属性似的（例如 color 属性可以被继承似的）"></a>css variables 也拥有正常继承和层叠规则就像其他属性似的（例如 color 属性可以被继承似的）</h4></li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">div &#123;</span><br><span class="line">    --color: red;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">div.test &#123;</span><br><span class="line">    color: var(--color);</span><br><span class="line">&#125;</span><br><span class="line">div.ew &#123;</span><br><span class="line">    color: var(--color);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>–color 会被 divs 所继承。<br><img src="https://cdn-images-1.medium.com/max/1600/0*GNSU5IDdk7dx3B8t.png" alt=""></p>
+<ol start="3">
+<li><h4 id="css-variables-也可以使用在媒体查询里面或者其他条件规则"><a href="#css-variables-也可以使用在媒体查询里面或者其他条件规则" class="headerlink" title="css variables 也可以使用在媒体查询里面或者其他条件规则"></a>css variables 也可以使用在媒体查询里面或者其他条件规则</h4>例如</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">:root &#123;</span><br><span class="line">    --gutter: 10px</span><br><span class="line">&#125;</span><br><span class="line">@media screen and (min-width: 768px) &#123;</span><br><span class="line">    --gutter: 30px;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://cdn-images-1.medium.com/max/1600/0*qmsVGjnWjLCKfyvt.png" alt="Useful bit for responsive design"></p>
+<ol start="4">
+<li><h4 id="css-variables-还可以在-html-style-属性里面使用"><a href="#css-variables-还可以在-html-style-属性里面使用" class="headerlink" title="css variables 还可以在 html style 属性里面使用"></a>css variables 还可以在 html style 属性里面使用</h4></li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;!--HTML--&gt;</span><br><span class="line">&lt;html style=&quot;--color: red&quot;&gt;</span><br><span class="line"></span><br><span class="line">&lt;!--CSS--&gt;</span><br><span class="line">body &#123;</span><br><span class="line">  color: var(--color)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://cdn-images-1.medium.com/max/1600/0*EQiFgdDyNBQ1AfDk.png" alt="Set variables inline"><br>还有就是 css variables 是大小写敏感的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">/*these are two different variables*/</span><br><span class="line">:root &#123;</span><br><span class="line"> --color: blue;</span><br><span class="line">--COLOR: red;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="5">
+<li><h4 id="多次声明"><a href="#多次声明" class="headerlink" title="多次声明"></a>多次声明</h4></li>
+</ol>
+<p>多次声明同一个 variable</p>
+<p>如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">/*define the variables*/</span><br><span class="line">:root &#123; --color: blue; &#125;</span><br><span class="line">div &#123; --color: green; &#125;</span><br><span class="line">#alert &#123; --color: red; &#125;</span><br><span class="line"></span><br><span class="line">/*use the variable */</span><br><span class="line">* &#123; color: var(--color); &#125;</span><br></pre></td></tr></table></figure>
+<p>然后看看下面这写元素的颜色吧</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;p&gt;What&apos;s my color?&lt;/p&gt;</span><br><span class="line">&lt;div&gt;and me?&lt;/div&gt;</span><br><span class="line">&lt;div id=&apos;alert&apos;&gt;</span><br><span class="line">  What&apos;s my color too?</span><br><span class="line">  &lt;p&gt;color?&lt;/p&gt;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure>
+<p>第一个 p 的颜色是 blue, 因为 p 没有直接的–color 定义，因此继承了:root 内的–color 定义。</p>
+<p>第一个 div 是绿色的 因为 div 内有直接的–color 定义</p>
+<p>id 是 alert 的 div 是 red，因为#alert 也有直接的–color 定义，按照 css 选择器的权重来看也是 red，因为 id 选择器是仅次于内联 和 important 的, so…</p>
+<p>最后在#alert 里的 p 也是红色的，因为 p 继承了#alert 的–color 属性</p>
+<p><img src="https://cdn-images-1.medium.com/max/1600/1*lGioVJqkKo0N91R9eMvywQ.png" alt="The solution to the Quiz"></p>
+<ol start="6">
+<li><h4 id="循环依赖的解析"><a href="#循环依赖的解析" class="headerlink" title="循环依赖的解析"></a>循环依赖的解析</h4></li>
+</ol>
+<p>看下面</p>
+<ol>
+<li>当一个变量依赖他自己时使用 var()来引用</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">:root &#123;</span><br><span class="line">    --m: var(--m)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">body &#123;</span><br><span class="line">    margin: var(--m)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>当多个变量相互依赖</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">:root &#123;</span><br><span class="line">  --one: calc(var(--two) + 10px);</span><br><span class="line">  --two: calc(var(--one) - 10px);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意千万不要创建循环依赖发，循环依赖是不 ok 的。</p>
+<ol start="7">
+<li><h4 id="使用无效的变量会发什么什么？"><a href="#使用无效的变量会发什么什么？" class="headerlink" title="使用无效的变量会发什么什么？"></a>使用无效的变量会发什么什么？</h4></li>
+</ol>
+<p>语法错误会被丢弃，那么无效的 var()会发生什么？</p>
+<p>看下面：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">:root &#123;</span><br><span class="line">    --color: 20px;</span><br><span class="line">&#125;</span><br><span class="line">p &#123; background-color: red; &#125;</span><br><span class="line">p &#123; background-color: var(--color); &#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://cdn-images-1.medium.com/max/1600/0*fa59XRLGKo5Rsqm4.png" alt=""></p>
+<p>–color 会被替换为 20px, 然而 20px 这个值对于 background-color 是个无效的值，并且他是非继承属性，因此它的值会被设置为 initial: transparent。尴尬了吧。</p>
+<p><img src="https://cdn-images-1.medium.com/max/1600/0*uVic7R1o96n-T1l5.png" alt=""></p>
+<p>接下来高能了，上面那个呢是给设置成了 initial 值，那么要是不用 css 变量直接写个 20px 呢，这个属性会被丢弃的，啥都木有<br><img src="https://cdn-images-1.medium.com/max/1600/0*9HzCVQdyvqeo5dZq.png" alt=""></p>
+<p>可以再 dev-tools 里面验证一下就得到了，直接写错是无效的。</p>
+<blockquote>
+<p>在 chrome65 下验证过了，确实是的</p>
+</blockquote>
+<ol start="8">
+<li><h4 id="设置数值请注意–单一实体"><a href="#设置数值请注意–单一实体" class="headerlink" title="设置数值请注意–单一实体"></a>设置数值请注意–单一实体</h4></li>
+</ol>
+<p>见下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">font-size: 20px;</span><br></pre></td></tr></table></figure>
+<p>20px 就是一个单一实体，是个整体</p>
+<p>当使用 css variables 时一定要注意，如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">:root &#123;</span><br><span class="line">    --size: 20</span><br><span class="line">&#125;</span><br><span class="line">div &#123;</span><br><span class="line">    font-size: var(--size)px /*wrong*/</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如上的代码你可能想要的结果是 20px,可惜你错了， 浏览器会把他解析为 20 px;</p>
+<p>请注意 20 和 px 中间有空格哦！说白了就无法生效</p>
+<p>如果一定要这么用的话就得这么用 calc(var(–size) * 1px), ok!</p>
+<h3 id="下面来一点儿实操"><a href="#下面来一点儿实操" class="headerlink" title="下面来一点儿实操"></a>下面来一点儿实操</h3><p>创建颜色不同的 button</p>
+<p><img src="https://cdn-images-1.medium.com/max/1600/1*qElS3I43_SdpdRA8-m2iew.gif" alt=""></p>
+<p>可以看到他们的不同是 border-color 和 background-color，那么我们会怎么做呢？</p>
+<p>如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;button class=&quot;btn&quot;&gt;Hello&lt;/button&gt;</span><br><span class="line">&lt;button class=&quot;btn red&quot;&gt;Hello&lt;/button&gt;</span><br></pre></td></tr></table></figure>
+<p>.btn 会包含基本的 style,如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">.btn &#123;</span><br><span class="line">    padding: 2rem 4rem;</span><br><span class="line">    border: 2px solid black;</span><br><span class="line">    background: transparent;</span><br><span class="line">    font-size: 0.6em;</span><br><span class="line">    border-radius: 2px;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/*on hover */</span><br><span class="line">.btn:hover &#123;</span><br><span class="line">  cursor: pointer;</span><br><span class="line">  background: black;</span><br><span class="line">  color: white;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>那么那些可变的因素在哪呢？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">.btn.red &#123;</span><br><span class="line">    border-color: red</span><br><span class="line">&#125;</span><br><span class="line">.btn.red:hover &#123;</span><br><span class="line">    background: red</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接下来我们用 css 变量来改写一下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">.btn &#123;</span><br><span class="line">   padding: 2rem 4rem;</span><br><span class="line">   border: 2px solid var(--color, black);</span><br><span class="line">   background: transparent;</span><br><span class="line">   font-size: 0.6em;</span><br><span class="line">   border-radius: 2px;</span><br><span class="line"> &#125;</span><br><span class="line"> /*on hover*/</span><br><span class="line"> .btn:hover &#123;</span><br><span class="line">  cursor: pointer;</span><br><span class="line">   background: var(--color, black);</span><br><span class="line">   color: white;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>var 第二个参数在上面我们说过了是 default value</p>
+<p>接下来看</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">.btn.red &#123;</span><br><span class="line">    --color: red</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此时再来看看比较<br><img src="https://cdn-images-1.medium.com/max/1600/1*bdT9ITBx1wpXjLOYoWBI7w.png" alt="Without CSS Variables VS with CSS Variables"></p>
+<p>如果你有更多的颜色的 button,如下</p>
+<p><img src="https://cdn-images-1.medium.com/max/1600/1*erZb3Z5FtTIR8EV9fl0QOA.png" alt="See the difference??"></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>其实变量这个东西是个语言都支持了，为啥 css 没有呢，在我看来因为是一开始就没把 css 当做编程语言来用。</p>
+<p>其实 web 也是 GUI 编程，我们纵观一下 GUI 编程，其实一开始都是直接语言去控制的，比如 QT, 所有的图形都是 C++去操作的，无论是按钮啊，tabel 啊都是的。可是人们就发现 UI 是可以和逻辑分开的。于是就出了可视化的 GUI 编程，妥妥拽拽啥的，最后是用 XML 来表达的，android,ios 都是差不多的。</p>
+<p>那 web 呢，我在我的一片文章里说过了，一开始 web 就不是打算来进行 UI 的，他只是像做一些文档展示的工作，可是社会是前进的，web 越来越火，对页面样式的控制也是极度强烈，但一开始都是一些简单的控制，一点一点才复杂化的，从简单开始 css 就出现了，在我看来 css 就好比是 GUI 中的 XML，但是用他们总是会有限制的。</p>
+<p>因此 css 的出现就好比是 XML 我只需要配置就好了，那么复杂干什么！！！要啥变量啊！要啥变量！！</p>
+<p>可随着 web 的功能性越来越强他需要 GUI 的能力，于是出现了 canvas, css variables, 硬件加速等等。</p>
+<p>web 的发展已经完全超出了他最初的目的，只要性能问题解决了，往后哪有 GUI 编程啊，都是 web(虽然 web 也可以看做 GUI，但他的限制还是太多了)。</p>
+<p>写到这其实我觉 GUI 编程或者说 application 的编程需要新的语言来解决一些问题了，无论是包袱太多还是什么其他问题，web 不应该再用 js 了(可惜不现实)，因为 js 的缺点确实多，历史包袱多，很难再有大的进化了。GUI 也不应该再用 C#, Java, C++了，他们都带繁重了。我看到了 Dart, 虽然出了很久了，可惜不火，dart 是新时代设计的语言，经过深思熟虑，不想 js 10 天就出来。</p>
+<p>新的时代就应该用新的语言。当然这很难…</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/css/">css</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 hello2dj (dj_amazing@sina.com)
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

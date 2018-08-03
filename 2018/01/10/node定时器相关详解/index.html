@@ -1,0 +1,252 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>node，setImmeidate, setTimeout, nextTick你真的了解么？ | hello2dj | if you can&#39;t explain it simply, you don&#39;t understand it well enough</title>
+
+  
+  <meta name="author" content="hello2dj (dj_amazing@sina.com)">
+  
+
+  
+  <meta name="description" content="每个人都是带着棱角来到世上，只有磨平棱角才能走的更远">
+  
+
+  
+  
+  <meta name="keywords" content="node,setTimeout,setInterval,setImmediate,process.nextTick">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="node，setImmeidate, setTimeout, nextTick你真的了解么？"/>
+
+  <meta property="og:site_name" content="hello2dj"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="hello2dj" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">hello2dj</a>
+    </h1>
+    <p class="site-description">if you can&#39;t explain it simply, you don&#39;t understand it well enough</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/categories">Categories</a></li>
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>node，setImmeidate, setTimeout, nextTick你真的了解么？</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/01/10/node定时器相关详解/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-01-10T12:27:18.000Z">
+          2018-01-10
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9leykiCi69dcz6PgtAdOLnqaQG934yIqpSitu_3YCoQ3eDxKpZQ" alt=""></p>
+<h3 id="先来温习一下event-loop中的几个phase可参见我的上篇文章libuv概览"><a href="#先来温习一下event-loop中的几个phase可参见我的上篇文章libuv概览" class="headerlink" title="先来温习一下event loop中的几个phase可参见我的上篇文章libuv概览"></a>先来温习一下event loop中的几个phase可参见我的上篇文章<a href="https://hello2dj.github.io/2018/01/10/libuv%E6%A6%82%E8%A7%88/" target="_blank" rel="noopener">libuv概览</a></h3><ul>
+<li>timers: 这个phase是来检查定时器是否到期的，并执行的</li>
+<li>poll(I/O): 这个是用来监听fd的事件的，比如socket的可读，可写，文件的可读可等</li>
+<li>check: 当事件循环被I/O阻塞结束之后立刻调用check handle的回调。本质上他是和prepare phase(在循环被I/O阻塞之前（right before the loop will block for I/O）prepare回调就会立即被调用) 相反的。</li>
+</ul>
+<h3 id="为什么会强调上述几个阶段呢？可以参见一下node官网对于event-loop的解释"><a href="#为什么会强调上述几个阶段呢？可以参见一下node官网对于event-loop的解释" class="headerlink" title="为什么会强调上述几个阶段呢？可以参见一下node官网对于event loop的解释"></a>为什么会强调上述几个阶段呢？可以参见一下<a href="https://nodejs.org/en/docs/guides/event-loop-timers-and-nexttick/" target="_blank" rel="noopener">node官网对于event loop的解释</a></h3><ol>
+<li>node的定时器setTimeout,setInterval是在timers 阶段检查是否过期执行的</li>
+<li>node的setImmediate 是在check阶段执行的</li>
+<li>其他的一些监听文件描述符而执行的cb是在poll(I/O)阶段执行的</li>
+</ol>
+<h3 id="其实我们可以总解一下js代码的执行时间有哪些？"><a href="#其实我们可以总解一下js代码的执行时间有哪些？" class="headerlink" title="其实我们可以总解一下js代码的执行时间有哪些？"></a>其实我们可以总解一下js代码的执行时间有哪些？</h3><ol>
+<li>event loop 开始之前的代码</li>
+<li>event loop 中各个phase执行的代码<br>也就是说node的js代码会在两种情况下执行(纯属自己的看法)</li>
+</ol>
+<h3 id="接下来就是解析一下他们的执行顺序问题"><a href="#接下来就是解析一下他们的执行顺序问题" class="headerlink" title="接下来就是解析一下他们的执行顺序问题"></a>接下来就是解析一下他们的执行顺序问题</h3><ol>
+<li>setTimeout(n) VS setImmediate<blockquote>
+<p>setImmediate 一定会在本轮event loop内的check 阶段执行，若是check阶段已经错过了，那就只能在下一轮的check阶段执行了。<br>参见<a href="(https://hello2dj.github.io/2018/01/10/libuv%E6%A6%82%E8%A7%88/">上篇文章</a>)，见下图</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">   ┌───────────────────────┐</span><br><span class="line">┌─&gt;│        timers         │</span><br><span class="line">│  └──────────┬────────────┘</span><br><span class="line">│  ┌──────────┴────────────┐</span><br><span class="line">│  │     I/O callbacks     │</span><br><span class="line">│  └──────────┬────────────┘</span><br><span class="line">│  ┌──────────┴────────────┐</span><br><span class="line">│  │     idle, prepare     │</span><br><span class="line">│  └──────────┬────────────┘      ┌───────────────┐</span><br><span class="line">│  ┌──────────┴────────────┐      │   incoming:   │</span><br><span class="line">│  │         poll          │&lt;─────┤  connections, │</span><br><span class="line">│  └──────────┬────────────┘      │   data, etc.  │</span><br><span class="line">│  ┌──────────┴────────────┐      └───────────────┘</span><br><span class="line">│  │        check          │</span><br><span class="line">│  └──────────┬────────────┘</span><br><span class="line">│  ┌──────────┴────────────┐</span><br><span class="line">└──┤    close callbacks    │</span><br><span class="line">   └───────────────────────┘</span><br></pre></td></tr></table></figure>
+</blockquote>
+</li>
+</ol>
+<p>可以看出来在同一次event loop内，timers阶段是在check阶段之前的,也就是说若是在同一个event loop内既有定时器到期又有setImmediate那肯定是setTimeout先执行。若不在一个event loop内那就不好说了，要具体情况具体分析了。<br>那么setTimeout(n) 和 setImmediate的执行顺序到底是啥？</p>
+<ul>
+<li><p>当setTimeout与setImmediate在同一时间执行且是在event loop之前执行的设置代码, 又且 n &lt;= t(t是当执行event loop时setTimeout刚好过期的那个时间)<br>此时就相当于 在第一次event loop内既有setTimeout 过期又有 setImmediate，显然 setTimeout先执行。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// test.js</span><br><span class="line">setTimeout(() =&gt; &#123;</span><br><span class="line">  console.log(&apos;setTimeout&apos;);</span><br><span class="line">&#125;, 1)</span><br><span class="line">setImmediate(() =&gt; &#123;</span><br><span class="line">  console.log(&apos;setImmediate&apos;);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">// 假设我的t 是2，那么输出就是</span><br><span class="line"># setTimeout</span><br><span class="line"># setImmediate</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>当setTimeout与setImmediate在同一时间执行且是在event loop之前执行的设置代码, 又且 n &gt; t(t是当执行event loop时setTimeout刚好过期的那个时间)<br>此时就相当于 在第一次event loop内只有 setImmediate，setTimeout的过期只有在接下来的event loop内被检查到了显然 setImmediate先执行。<br>代码同上，把n 换成 大于2的时间。</p>
+<blockquote>
+<p>t的抉择就完全取决于机器的性能了<br>而且在此处还有一个问题就是node中setTimeout最小时间1毫秒，见源码如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">//lib/internal/timers.js~line#34</span><br><span class="line">after *= 1; // coalesce to number or NaN</span><br><span class="line">if (!(after &gt;= 1 &amp;&amp; after &lt;= TIMEOUT_MAX)) &#123;</span><br><span class="line">  if (after &gt; TIMEOUT_MAX) &#123;</span><br><span class="line">    process.emitWarning(`$&#123;after&#125; does not fit into` +</span><br><span class="line">                        &apos; a 32-bit signed integer.&apos; +</span><br><span class="line">                        &apos;\nTimeout duration was set to 1.&apos;,</span><br><span class="line">                        &apos;TimeoutOverflowWarning&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">  after = 1; // schedule on next tick, follows browser behavior</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>也就是说你设置0，最下也是1，那么就是说若你的机器性能很好，在1毫秒之前就开始执行event loop了，那么将会永远只看到setImmediate在setTimeout之前执行了。</p>
+</li>
+<li><p>前面说的都是在event loop之前设置，那么在event loop的期间执行js代码时设置的呢（我们只说同时设置的执行顺序）？(参见我前面的关于js代码的执行时机解释)</p>
+<ul>
+<li>timers阶段设置<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">setTimeout(() =&gt; &#123; // 1</span><br><span class="line">  console.log(&apos;外层timeout&apos;);</span><br><span class="line">  setTimeout(() =&gt; &#123; // 2</span><br><span class="line">    console.log(&apos;set timeout in timeout&apos;);</span><br><span class="line">  &#125;);</span><br><span class="line">  setImmediate(() =&gt; &#123; // 3</span><br><span class="line">    console.log(&apos;set immediate in timeout&apos;);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>1的回调是在timers阶段执行的，而setTimeout内部的定时器一定是不可能在本次event loop的timers阶段执行的(分析后面再说)，那就是说2的回调一定是在本次event loop之后的某次loop中的timers阶段执行的，可我们也要注意，本次loop的check阶段还没执行，因此就很明显了，3的回调会在本次loop的check阶段执行，因此得到总结<strong>在timer阶段设置的setTimeout和setImmediate一定是setImmediate先执行</strong>。</p>
+<ul>
+<li><p>I/O callbacks, idle, prepare, poll, 同理这些阶段也一定是setImmediate先执行，我们最常处于的阶段可能就是poll阶段了，因为这是描述符事件回调的触发阶段，在这个阶段，本轮loop的timers阶段已经执行过了，所以setTimeout,一定是后面的loop timers阶段执行，而本轮loop的check阶段还没有执行，因此在这些阶段设置的setImmediate可以在本轮loop得到执行，所以<strong>在timer阶段之后，check阶段之前设置的setTimeout和setImmediate一定是setImmediate先执行</strong>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">const fs = require(&apos;fs&apos;);</span><br><span class="line"></span><br><span class="line">fs.readFile(&apos;./test.js&apos;, () =&gt; &#123;</span><br><span class="line">  setTimeout(() =&gt; &#123;</span><br><span class="line">    console.log(&apos;set timeout in poll phase&apos;);</span><br><span class="line">  &#125;);</span><br><span class="line">  setImmediate(() =&gt; &#123;</span><br><span class="line">    console.log(&apos;set immediate in poll phase&apos;);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>check阶段，在本轮设置的setTimeout和setImmediate执行顺序与在event loop执行之前设置的是一样的，执行顺序不定取决于设置的超时时间t(原因同在event loop执行之前设置的是一样，甚至可以说两者就是可以看做是等同的)。因为在这一阶段设置的setImmediate是不会在本轮check阶段执行的，同理setTimeout也是没办法在本轮执行的。</p>
+</li>
+</ul>
+<p>总的可以用一个流程图来概括</p>
+<img src="/2018/01/10/node定时器相关详解/timerheimmediate.png" title="timer & check phase">
+<h3 id="接下来-process-nextTick-VS-setImmediate"><a href="#接下来-process-nextTick-VS-setImmediate" class="headerlink" title="接下来 process.nextTick VS setImmediate"></a>接下来 process.nextTick VS setImmediate</h3><p>事实上这两者是没有可比的</p>
+</li>
+</ul>
+<ol>
+<li><p>process.nextTick的实现是基于v8 MicroTask(是在当前js call stack 中没有可执行代码才会执行的队列,低于js call stack 代码，但高于事件循环，浏览器中也是如此<a href="https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/" target="_blank" rel="noopener">可参见</a>)机制的。不属于event loop(v8 microtask是怎么和node结合起来的还没看明白失败啊)<br>但是可以确定是nextTick走的是v8的mircotasks机制，且在当前js calk stack 结束后event loop 继续进行之前调用，也就是说要是写一个递归nextTick调用会把整个node阻塞掉</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">setImmediate(() =&gt; &#123;</span><br><span class="line">  console.log(&apos;immediate&apos;);</span><br><span class="line">&#125;);</span><br><span class="line">function a() &#123;</span><br><span class="line">  process.nextTick(() =&gt; &#123;</span><br><span class="line">    console.log(&apos;set nextTick&apos;);</span><br><span class="line">    a();</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line">a();</span><br></pre></td></tr></table></figure>
+<p>可以试一下上面的代码, 你会发现这就是无限调用了。还有我们所熟知的promise也走的是v8 microtask机制(并且Promise使用时v8实现的promise)。那么同理，promise的then的回调和nextTick中的回调也是由v8 microtask机制来确定执行的，也是与event loop 无关的。当然这在promiseA+规范里面也是有相应描述的。为了测试我们可以执行以下代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">const promise = Promise.resolve(234)</span><br><span class="line"></span><br><span class="line">setImmediate(() =&gt; &#123;</span><br><span class="line">  console.log(&apos;immediate&apos;);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">testPromise();</span><br><span class="line"></span><br><span class="line">function testPromise() &#123;</span><br><span class="line">  promise = promise.then(() =&gt; &#123;</span><br><span class="line">    console.log(&apos;promise&apos;);</span><br><span class="line">    testPromise();</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>是的结果和执行pross.nextTick是一样的event loop被阻塞了。</p>
+<p>在源代码里我们也可以看到见下<br>主要代码在/lib/internal/procss/next_tick.js(这里有太多的逻辑没搞明白只是知道了一个大概)</p>
+<img src="/2018/01/10/node定时器相关详解/tickQueue.png" title="tick queue">
+<p>我们所创建的nextTick都是由这个全局的NextTickQueue来管理的，当我们执行nextTick,就push进去一个TickObject</p>
+<img src="/2018/01/10/node定时器相关详解/tickObject.png" title="tick object">
+<p>执行nextTick的逻辑如下</p>
+<img src="/2018/01/10/node定时器相关详解/nextTick.png" title="nextTick">
+<p>接下来就是触发nextTickQueue里面的tickObject的执行了</p>
+<img src="/2018/01/10/node定时器相关详解/tickCb.png" title="tick queue handle">
+<p>在接下来就是设置_tickCallback（_tickDomainCallback是使用了Domain的版本）这个回调的执行时机了</p>
+<img src="/2018/01/10/node定时器相关详解/setUpNextTick.png" title="setUpNextTick">
+<p>失败的地方就来了，我跟到C++代码里面后就完全没找到_tickCallback的具体执行时机的设置了，而且这里面也有太多的逻辑了，完全不知道是在干啥，还有待慢慢揭秘求高手。</p>
+</li>
+<li><p>setImmediate是基于libuv的event loop的。</p>
+<p>到了这里我可以知道了nextTick一定是先执行的（同时设置）</p>
+</li>
+</ol>
+<h3 id="总结一下"><a href="#总结一下" class="headerlink" title="总结一下"></a>总结一下</h3><ol>
+<li>当同时设置nextTick, setImmediate, setTimeout时一定是nextTick先执行，nextTick不属于event loop属于v8的micro tasks</li>
+<li>setImmediate, setTimeout是属于event loop的，但是执行的阶段不同。</li>
+<li>nextTick的promise的回调执行是在event loop继续执行之前的，也就是说他们的调用是会阻塞event loop的。也就是说在使用nextTick和promise编写递归调用或者大循环时要小心阻塞event loop</li>
+<li>在setImmediate, setTimeout设置再次设置自己时，一定不会再本次loop中执行的</li>
+<li>在浏览器中我猜测setTimeout和promise, MicroTasks也是这样的</li>
+</ol>
+<h3 id="最后再来点儿，对于setTimeout和setImmediate的代码分析，来具体解释为什么4成立"><a href="#最后再来点儿，对于setTimeout和setImmediate的代码分析，来具体解释为什么4成立" class="headerlink" title="最后再来点儿，对于setTimeout和setImmediate的代码分析，来具体解释为什么4成立"></a>最后再来点儿，对于setTimeout和setImmediate的代码分析，来具体解释为什么4成立</h3><ul>
+<li><p>setTimeout<br>当我们执行setTimeout时，node会创建一个Timeout对象来存储</p>
+<img src="/2018/01/10/node定时器相关详解/timeout.png" title="setTimeout">
+<p>Timeout具体属性见下</p>
+<img src="/2018/01/10/node定时器相关详解/timeoutobj.png" title="Timeout">
+<p>其中_idleStart很重要，是指这个定时器的起始时间，比如在10秒的时候设置了一个40秒的定时器，那么到期的时候就检查这个now - _idleStart 是否大于定时的40秒，而这个时间应当是程序启动后经过的毫秒数。（纯属个人猜测）<br>生成了定时器对象后，怎么组织管理就是个问题了，定时器在node中是以对象加链表来组织的，相同时间的定时器会被放到同一个链表中，如都是定时的40毫秒，但设置的时间不同，那么他们就会被放到同一个list中,见下图</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">// ╔════ &gt; Object Map</span><br><span class="line">// ║</span><br><span class="line">// ╠══</span><br><span class="line">// ║ refedLists: &#123; &apos;40&apos;: &#123; &#125;, &apos;320&apos;: &#123; etc &#125; &#125; (keys of millisecond duration)</span><br><span class="line">// ╚══          ┌─────────┘</span><br><span class="line">//              │</span><br><span class="line">// ╔══          │</span><br><span class="line">// ║ TimersList &#123; _idleNext: &#123; &#125;, _idlePrev: (self), _timer: (TimerWrap) &#125;</span><br><span class="line">// ║         ┌────────────────┘</span><br><span class="line">// ║    ╔══  │                              ^</span><br><span class="line">// ║    ║    &#123; _idleNext: &#123; &#125;,  _idlePrev: &#123; &#125;, _onTimeout: (callback) &#125;</span><br><span class="line">// ║    ║      ┌───────────┘</span><br><span class="line">// ║    ║      │                                  ^</span><br><span class="line">// ║    ║      &#123; _idleNext: &#123; etc &#125;,  _idlePrev: &#123; &#125;, _onTimeout: (callback) &#125;</span><br><span class="line">// ╠══  ╠══</span><br><span class="line">// ║    ║</span><br><span class="line">// ║    ╚════ &gt;  Actual JavaScript timeouts</span><br><span class="line">// ║</span><br><span class="line">// ╚════ &gt; Linked List</span><br></pre></td></tr></table></figure>
+<p>插入的流程如下</p>
+<img src="/2018/01/10/node定时器相关详解/insert.png" title="insert">
+<p>初始化TimerList的如下</p>
+<img src="/2018/01/10/node定时器相关详解/timerlist.png" title="timer list">
+<p>在初始化一个TimersList时就会以他所属的过期的时间设置一个libuv的定时器，到期后处理自己这个list中node定时器，若是，还有未到期的，那么就继续设置libuv的定时器<br>接下来就是定时器到期后怎么处理了</p>
+<img src="/2018/01/10/node定时器相关详解/timeouecb.png" title="timer outdate">
+<p>上面我的截图里说的语句不通了激动了，从上面可以看到，我们新设置的相同的定时器尤其是针对setTimeout(0)(虽然我们不可能有零这种情况),其实我想说的是，假设我们设置了两个1msecs的定时器，见代码吧</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">setTimeout(() =&gt; &#123; // 1</span><br><span class="line">  console.log(1);</span><br><span class="line">  setTimeout(() =&gt; &#123; // 2</span><br><span class="line">    console.log(2);</span><br><span class="line">  &#125;);</span><br><span class="line">  setImmediate(() =&gt; &#123; // 3</span><br><span class="line">    console.log(3);</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>上述代码1，2的过期时间都是1，所以他们在同一个timerList中，还有我们看到前面的描述，当我们是while去处理timerlist的，根据前面的讲述我们知道3一定比2先输出，但是我们是while处理timerlist的，为什么没有判断2过期呢，我就发现了，因为判断过期取的是now - timer._idleStart, 而这个now是在定时器cb执之前取的，而timer._idleStart是在setTimeout时设置的，那就意味着，2的_idleStart 一定比1的到期是去的now 大，那就很明显了，无论如何都是是无法判断2过期(在本次loop期间判断2过期)了，即使是下面的代码也不行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"> setTimeout(() =&gt; &#123; // 1</span><br><span class="line">  console.log(1);</span><br><span class="line">  setTimeout(() =&gt; &#123; // 2</span><br><span class="line">    console.log(2);</span><br><span class="line">  &#125;);</span><br><span class="line">  for(let i = 0; i &lt; 100e100; i ++) &#123; // 1msec的时间绝对有了，那么是不是在本轮loop就可以判断timer过期呢，不会</span><br><span class="line">    let c = 0;</span><br><span class="line">  &#125;</span><br><span class="line">  setImmediate(() =&gt; &#123; // 3</span><br><span class="line">    console.log(3);</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>定时器的整体组织方式就是为了方便管理，减少底层真实定时器的使用。</p>
+</li>
+<li><p>setImmediate<br>那么setImmediate内设置setImmediate呢？<br>看代码吧，immediate是通过一个全局的list来管理的</p>
+<img src="/2018/01/10/node定时器相关详解/immediatelist.png" title="immediate list">
+<p>调用setImmediate</p>
+<img src="/2018/01/10/node定时器相关详解/newimme.png" title="Immediate">
+<p>Immediate构造函数的处理</p>
+<img src="/2018/01/10/node定时器相关详解/appendimme.png" title="append Immediate">
+<p>加下来就是处理 check阶段处理immediate了</p>
+<img src="/2018/01/10/node定时器相关详解/processimme.png" title="才处理immediate list">
+<p>上图解释的很清楚了，这就告诉了我们另一个问题，在同一时期设置的setImmeidate会放到同一个队列，并且在一次loop check阶段就把所有的immediate回调给执行了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">setTimeout(() =&gt; &#123; // 1</span><br><span class="line">  console.log(1);</span><br><span class="line">  setTimeout(() =&gt; &#123; // 2</span><br><span class="line">    console.log(2);</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  for(let i = 0; i &lt; 10e10; i++) &#123;</span><br><span class="line">    let c = 0;</span><br><span class="line">  &#125; // 上面的那个肯定过期了</span><br><span class="line">  for(let i = 0; i &lt; 100; i++&gt;) &#123;</span><br><span class="line">    setImmediate(() =&gt; &#123; // 3</span><br><span class="line">      console.log(3);</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>上面的代码我们的2在1的回调执行之后一定是过期的，那么若是同一时间设置的setImmediate不会在同一个loop的check阶段那么，我们的2输出之后就一定会有3，可以执行一下是没有的，也就证明了我们上面的源码分析是正确的。</p>
+<h3 id="最终总结"><a href="#最终总结" class="headerlink" title="最终总结"></a>最终总结</h3><p>打完收工，源码阅读很考验啊，应当先知道代码的最终功能是什么？你想要知道的问题是什么？然后再去跟代码，一定要先找到函数入口，在就是一步一步调试是很有用的，等着看看怎么调试v8以及node的c++代码势要把microtasks也高明白了。</p>
+</li>
+</ul>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ol>
+<li><a href="https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/" target="_blank" rel="noopener">task, micro tasks</a></li>
+<li><a href="https://github.com/nodejs/node" target="_blank" rel="noopener">node source code</a></li>
+<li><a href="https://github.com/creeperyang/blog/issues/26" target="_blank" rel="noopener">event loop</a></li>
+</ol>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/node/">node</a><a href="/tags/setTimeout/">setTimeout</a><a href="/tags/setInterval/">setInterval</a><a href="/tags/setImmediate/">setImmediate</a><a href="/tags/process-nextTick/">process.nextTick</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 hello2dj (dj_amazing@sina.com)
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

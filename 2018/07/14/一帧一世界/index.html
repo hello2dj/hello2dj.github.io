@@ -1,0 +1,210 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>一帧一世界 | hello2dj | if you can&#39;t explain it simply, you don&#39;t understand it well enough</title>
+
+  
+  <meta name="author" content="hello2dj (dj_amazing@sina.com)">
+  
+
+  
+  <meta name="description" content="每个人都是带着棱角来到世上，只有磨平棱角才能走的更远">
+  
+
+  
+  
+  <meta name="keywords" content="web,chrome,frame">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="一帧一世界"/>
+
+  <meta property="og:site_name" content="hello2dj"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="hello2dj" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">hello2dj</a>
+    </h1>
+    <p class="site-description">if you can&#39;t explain it simply, you don&#39;t understand it well enough</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/categories">Categories</a></li>
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>一帧一世界</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/07/14/一帧一世界/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-07-14T13:00:30.099Z">
+          2018-07-14
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <blockquote>
+<p><a href="https://aerotwist.com/blog/the-anatomy-of-a-frame/" target="_blank" rel="noopener">原文地址</a></p>
+</blockquote>
+<h3 id="一帧的时间内到底发生了什么"><a href="#一帧的时间内到底发生了什么" class="headerlink" title="一帧的时间内到底发生了什么"></a>一帧的时间内到底发生了什么</h3><p>一些开发者经常会问我一个问题:页面到像素渲染的流程到底是啥？以及什么时候发生渲染以及为啥。所以啊我就发现好好的解释一下渲染像素到屏幕的过程是很有必要滴，且听我细细道来</p>
+<blockquote>
+<p>本文是从chrome/Blink的角度来谈的。其中大部分对于其他浏览器来说也是大同小异的，好比layout 或者stlye calcs, 但是总体架构可能不太一样。</p>
+</blockquote>
+<h3 id="俗话说一图胜千言"><a href="#俗话说一图胜千言" class="headerlink" title="俗话说一图胜千言"></a>俗话说一图胜千言</h3><p>确实如此，那我们也从一副图开始说起吧<br><img src="https://aerotwist.com/static/blog/the-anatomy-of-a-frame/anatomy-of-a-frame.svg" alt=""></p>
+<blockquote>
+<p>上图就是从得到像素到绘制到屏幕的整个完整过程</p>
+</blockquote>
+<h3 id="Processes"><a href="#Processes" class="headerlink" title="Processes"></a>Processes</h3><p>图里面有太多的东西了，所以我在下面进行了更详细的介绍，对于我们的理解来说这是很有帮助的</p>
+<ol>
+<li><p>render process. 一个tab页就是会有一个render process, 他包含了很对的thread, 他负责对我们的操作做出回应。 这些thread 包括 Compositor, Tile Worker, 以及main threads</p>
+</li>
+<li><p>GPU process. 这个是单一的进程(就是说无论你打开多少个tab都只有这一个GPU process),他服务于所有的tab。实际渲染到屏幕的像素数据都是由那些提交到GPU process的帧中的tile数据(贴图)以及其他一些数据(例如顶点数据，矩阵数据)，GPU就包含了一个thread， 而这个GPU thread才是实际干活的。</p>
+</li>
+</ol>
+<h3 id="render-process-threads"><a href="#render-process-threads" class="headerlink" title="render process threads"></a>render process threads</h3><p>接下来让我们看看render process中的threads</p>
+<ol>
+<li><p>Compositor thread. 当产生<a href="http://blog.csdn.net/zzqhost/article/details/7785376" target="_blank" rel="noopener">vsync</a> event(vsync是指os告诉浏览器如何产生新的一帧）时这个thread是第一个被通知的。同时也会接受所有的input事件，Compositor会尽量避免打扰main thread, 他会尝试处理输入，例如处理滚动(这可不代表滚动就有compositor处理的哦)。如果他能处理，那么他会直接去更改layer的位置然后吧frames同过GPU thread 提交大GPU去， 但是如果要处理输入的事件，或者其他一个可视化的工作，那么他就会把这些交给main thread</p>
+</li>
+<li><p>Main Thread. 这个是浏览器处理任务的thread，包括我们所熟知的和喜爱的js, styles, layout 以及 paint(这些在将来有可能会因为Houdini而发生改变，通过使用Houdini我们可以在Compositor Thread中run一些code).这个thread也或得了一个荣耀“最能引起卡顿的家伙”， 很大一部分原因是因为有太多的东西在这里运行了</p>
+</li>
+<li><p>Compositor Tile Worker(s).这些都是由Compositor Thread启动的，是用来处理光栅化任务的(栅格化这个术语可以用于任何将向量图形转换成位图的过程)。</p>
+</li>
+</ol>
+<p>我们可以把Compositor Thread 当做“大boss”。因为他不去运行js，不去布局，不去paint,或者其他事情。他所要做的事情除了启动main thread, 就是把frames传输给screen. 而且如果他没有在等待input event, 他就可以在等待main thread完成任务的同时传输frames</p>
+<p>你也可已设想 Serviec Workers 和 Web Workers 运行在this process(应该是指render process),但是我把他们放到后面在说，因为他们会使事情变得太复杂。</p>
+<h3 id="main-thread-里的整体流程"><a href="#main-thread-里的整体流程" class="headerlink" title="main thread 里的整体流程"></a>main thread 里的整体流程</h3><p><img src="https://aerotwist.com/static/blog/the-anatomy-of-a-frame/main-thread.svg" alt=""></p>
+<blockquote>
+<p>oftentimes the best way to improve performance is simply to remove the need for parts of the flow to be fired!</p>
+</blockquote>
+<p>让我们逐步介绍从vsync到像素的流程。 值得记住的是，浏览器不需要执行所有这些步骤，这取决于哪些是需要进行的。 例如，如果没有新的HTML解析，那么解析HTML将不会触发。 事实上，提高性能的最佳方法通常是简单地避免整个流程中某些部分的触发例如layout或者其他！</p>
+<p>同样值得注意的是，在样式和布局下的那些红色箭头似乎指向了requestAnimationFrame。 在代码中偶然触发是完全可能的。 这称为强制同步布局（或样式），它往往不利于性能。</p>
+<ol>
+<li><p>Frame start. Vsync事件触发，一帧开始</p>
+</li>
+<li><p>输入事件。 输入数据同过compositor传递给main thread中相应的handler。每帧当中，首先触发的是事件处理的函数(如touchmove, scroll, click)，但这不是必须的，因为有些没有事件发生。调度程序会尽力而为的尝试，成功性在不同操作系统之间有所不同。 在用户交互和事件之间还有一些延迟(making its way to the main thread to be handled 不会翻译了。。。)</p>
+</li>
+<li><p>requestAnimationFrame. 这里是进行屏幕元素更新的理想场所，你可以在这里刷新数据，并且这里是离最近一次Vsync最近的时机。其他视觉或者可视化任务(visual tasks)，例如style calcs,将在这个task之后进行，因此这里是更改元素的理想时机，如果你进行了更改了-100个classes, 将不会导致100 style calcs, 他们将会被延时批量处理。这里有一个要注意的地方就是不要在这里访问computed styles 或者是布局属性(例如el.style.backgroundImage or el.style.offsetWidth). 如果你这么做了，那么你将会引起样式的重新计算，或者是重新布局或者是全部，更甚至引起<a href="https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing?hl=en#avoid-layout-thrashing" target="_blank" rel="noopener">强制同步布局或者更甚至是布局恶化</a></p>
+</li>
+<li><p>Parse HTML. 任何新加入的HTML都会被处理，并且创建DOM, 你经常会在页面加载时或者在类似于appendChild这样的操作后看到他</p>
+</li>
+<li><p>Recalc Styles. 所有新加入或者改变过的样式都会被计算。这可能是整棵树，或者可以缩小范围，取决于更改的内容。 例如，更改body上的类可能是整体的，但值得注意的是，浏览器已经非常聪明地自动限制了样式计算的范围。</p>
+</li>
+<li><p>Layout. 计算每个可见元素的几何信息（每个元素的位置和大小）。 它通常是为整个文档计算的，通常计算成本与DOM大小成比例。</p>
+</li>
+<li><p>Update Layer Tree. 这个是给排序元素(z-index相关，overlap相关)创建<a href="https://www.w3ctech.com/topic/1065" target="_blank" rel="noopener">层叠上下文</a>以及深度信息的过程<br>(The process of creating the stacking contexts and depth sorting elements.)</p>
+</li>
+<li><p>Paint. 这是两部分过程中的第一个：paint是draw调用的记录（填充矩形，写入文本），以查看任何新的或视觉上已经改变的元素。 第二部分是光栅化（参见下面），绘制调用被执行，纹理被填充。这部分是绘制调用的记录，通常比光栅化要快得多，但是这两个部分通常统称为“painting”。</p>
+</li>
+<li><p>Composite. the layer 和贴图信息被计算出来并且传递回来给compositor thread 进行处理。这是因为要处理will-chandge, 相互遮挡的元素，或者是开启了硬件加速的元素。</p>
+</li>
+<li><p>Raster Scheduled and Rasterize: The draw calls recorded in the Paint task are now executed. This is done in Compositor Tile Workers, the number of which depends on the platform and device capabilities. For example, on Android you typically find one worker, on desktop you can sometimes find four. The rasterization is done in terms of layers, each of which is made up of tiles.</p>
+</li>
+<li><p>Frame End: With the tiles for the various layers all rasterized, any new tiles are committed, along with input data (which may have been changed in the event handlers), to the GPU Thread.</p>
+</li>
+<li><p>Frame Ships: Last, but by no means least, the tiles are uploaded to the GPU by the GPU Thread. The GPU, using quads and matrices (all the usual GL goodness) will draw the tiles to the screen.</p>
+</li>
+</ol>
+<h3 id="Bonus-round"><a href="#Bonus-round" class="headerlink" title="Bonus round"></a>Bonus round</h3><ul>
+<li>requestIdleCallback: if there’s any time Main Thread left at the end of a frame then requestIdleCallback can fire. This is a great opportunity to do non-essential work, like beaconing analytics data. If you’re new to requestIdleCallback have <a href="https://developers.google.com/web/updates/2015/08/using-requestidlecallback?hl=en" target="_blank" rel="noopener">a primer for it on Google Developers</a> that gives a bit more of a breakdown.</li>
+</ul>
+<h3 id="LAYERS-AND-LAYERS"><a href="#LAYERS-AND-LAYERS" class="headerlink" title="LAYERS AND LAYERS"></a>LAYERS AND LAYERS</h3><p>There are two versions of depth sorting that crop up in the workflow.</p>
+<p>Firstly, there’s the Stacking Contexts, like if you have two absolutely positioned divs that overlap. Update Layer Tree is the part of the process that ensures that z-index and the like is heeded.</p>
+<p>Secondly, there’s the Compositor Layers, which is later in the process, and applies more to the idea of painted elements. An element can be promoted to a Compositor Layer with the null transform hack, or will-change: transform, which can then be transformed around the place cheaply (good for animation!). But the browser may also have to create additional Compositor Layers to preserve the depth order specified by z-index and the like if there are overlapping elements. Fun stuff!</p>
+<h3 id="RIFFING-ON-A-THEME"><a href="#RIFFING-ON-A-THEME" class="headerlink" title="RIFFING ON A THEME"></a>RIFFING ON A THEME</h3><p>Virtually all of the process outlined above is done on the CPU. Only the last part, where tiles are uploaded and moved, is done on the GPU.</p>
+<p>On Android, however, the pixel flow is a little different when it comes to Rasterization: the GPU is used far more. Instead of Compositor Tile Workers doing the rasterization, the draw calls are executed as GL commands on the GPU in shaders.</p>
+<p>This is known as GPU Rasterization, and it’s one way to reduce the cost of paint. You can find out if your page is GPU rasterized by enabling the FPS Meter in Chrome DevTools:<br><img src="https://aerotwist.com/static/blog/the-anatomy-of-a-frame/fps-meter.jpg" alt=""></p>
+<h3 id="OTHER-RESOURCES"><a href="#OTHER-RESOURCES" class="headerlink" title="OTHER RESOURCES"></a>OTHER RESOURCES</h3><p>There’s a ton of other stuff that you might want to dive into, like how to avoid work on the Main Thread, or how this stuff works at a deeper level. Hopefully these will help you out:</p>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=Lpk1dYdo62o" target="_blank" rel="noopener">Compositing in Blink &amp; WebKit</a>. A little old now, but still worth a watch.</li>
+<li><a href="https://developers.google.com/web/fundamentals/performance/rendering/" target="_blank" rel="noopener">Browser Rendering Performance</a> - Google Developers</li>
+<li><a href="https://www.udacity.com/courses/ud860" target="_blank" rel="noopener">Browser Rendering Performance</a> - Udacity Course (totally free!).</li>
+<li><a href="https://dassur.ma/things/houdini-intro/" target="_blank" rel="noopener">Houdini</a> - The future, where you get to add more script to more parts of the flow.</li>
+</ul>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/web/">web</a><a href="/tags/chrome/">chrome</a><a href="/tags/frame/">frame</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 hello2dj (dj_amazing@sina.com)
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

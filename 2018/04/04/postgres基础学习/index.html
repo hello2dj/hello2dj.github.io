@@ -1,0 +1,191 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>postgres基础学习 | hello2dj | if you can&#39;t explain it simply, you don&#39;t understand it well enough</title>
+
+  
+  <meta name="author" content="hello2dj (dj_amazing@sina.com)">
+  
+
+  
+  <meta name="description" content="每个人都是带着棱角来到世上，只有磨平棱角才能走的更远">
+  
+
+  
+  
+  <meta name="keywords" content="sql postgres">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="postgres基础学习"/>
+
+  <meta property="og:site_name" content="hello2dj"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="hello2dj" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">hello2dj</a>
+    </h1>
+    <p class="site-description">if you can&#39;t explain it simply, you don&#39;t understand it well enough</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/categories">Categories</a></li>
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>postgres基础学习</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/04/04/postgres基础学习/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-04-03T16:00:00.000Z">
+          2018-04-04
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h3 id="sql-语句就好比pipeline似的，上一个的执行结果喂给下个语句（select-语句永远在最后）"><a href="#sql-语句就好比pipeline似的，上一个的执行结果喂给下个语句（select-语句永远在最后）" class="headerlink" title="sql 语句就好比pipeline似的，上一个的执行结果喂给下个语句（select 语句永远在最后）"></a>sql 语句就好比pipeline似的，上一个的执行结果喂给下个语句（select 语句永远在最后）</h3><h3 id="使用汉语时需要使用’’单引号"><a href="#使用汉语时需要使用’’单引号" class="headerlink" title="使用汉语时需要使用’’单引号"></a>使用汉语时需要使用’’单引号</h3><h3 id="select-不但可以使用列名还可以写常量比如“商品”等字符串。"><a href="#select-不但可以使用列名还可以写常量比如“商品”等字符串。" class="headerlink" title="select 不但可以使用列名还可以写常量比如“商品”等字符串。"></a>select 不但可以使用列名还可以写常量比如“商品”等字符串。</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select &quot;商品&quot; as &apos;name&apos;, id from product;</span><br></pre></td></tr></table></figure>
+<h3 id="在-SELECT-语句中使用-DISTINCT-可以删除重复行-DISTINCT-关键字只能用在第一个列名之前"><a href="#在-SELECT-语句中使用-DISTINCT-可以删除重复行-DISTINCT-关键字只能用在第一个列名之前" class="headerlink" title="在 SELECT 语句中使用 DISTINCT 可以删除重复行, DISTINCT 关键字只能用在第一个列名之前"></a>在 SELECT 语句中使用 DISTINCT 可以删除重复行, DISTINCT 关键字只能用在第一个列名之前</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">select distinct product_id from product;</span><br><span class="line">or </span><br><span class="line">select distinct product_id, purchase_price from product;</span><br><span class="line">// 这是会按照product_id, 和purchase_price进行合并去重的</span><br><span class="line">// 因此如下写是错误的</span><br><span class="line">select product_id, distinct purchase_price from product; // error</span><br></pre></td></tr></table></figure>
+<h3 id="WHERE-子句要紧跟在-FROM-子句之后。"><a href="#WHERE-子句要紧跟在-FROM-子句之后。" class="headerlink" title="WHERE 子句要紧跟在 FROM 子句之后。"></a>WHERE 子句要紧跟在 FROM 子句之后。</h3><h3 id="单行注释"><a href="#单行注释" class="headerlink" title="单行注释"></a>单行注释</h3><p>书写在“–”之后，只能写在同一行</p>
+<h3 id="多行注释"><a href="#多行注释" class="headerlink" title="多行注释"></a>多行注释</h3><p>/<em> </em>/类c</p>
+<h3 id="select-字句也可以使用算数运算，比如2倍价钱，-常用的4则运算，当查询结果是null时，那所有的运算结果都是null"><a href="#select-字句也可以使用算数运算，比如2倍价钱，-常用的4则运算，当查询结果是null时，那所有的运算结果都是null" class="headerlink" title="select 字句也可以使用算数运算，比如2倍价钱， 常用的4则运算，当查询结果是null时，那所有的运算结果都是null"></a>select 字句也可以使用算数运算，比如2倍价钱， 常用的4则运算，当查询结果是null时，那所有的运算结果都是null</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select purchase_price * 2 as &apos;purchase_price2&apos; from product;</span><br></pre></td></tr></table></figure>
+<h3 id="运算就是这样以’行’为单位执行的-查出一行执行一行"><a href="#运算就是这样以’行’为单位执行的-查出一行执行一行" class="headerlink" title="运算就是这样以’行’为单位执行的, 查出一行执行一行"></a>运算就是这样以’行’为单位执行的, 查出一行执行一行</h3><h3 id="SELECT-子句中可以使用常数或者表达式"><a href="#SELECT-子句中可以使用常数或者表达式" class="headerlink" title="SELECT 子句中可以使用常数或者表达式"></a>SELECT 子句中可以使用常数或者表达式</h3><h3 id="比较运算符在where字句中的有-相等，-lt-gt-不等-gt-lt-lt-gt"><a href="#比较运算符在where字句中的有-相等，-lt-gt-不等-gt-lt-lt-gt" class="headerlink" title="比较运算符在where字句中的有 = 相等， &lt;&gt; 不等 &gt;=, &lt;=, &lt;, &gt;"></a>比较运算符在where字句中的有 = 相等， &lt;&gt; 不等 &gt;=, &lt;=, &lt;, &gt;</h3><h3 id="WHERE-子句的条件表达式中也可以使用计算表达式-比如查询卖出价比买入价多600的商品-相当与在找单品利润大于600的"><a href="#WHERE-子句的条件表达式中也可以使用计算表达式-比如查询卖出价比买入价多600的商品-相当与在找单品利润大于600的" class="headerlink" title="WHERE 子句的条件表达式中也可以使用计算表达式 比如查询卖出价比买入价多600的商品,相当与在找单品利润大于600的"></a>WHERE 子句的条件表达式中也可以使用计算表达式 比如查询卖出价比买入价多600的商品,相当与在找单品利润大于600的</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">select product_id, product_name, product_type from product</span><br><span class="line">where sale_price - purchase_price &gt; 600</span><br></pre></td></tr></table></figure>
+<h3 id="insert-into-table-name-values-‘field’-…-‘field-value’-…-…-插入多行数据"><a href="#insert-into-table-name-values-‘field’-…-‘field-value’-…-…-插入多行数据" class="headerlink" title="insert into table_name values (‘field’, …), (‘field_value’, …) …;插入多行数据"></a>insert into table_name values (‘field’, …), (‘field_value’, …) …;插入多行数据</h3><h3 id="字符串类型的数据原则上按照字典顺序进行排序，不能与数字的大小顺序混淆说白了，就是ascii的大小"><a href="#字符串类型的数据原则上按照字典顺序进行排序，不能与数字的大小顺序混淆说白了，就是ascii的大小" class="headerlink" title="字符串类型的数据原则上按照字典顺序进行排序，不能与数字的大小顺序混淆说白了，就是ascii的大小"></a>字符串类型的数据原则上按照字典顺序进行排序，不能与数字的大小顺序混淆说白了，就是ascii的大小</h3><h3 id="对null-不能使用比较运算符，sql-有专门的is-null-和is-not-null来判断"><a href="#对null-不能使用比较运算符，sql-有专门的is-null-和is-not-null来判断" class="headerlink" title="对null 不能使用比较运算符，sql 有专门的is null 和is not null来判断"></a>对null 不能使用比较运算符，sql 有专门的is null 和is not null来判断</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">select product_name from product</span><br><span class="line">where purchase_price is null;</span><br></pre></td></tr></table></figure>
+<h3 id="逻辑运算符，not-and-or"><a href="#逻辑运算符，not-and-or" class="headerlink" title="逻辑运算符，not, and, or"></a>逻辑运算符，not, and, or</h3><ul>
+<li><p>售价不大于1000的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">select product_name from product</span><br><span class="line">where not sale_price &gt; 1000;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>and 条件都满足, 售价大于100的衣服</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">select product_name from product</span><br><span class="line">where sale_price &gt; 100 and product_type = &apos;衣服&apos;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="AND-运算符的优先级高于-OR-运算符。想要优先执行-OR-运算符时可以使用括号"><a href="#AND-运算符的优先级高于-OR-运算符。想要优先执行-OR-运算符时可以使用括号" class="headerlink" title="AND 运算符的优先级高于 OR 运算符。想要优先执行 OR 运算符时可以使用括号"></a>AND 运算符的优先级高于 OR 运算符。想要优先执行 OR 运算符时可以使用括号</h3><h3 id="count聚合函数应用在具体列时，不会对null进行计算就是不包括null"><a href="#count聚合函数应用在具体列时，不会对null进行计算就是不包括null" class="headerlink" title="count聚合函数应用在具体列时，不会对null进行计算就是不包括null"></a>count聚合函数应用在具体列时，不会对null进行计算就是不包括null</h3><p>COUNT 函数的结果根据参数的不同而不同。COUNT(*) 会得到包含 NULL 的数据 行数，而 COUNT(&lt; 列名 &gt;) 会得到 NULL 之外的数据行数。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">select count(purchase_price) from product;</span><br><span class="line">// 假设一共有8行2行purchase_price是null，则上面的输出是6</span><br></pre></td></tr></table></figure></p>
+<h3 id="当select字句中使用了聚合函数后，则整个select语句中只能使用聚合函数，或者常量而不允许在直接使用列名了。"><a href="#当select字句中使用了聚合函数后，则整个select语句中只能使用聚合函数，或者常量而不允许在直接使用列名了。" class="headerlink" title="当select字句中使用了聚合函数后，则整个select语句中只能使用聚合函数，或者常量而不允许在直接使用列名了。"></a>当select字句中使用了聚合函数后，则整个select语句中只能使用聚合函数，或者常量而不允许在直接使用列名了。</h3><h3 id="所有的聚合函数，如果以列名为参数，那么在计算之前就已经把-NULL-排除在外了，聚合函数会将-NULL-排除在外。但-COUNT-例外，并不会排除-NULL。"><a href="#所有的聚合函数，如果以列名为参数，那么在计算之前就已经把-NULL-排除在外了，聚合函数会将-NULL-排除在外。但-COUNT-例外，并不会排除-NULL。" class="headerlink" title="所有的聚合函数，如果以列名为参数，那么在计算之前就已经把 NULL 排除在外了，聚合函数会将 NULL 排除在外。但 COUNT(*) 例外，并不会排除 NULL。"></a>所有的聚合函数，如果以列名为参数，那么在计算之前就已经把 NULL 排除在外了，聚合函数会将 NULL 排除在外。但 COUNT(*) 例外，并不会排除 NULL。</h3><h3 id="由于有上述原因所以在我们计算平均值时avg，也会出问题，他会把null也排除，那么平均值得分母也就少了。"><a href="#由于有上述原因所以在我们计算平均值时avg，也会出问题，他会把null也排除，那么平均值得分母也就少了。" class="headerlink" title="由于有上述原因所以在我们计算平均值时avg，也会出问题，他会把null也排除，那么平均值得分母也就少了。"></a>由于有上述原因所以在我们计算平均值时avg，也会出问题，他会把null也排除，那么平均值得分母也就少了。</h3><h3 id="MAX-MIN-函数几乎适用于所有数据类型的列。SUM-AVG-函数只适用于数值类型的列。"><a href="#MAX-MIN-函数几乎适用于所有数据类型的列。SUM-AVG-函数只适用于数值类型的列。" class="headerlink" title="MAX/MIN 函数几乎适用于所有数据类型的列。SUM/AVG 函数只适用于数值类型的列。"></a>MAX/MIN 函数几乎适用于所有数据类型的列。SUM/AVG 函数只适用于数值类型的列。</h3><h3 id="想要计算值的种类时，可以在-COUNT-函数的参数中使用-DISTINCT。"><a href="#想要计算值的种类时，可以在-COUNT-函数的参数中使用-DISTINCT。" class="headerlink" title="想要计算值的种类时，可以在 COUNT 函数的参数中使用 DISTINCT。"></a>想要计算值的种类时，可以在 COUNT 函数的参数中使用 DISTINCT。</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select count (distinct product_type) form product</span><br></pre></td></tr></table></figure>
+<h3 id="所有的聚合函数都可以使用-DISTINCT-在聚合函数的参数中使用-DISTINCT，可以删除重复数据。"><a href="#所有的聚合函数都可以使用-DISTINCT-在聚合函数的参数中使用-DISTINCT，可以删除重复数据。" class="headerlink" title="所有的聚合函数都可以使用 DISTINCT, 在聚合函数的参数中使用 DISTINCT，可以删除重复数据。"></a>所有的聚合函数都可以使用 DISTINCT, 在聚合函数的参数中使用 DISTINCT，可以删除重复数据。</h3><h3 id="使用聚合函数和GROUP-BY子句时需要注意以下4点。-GROUP-BY子句也和SELECT子句一样，-可以通过逗号分隔指定多列。GROUP-BY-就像是切分表的一把刀。"><a href="#使用聚合函数和GROUP-BY子句时需要注意以下4点。-GROUP-BY子句也和SELECT子句一样，-可以通过逗号分隔指定多列。GROUP-BY-就像是切分表的一把刀。" class="headerlink" title="使用聚合函数和GROUP BY子句时需要注意以下4点。 GROUP BY子句也和SELECT子句一样， 可以通过逗号分隔指定多列。GROUP BY 就像是切分表的一把刀。"></a>使用聚合函数和GROUP BY子句时需要注意以下4点。 GROUP BY子句也和SELECT子句一样， 可以通过逗号分隔指定多列。GROUP BY 就像是切分表的一把刀。</h3><blockquote>
+<p>此外，GROUP BY子句的书写位置也有严格要求，一定要写在 FROM 语句之后(如果有 WHERE 子句的话需要写在 WHERE 子句之后)。</p>
+</blockquote>
+<ol>
+<li>聚合函数只能写在SELECT子句之中</li>
+<li>GROUP BY子句中不能使用SELECT子句中列的别名 </li>
+<li>GROUP BY子句的聚合结果是无序的</li>
+<li>WHERE子句中不能使用聚合函数</li>
+</ol>
+<h3 id="聚合键中包含-NULL-时，在结果中会以“不确定”行-空行-的形式表现出来。"><a href="#聚合键中包含-NULL-时，在结果中会以“不确定”行-空行-的形式表现出来。" class="headerlink" title="聚合键中包含 NULL 时，在结果中会以“不确定”行(空行)的形式表现出来。"></a>聚合键中包含 NULL 时，在结果中会以“不确定”行(空行)的形式表现出来。</h3><h3 id="GROUP-BY和WHERE并用时SELECT语句的执行顺序"><a href="#GROUP-BY和WHERE并用时SELECT语句的执行顺序" class="headerlink" title="GROUP BY和WHERE并用时SELECT语句的执行顺序"></a>GROUP BY和WHERE并用时SELECT语句的执行顺序</h3><p>FROM → WHERE → GROUP BY → SELECT</p>
+<h3 id="使用聚合函数与group-by字句时常见的错误"><a href="#使用聚合函数与group-by字句时常见的错误" class="headerlink" title="使用聚合函数与group by字句时常见的错误"></a>使用聚合函数与group by字句时常见的错误</h3><ol>
+<li>在select 语句中写了多余的列<br>在使用了聚合函数，以及group by字句时，select字句中的列是有严格限制的<ul>
+<li>常数</li>
+<li>聚合函数</li>
+<li>group by 字句中指定的列名（就是聚合键）<blockquote>
+<p>使用 GROUP BY 子句时，SELECT 子句中不能出现聚合键之外的列名。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li>使用 GROUP BY 子句时，SELECT 子句中不能出现聚合键之外的列名。</li>
+<li>GROUP BY子句的结果能排序吗? 答案随机的， GROUP BY 子句结果的显示是无序的。</li>
+<li>在 WHERE 子句中使用聚合函数, where 字句中是不能使用字句的。</li>
+</ol>
+<h3 id="只有SELECT子句和HAVING子句-以及ORDER-BY子句-中能够使用聚合函数，-where是不对分组数据处理的where处理的是单行数据。"><a href="#只有SELECT子句和HAVING子句-以及ORDER-BY子句-中能够使用聚合函数，-where是不对分组数据处理的where处理的是单行数据。" class="headerlink" title="只有SELECT子句和HAVING子句(以及ORDER BY子句)中能够使用聚合函数， where是不对分组数据处理的where处理的是单行数据。"></a>只有SELECT子句和HAVING子句(以及ORDER BY子句)中能够使用聚合函数， where是不对分组数据处理的where处理的是单行数据。</h3><h3 id="对聚合结果操作，指定条件having-子句"><a href="#对聚合结果操作，指定条件having-子句" class="headerlink" title="对聚合结果操作，指定条件having 子句"></a>对聚合结果操作，指定条件having 子句</h3><h3 id="HAVING-子句要写在-GROUP-BY-子句之后"><a href="#HAVING-子句要写在-GROUP-BY-子句之后" class="headerlink" title="HAVING 子句要写在 GROUP BY 子句之后"></a>HAVING 子句要写在 GROUP BY 子句之后</h3><h3 id="having-子句与select子句类似只能包含以下"><a href="#having-子句与select子句类似只能包含以下" class="headerlink" title="having 子句与select子句类似只能包含以下"></a>having 子句与select子句类似只能包含以下</h3><ol>
+<li>常数</li>
+<li>聚合函数</li>
+<li>group by 字句中指定的列名（就是聚合键）<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">select product_type, count(*) from product</span><br><span class="line">group by product_type</span><br><span class="line">having product_name = &apos;圆柱笔&apos;</span><br><span class="line">//  error 错误</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="在where字句中和having字句中都可以出现的条件是聚合键所对应的条件"><a href="#在where字句中和having字句中都可以出现的条件是聚合键所对应的条件" class="headerlink" title="在where字句中和having字句中都可以出现的条件是聚合键所对应的条件"></a>在where字句中和having字句中都可以出现的条件是聚合键所对应的条件</h3><ul>
+<li>WHERE 子句 = 指定行所对应的条件</li>
+<li>HAVING 子句 = 指定组所对应的条件<br>但应当符合上述的要求，聚合键的条件写在where子句会更好</li>
+</ul>
+<h3 id="where字句中的条件执行速度会比having子句的执行性能好一些"><a href="#where字句中的条件执行速度会比having子句的执行性能好一些" class="headerlink" title="where字句中的条件执行速度会比having子句的执行性能好一些"></a>where字句中的条件执行速度会比having子句的执行性能好一些</h3><h3 id="ORDER-BY-子句通常写在-SELECT-语句的末尾。"><a href="#ORDER-BY-子句通常写在-SELECT-语句的末尾。" class="headerlink" title="ORDER BY 子句通常写在 SELECT 语句的末尾。"></a>ORDER BY 子句通常写在 SELECT 语句的末尾。</h3><h3 id="排序键中包含-NULL-时，会在开头或末尾进行汇总。"><a href="#排序键中包含-NULL-时，会在开头或末尾进行汇总。" class="headerlink" title="排序键中包含 NULL 时，会在开头或末尾进行汇总。"></a>排序键中包含 NULL 时，会在开头或末尾进行汇总。</h3><h3 id="带有order-by-子句的整体执行流程"><a href="#带有order-by-子句的整体执行流程" class="headerlink" title="带有order by 子句的整体执行流程"></a>带有order by 子句的整体执行流程</h3><p>FROM→WHERE→GROUP BY→HAVING→SELECT→ORDER BY</p>
+<h3 id="在-ORDER-BY-子句中可以使用-SELECT-子句中定义的别名。"><a href="#在-ORDER-BY-子句中可以使用-SELECT-子句中定义的别名。" class="headerlink" title="在 ORDER BY 子句中可以使用 SELECT 子句中定义的别名。"></a>在 ORDER BY 子句中可以使用 SELECT 子句中定义的别名。</h3><h3 id="在-ORDER-BY-子句中可以使用-SELECT-子句中未使用的列和聚合函数"><a href="#在-ORDER-BY-子句中可以使用-SELECT-子句中未使用的列和聚合函数" class="headerlink" title="在 ORDER BY 子句中可以使用 SELECT 子句中未使用的列和聚合函数"></a>在 ORDER BY 子句中可以使用 SELECT 子句中未使用的列和聚合函数</h3><h3 id="在-ORDER-BY-子句中可以使用-SELECT-子句中使用的列和聚合函数"><a href="#在-ORDER-BY-子句中可以使用-SELECT-子句中使用的列和聚合函数" class="headerlink" title="在 ORDER BY 子句中可以使用 SELECT 子句中使用的列和聚合函数"></a>在 ORDER BY 子句中可以使用 SELECT 子句中使用的列和聚合函数</h3><h3 id="定义视图时不要使用ORDER-BY子句"><a href="#定义视图时不要使用ORDER-BY子句" class="headerlink" title="定义视图时不要使用ORDER BY子句"></a>定义视图时不要使用ORDER BY子句</h3><h1 id="子查询"><a href="#子查询" class="headerlink" title="子查询"></a>子查询</h1><h3 id="一言以蔽之，子查询就是一次性视图-SELECT语句-。与视图不同，子查-询在-SELECT-语句执行完毕之后就会消失"><a href="#一言以蔽之，子查询就是一次性视图-SELECT语句-。与视图不同，子查-询在-SELECT-语句执行完毕之后就会消失" class="headerlink" title="一言以蔽之，子查询就是一次性视图(SELECT语句)。与视图不同，子查 询在 SELECT 语句执行完毕之后就会消失"></a>一言以蔽之，子查询就是一次性视图(SELECT语句)。与视图不同，子查 询在 SELECT 语句执行完毕之后就会消失</h3><h3 id="子查询作为内层查询会首先执行。"><a href="#子查询作为内层查询会首先执行。" class="headerlink" title="子查询作为内层查询会首先执行。"></a>子查询作为内层查询会首先执行。</h3><h1 id="标量子查询"><a href="#标量子查询" class="headerlink" title="标量子查询"></a>标量子查询</h1><h3 id="标量子查询就是返回单一值的子查询。"><a href="#标量子查询就是返回单一值的子查询。" class="headerlink" title="标量子查询就是返回单一值的子查询。"></a>标量子查询就是返回单一值的子查询。</h3><p>标量子查询有一个特殊的限制，那就是必须而且只能返回 1 行 1<br>列的结果，也就是返回表中某一行的某一列的值，例如“10”或者“东京都” 这样的值。</p>
+<h3 id="标量子查询的书写位置并不仅仅局限于-WHERE-子句中，通常任何可-以使用单一值的位置都可以使用。也就是说，能够使用常数或者列名的-地方，无论是-SELECT-子句、GROUP-BY-子句、HAVING-子句，还是-ORDER-BY子句，几乎所有的地方都可以使用。"><a href="#标量子查询的书写位置并不仅仅局限于-WHERE-子句中，通常任何可-以使用单一值的位置都可以使用。也就是说，能够使用常数或者列名的-地方，无论是-SELECT-子句、GROUP-BY-子句、HAVING-子句，还是-ORDER-BY子句，几乎所有的地方都可以使用。" class="headerlink" title="标量子查询的书写位置并不仅仅局限于 WHERE 子句中，通常任何可 以使用单一值的位置都可以使用。也就是说，能够使用常数或者列名的 地方，无论是 SELECT 子句、GROUP BY 子句、HAVING 子句，还是 ORDER BY子句，几乎所有的地方都可以使用。"></a>标量子查询的书写位置并不仅仅局限于 WHERE 子句中，通常任何可 以使用单一值的位置都可以使用。也就是说，能够使用常数或者列名的 地方，无论是 SELECT 子句、GROUP BY 子句、HAVING 子句，还是 ORDER BY子句，几乎所有的地方都可以使用。</h3><h3 id="使用标量子查询时的注意事项，那就是该子查询-绝对不能返回多行结果"><a href="#使用标量子查询时的注意事项，那就是该子查询-绝对不能返回多行结果" class="headerlink" title="使用标量子查询时的注意事项，那就是该子查询 绝对不能返回多行结果"></a>使用标量子查询时的注意事项，那就是该子查询 绝对不能返回多行结果</h3><h3 id="where-子句是一行一行处理数据的，所以不能使用聚合函数，WHERE-子句中不能使用聚合函数"><a href="#where-子句是一行一行处理数据的，所以不能使用聚合函数，WHERE-子句中不能使用聚合函数" class="headerlink" title="where 子句是一行一行处理数据的，所以不能使用聚合函数，WHERE 子句中不能使用聚合函数"></a>where 子句是一行一行处理数据的，所以不能使用聚合函数，WHERE 子句中不能使用聚合函数</h3><h1 id="关联子查询是指内部自查使用了外包部查询的变量"><a href="#关联子查询是指内部自查使用了外包部查询的变量" class="headerlink" title="关联子查询是指内部自查使用了外包部查询的变量"></a>关联子查询是指内部自查使用了外包部查询的变量</h1><h3 id="在细分的组内进行比较时，需要使用关联子查询。"><a href="#在细分的组内进行比较时，需要使用关联子查询。" class="headerlink" title="在细分的组内进行比较时，需要使用关联子查询。"></a>在细分的组内进行比较时，需要使用关联子查询。</h3><h3 id="关联子查询也是用来对集合进行切分的-作用group-by-类似"><a href="#关联子查询也是用来对集合进行切分的-作用group-by-类似" class="headerlink" title="关联子查询也是用来对集合进行切分的 作用group by 类似"></a>关联子查询也是用来对集合进行切分的 作用group by 类似</h3><h3 id="别名的使用’内部可以看到外部，而外部看不到内部‘"><a href="#别名的使用’内部可以看到外部，而外部看不到内部‘" class="headerlink" title="别名的使用’内部可以看到外部，而外部看不到内部‘"></a>别名的使用’内部可以看到外部，而外部看不到内部‘</h3><h1 id="select-子句中若是出现了，聚合函数则其他列就不能使用，除非这个列是聚合件"><a href="#select-子句中若是出现了，聚合函数则其他列就不能使用，除非这个列是聚合件" class="headerlink" title="select 子句中若是出现了，聚合函数则其他列就不能使用，除非这个列是聚合件"></a>select 子句中若是出现了，聚合函数则其他列就不能使用，除非这个列是聚合件</h1><h2 id="exist-谓词"><a href="#exist-谓词" class="headerlink" title="exist 谓词"></a>exist 谓词</h2><h3 id="通常指定关联子查询作为-EXIST-的参数"><a href="#通常指定关联子查询作为-EXIST-的参数" class="headerlink" title="通常指定关联子查询作为 EXIST 的参数"></a>通常指定关联子查询作为 EXIST 的参数</h3><h2 id="dt-显示表详细信息"><a href="#dt-显示表详细信息" class="headerlink" title="\dt 显示表详细信息"></a>\dt 显示表详细信息</h2><h2 id="关于数据库join的问题"><a href="#关于数据库join的问题" class="headerlink" title="关于数据库join的问题"></a>关于数据库join的问题</h2><ol>
+<li>数据库join</li>
+<li>service应用层join<br><a href="https://www.zhihu.com/question/68258877" target="_blank" rel="noopener">https://www.zhihu.com/question/68258877</a></li>
+</ol>
+<h2 id="重代码和重sql的两种编码方式"><a href="#重代码和重sql的两种编码方式" class="headerlink" title="重代码和重sql的两种编码方式"></a>重代码和重sql的两种编码方式</h2><p><a href="https://zhuanlan.zhihu.com/p/36585028" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/36585028</a> </p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/sql-postgres/">sql postgres</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 hello2dj (dj_amazing@sina.com)
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

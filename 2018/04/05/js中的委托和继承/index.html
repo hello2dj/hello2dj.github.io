@@ -1,0 +1,151 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>js中的委托vs继承 | hello2dj | if you can&#39;t explain it simply, you don&#39;t understand it well enough</title>
+
+  
+  <meta name="author" content="hello2dj (dj_amazing@sina.com)">
+  
+
+  
+  <meta name="description" content="每个人都是带着棱角来到世上，只有磨平棱角才能走的更远">
+  
+
+  
+  
+  <meta name="keywords" content="js">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="js中的委托vs继承"/>
+
+  <meta property="og:site_name" content="hello2dj"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="hello2dj" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">hello2dj</a>
+    </h1>
+    <p class="site-description">if you can&#39;t explain it simply, you don&#39;t understand it well enough</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/categories">Categories</a></li>
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>js中的委托vs继承</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/04/05/js中的委托和继承/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-04-04T16:00:00.000Z">
+          2018-04-05
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>曾经 James Gosling（java 之父） 回答过一个问题，那就是如果让他从头重写一遍 java，那会有什么不同的地方？他回答说那就是不要继承只有委托。</p>
+<p>使用继承来重用代码就好比是你想要一个塑料碗于是你定了一个外卖似的。事实上当你按照教课书似的来使用继承，你回发现你的整个继承架构是那么的脆弱和随意。子类会一直拥有它根本不需要的方法或者属性，这就违背了最小知识原则。</p>
+<p>而委托则是通过运行时在具体的实例上下文中进行函数调用来实现代码重用的。如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Object.prototype.toString.call(&#123;&#125;);</span><br></pre></td></tr></table></figure>
+<p>在 js 中同 call 和 apply 我们可以很轻松的实现委托。</p>
+<h3 id="自定义函数委托"><a href="#自定义函数委托" class="headerlink" title="自定义函数委托"></a>自定义函数委托</h3><p>假设我们的有一款绘画 app, 我们需要一个矩形对象。我们先用如下的方法实现：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">const Rectangle = function(left, top, length, width, options) &#123;</span><br><span class="line">    this.left = left;</span><br><span class="line">    this.top = top;</span><br><span class="line">    this.length = length;</span><br><span class="line">    this.width = width;</span><br><span class="line">    if (options) &#123;</span><br><span class="line">        this.color = options.color;</span><br><span class="line">        this.border = options.border;</span><br><span class="line">        this.opacity = options.opacity;</span><br><span class="line">        //... etc.</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">const myRectangle = new Rectangle(10, 10, 30, 20, &#123;color:&apos;#FAFAFA&apos;, opacity:0.7&#125;);</span><br></pre></td></tr></table></figure>
+<p>我们也需要知道两个矩形是否重叠，因此有如下的方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Rectangle.prototype.overlaps = function(another) &#123;</span><br><span class="line">    const r1x1 = this.left,</span><br><span class="line">        r1x2 = this.left + this.width,</span><br><span class="line">        r1y1 = this.top,</span><br><span class="line">        r1y2 = this.top + this.height,</span><br><span class="line">        r2x1 = another.left,</span><br><span class="line">        r2x2 = another.left + another.width,</span><br><span class="line">        r2y1 = another.top,</span><br><span class="line">        r2y2 = another.top + another.height;</span><br><span class="line"></span><br><span class="line">    return (r1x2 &gt;= r2x1) &amp;&amp; (r1y2 &gt;= r2y1) &amp;&amp; (r1x1 &lt;= r2x2) &amp;&amp; (r1y1 &lt;= r2y2);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">myRectangle.overlaps(myOtherRectangle);</span><br></pre></td></tr></table></figure>
+<p>现在假设我们的 app 有一个用来渲染 dashlets 的 dashbord。我们也需要判断这些 dashlets 是否重叠。因此我们可以使用继承，然后让他们继承自 Rectangle。但其实我们也可以使用委托来实现</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Rectangle.prototype.overlaps.call(dashlet1, dashlet2);</span><br></pre></td></tr></table></figure>
+<p>完整的如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">const Rectangle = function(left, top, length, width, options) &#123;</span><br><span class="line">    //whatever...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Rectangle.prototype.overlaps = function(another) &#123;</span><br><span class="line">    const r1x1 = this.left,</span><br><span class="line">        r1x2 = this.left + this.width,</span><br><span class="line">        r1y1 = this.top,</span><br><span class="line">        r1y2 = this.top + this.height,</span><br><span class="line">        r2x1 = another.left,</span><br><span class="line">        r2x2 = another.left + another.width,</span><br><span class="line">        r2y1 = another.top,</span><br><span class="line">        r2y2 = another.top + another.height;</span><br><span class="line"></span><br><span class="line">    return (r1x2 &gt;= r2x1) &amp;&amp; (r1y2 &gt;= r2y1) &amp;&amp; (r1x1 &lt;= r2x2) &amp;&amp; (r1y1 &lt;= r2y2));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Rectangle.prototype.overlaps.call(</span><br><span class="line">    &#123;left: 10, top: 10, width 12, height: 6&#125;,</span><br><span class="line">    &#123;left: 8, top: 15, width 9, height: 16&#125;);</span><br><span class="line">//true  </span><br><span class="line">Rectangle.prototype.overlaps.call(</span><br><span class="line">    &#123;left: 10, top: 10, width 12, height: 6&#125;,</span><br><span class="line">    &#123;left: 8, top: 25, width 9, height: 16&#125;);</span><br><span class="line">//false;</span><br></pre></td></tr></table></figure>
+<h3 id="泛型函数（generic）"><a href="#泛型函数（generic）" class="headerlink" title="泛型函数（generic）"></a>泛型函数（generic）</h3><p>那么内置函数是否都可以像上面那么使用么？不幸的是许多内置函数都不行，若是 this 不是指定的类型就会抛出 TypeError。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Date.prototype.getMilliseconds.apply(&#123;year:2010&#125;);</span><br><span class="line">//TypeError: Date.prototype.getMilliseconds called on incompatible Object</span><br></pre></td></tr></table></figure>
+<p>幸运的是 es5 规范明确的描述了 generic functions 的概念。泛型函数是指那些允许 this 的类型是任意类型的函数。举个例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">const hasNumbers = &apos;&apos;.search.call([&apos;a&apos;, &apos;b&apos;, &apos;c&apos;], /[0-9]/) &gt; -1</span><br></pre></td></tr></table></figure>
+<h3 id="委托，组合，继承"><a href="#委托，组合，继承" class="headerlink" title="委托，组合，继承"></a>委托，组合，继承</h3><p>继承链太长，继承结构机会很脆弱，就会给子孙添加很多不必要的东西。能用委托和组合就不要使用继承。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/js/">js</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 hello2dj (dj_amazing@sina.com)
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

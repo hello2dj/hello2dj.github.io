@@ -1,0 +1,172 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>hello2dj | if you can&#39;t explain it simply, you don&#39;t understand it well enough</title>
+
+  
+  <meta name="author" content="hello2dj (dj_amazing@sina.com)">
+  
+
+  
+  <meta name="description" content="每个人都是带着棱角来到世上，只有磨平棱角才能走的更远">
+  
+
+  
+  
+  <meta name="keywords" content="">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  
+
+  <meta property="og:site_name" content="hello2dj"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="hello2dj" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">hello2dj</a>
+    </h1>
+    <p class="site-description">if you can&#39;t explain it simply, you don&#39;t understand it well enough</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/categories">Categories</a></li>
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span></span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/07/14/http2/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-07-14T13:00:30.039Z">
+          2018-07-14
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h2 id="http2"><a href="#http2" class="headerlink" title="http2"></a>http2</h2><ul>
+<li><h3 id="支持请求与响应的多路复用来减少延迟。"><a href="#支持请求与响应的多路复用来减少延迟。" class="headerlink" title="支持请求与响应的多路复用来减少延迟。"></a>支持请求与响应的多路复用来减少延迟。</h3></li>
+<li><h3 id="压缩-HTTP-首部字段将协议开销降至最低。"><a href="#压缩-HTTP-首部字段将协议开销降至最低。" class="headerlink" title="压缩 HTTP 首部字段将协议开销降至最低。"></a>压缩 HTTP 首部字段将协议开销降至最低。</h3></li>
+<li><h3 id="增加对请求优先级和服务器端推送的支持。"><a href="#增加对请求优先级和服务器端推送的支持。" class="headerlink" title="增加对请求优先级和服务器端推送的支持。"></a>增加对请求优先级和服务器端推送的支持。</h3><blockquote>
+<p>同时由于考虑到庞大的 HTTP1.1 协议用户，所以 HTTP 方法、状态码、URI 及首部字段，等核心概念保持不变，也就是当前正在运行的网站不用做任何改变即可在 HTTP2 协议上运行。</p>
+</blockquote>
+</li>
+<li><h3 id="二进制分帧层"><a href="#二进制分帧层" class="headerlink" title="二进制分帧层:"></a>二进制分帧层:</h3><p><img src="http://www.softwhy.com/data/attachment/portal/201710/16/020524pf7gmftffdtfzvfo.png" alt=""></p>
+</li>
+<li><h3 id="流、消息和帧"><a href="#流、消息和帧" class="headerlink" title="流、消息和帧:"></a>流、消息和帧:</h3><p>二进制分帧机制改变了客户端与服务器之间交互数据的方式，涉及到以下几个重要的概念:</p>
+</li>
+</ul>
+<ol>
+<li><p>流：已建立的 TCP 连接上的双向字节流，逻辑上可看做一个较为完整的交互处理单元，即表达一次完整的资源请求-响应数据交换流程；一个业务处理单元，在一个流内进行处理完毕，这个流生命周期完结。</p>
+</li>
+<li><p>消息：由一个或多个帧组合而成，例如请求和响应。</p>
+</li>
+<li><p>帧：HTTP2 通信的最小单位，每个帧包含帧首部，至少也会标识出当前帧所属的流。所有 HTTP2 通信都在一个连接上完成，此连接理论上可以承载任意数量的双向数据流。相应地，每个数据流以消息的形式发送，而消息由一或多个帧组成，这些帧可以乱序发送，然后再根据每个帧首部的流标识符重新组装。图示如下:<br><img src="http://www.softwhy.com/data/attachment/portal/201710/16/022009pmxtfks7s6ntsqty.png" alt=""></p>
+<blockquote>
+<p>HTTP2 的所有帧都采用二进制编码，所有首部数据都会被压缩。上图只是演示数据流、消息和帧之间的关系，而非实际传输时的编码结果。</p>
+</blockquote>
+</li>
+</ol>
+<ul>
+<li><h3 id="多向请求与响应"><a href="#多向请求与响应" class="headerlink" title="多向请求与响应:"></a>多向请求与响应:</h3>在 HTTP1.1 中，如果想使用多个并行 request 请求，必须多开 TCP 连接，但是一个域名对同一个浏览器客户端是有数量限制的（6 个左右），同时，每一个连接中的响应是按照顺序排队进行的，容易导致队头堵塞。</li>
+</ul>
+<p>二进制分帧层实现了多向请求和响应，客户端和服务器可以把 HTTP 消息分解为互不依赖的帧，然后乱序发送，最后再在另一端把它们重新组合起来。图示如下:<br><img src="http://www.softwhy.com/data/attachment/portal/201710/16/024057jh3371lvfjn1f1nf.png" alt=""><br>由上图可以看出，同一个 TCP 连接可以传输多个数据流，并且服务器到客户端方向有多个数据流，流是一个逻辑信道，所以属于它的帧可以乱序发送，最后再根据标记组合起来即可。把 HTTP 消息分解为独立的帧，交错发送，然后在另一端重新组装是 HTTP2 最重要的改进，带来了巨大的性能提升，主要因为如下几个原因:</p>
+<ol>
+<li>可以并行交错地发送请求，请求之间互不影响。</li>
+<li>可以并行交错地发送响应，响应之间互不干扰。</li>
+<li>只使用一个连接即可并行发送多个请求和响应。</li>
+<li>消除不必要的延迟，从而减少页面加载的时间。</li>
+</ol>
+<p>二进制分帧机制解决了 HTTP1.1 队头阻塞问题，也消除了并行处理和发送请求及响应时对多个 TCP 连接的依赖</p>
+<ul>
+<li><h3 id="请求优先级"><a href="#请求优先级" class="headerlink" title="请求优先级:"></a>请求优先级:</h3><p>每个流都包含一个优先级，用来告诉对端哪个流更重要，当资源有限的时候，服务器会根据优先级来选择应该先发送哪些流。HTTP2 中，每个请求都可以带一个 31bit 的优先值，0 表示最高优先级。数值越大优先级越低。有了这个优先值，客户端和服务器就可以在处理不同的流时采取不同的策略，以最优的方式发送流、消息和帧。</p>
+</li>
+<li><h3 id="服务器推送"><a href="#服务器推送" class="headerlink" title="服务器推送:"></a>服务器推送:</h3><p>当前 web 页面的功能越来越强大，排版越来越精美，所以需要引用的 js 文件、css 文件或者图片等内容也越来越多，对每一个资源的外部引用，都是一次 request 请求。在 HTTP1.1 中，由于不具有多向请求与响应，所以可能需要额外的 TCP 连接，甚至导致队头堵塞，HTTP1.1 对此问题的解决方案可以参阅 HTTP 请求延迟解决方案一章节。当客户端获取服务器发送来的文档之后，通过分析获知需要引入额外的资源，然后再向服务器发送请求获取这些资源，如此大费周章，倒不如服务器主动推送这些额外资源。推送资源的特点如下:</p>
+</li>
+<li><h3 id="客户端可以缓存推送过来的资源。"><a href="#客户端可以缓存推送过来的资源。" class="headerlink" title="客户端可以缓存推送过来的资源。"></a>客户端可以缓存推送过来的资源。</h3></li>
+<li><h3 id="客户端可以拒绝推送过来的资源。"><a href="#客户端可以拒绝推送过来的资源。" class="headerlink" title="客户端可以拒绝推送过来的资源。"></a>客户端可以拒绝推送过来的资源。</h3></li>
+<li><h3 id="推送资源可以由不同的页面共享。"><a href="#推送资源可以由不同的页面共享。" class="headerlink" title="推送资源可以由不同的页面共享。"></a>推送资源可以由不同的页面共享。</h3></li>
+<li><h3 id="服务器可以按照优先级推送资源。"><a href="#服务器可以按照优先级推送资源。" class="headerlink" title="服务器可以按照优先级推送资源。"></a>服务器可以按照优先级推送资源。</h3></li>
+<li><h3 id="首部压缩"><a href="#首部压缩" class="headerlink" title="首部压缩:"></a>首部压缩:</h3><p>在 HTTP1.1 中，每次请求或者响应都会发送一组首部信息，同时这些信息都是以文本形式发送，如果带有 cookie 信息的话，那么发送首部信息就是一份相当大的额外开销。为减少这些开销并提升性能，HTTP2 会压缩首部元数据，HTTP2 在客户端和服务器端使用“首部表”来跟踪和存储之前发送的键/值对，对于相同的数据，不再通过每次请求和响应发送，首部表在 HTTP2 的连接存续期内始终存在，由客户端和服务器共同渐进地更新。<br><img src="http://www.softwhy.com/data/attachment/portal/201710/16/033703znauwpwrlnohwkpn.png" alt=""></p>
+</li>
+</ul>
+<h3 id="http1-的一个问题"><a href="#http1-的一个问题" class="headerlink" title="http1 的一个问题"></a><a href="https://stackoverflow.com/questions/45583861/how-does-http2-solve-head-of-line-blocking-hol-issue" target="_blank" rel="noopener">http1 的一个问题</a></h3>
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 hello2dj (dj_amazing@sina.com)
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

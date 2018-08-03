@@ -1,0 +1,147 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>为什么不要使用setInterval? | hello2dj | if you can&#39;t explain it simply, you don&#39;t understand it well enough</title>
+
+  
+  <meta name="author" content="hello2dj (dj_amazing@sina.com)">
+  
+
+  
+  <meta name="description" content="每个人都是带着棱角来到世上，只有磨平棱角才能走的更远">
+  
+
+  
+  
+  <meta name="keywords" content="js">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="为什么不要使用setInterval?"/>
+
+  <meta property="og:site_name" content="hello2dj"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="hello2dj" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">hello2dj</a>
+    </h1>
+    <p class="site-description">if you can&#39;t explain it simply, you don&#39;t understand it well enough</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/categories">Categories</a></li>
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>为什么不要使用setInterval?</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/04/02/why-not-use-setinterval/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-04-01T16:00:00.000Z">
+          2018-04-02
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <blockquote>
+<p>最近我遇到了一个情况，就是需要在一个特定的时间间隔后调用一个函数。好比说每隔十秒就发送一个 ajax 请求。显然，最好的选项似乎是 setInterval, 但是我被分分钟搞得灰头土脸。</p>
+</blockquote>
+<p>为了了解为甚么 setInterval 是邪恶的，那么我们得先搞清楚一个事实那就是 js 是单线程的，也就是同一时间只能执行一个操作。</p>
+<p>如果我们的函数的执行时间都比咱么的延时时间还长（好比 ajax call）, 我们就会发现我们的 setInterval 就不会准时触发了，事实上 js 的定时器就是这么无奈，他的定时总是不准时。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">const fakeCallToServer = () &#123;</span><br><span class="line">    setTimeou(() =&gt; &#123;</span><br><span class="line">        console.log(&apos;returning from server&apos;, new Date().toLocaleTimeString());</span><br><span class="line">    &#125;, 4000)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">setInterval(function()&#123;</span><br><span class="line"></span><br><span class="line">    let insideSetInterval = new Date().toLocaleTimeString();</span><br><span class="line"></span><br><span class="line">    console.log(&apos;insideSetInterval&apos;, insideSetInterval);</span><br><span class="line"></span><br><span class="line">    fakeCallToServer();</span><br><span class="line">&#125;, 2000);</span><br><span class="line"></span><br><span class="line">//insideSetInterval 14:13:47</span><br><span class="line">//insideSetInterval 14:13:49</span><br><span class="line">//insideSetInterval 14:13:51</span><br><span class="line">//returning from server 14:13:51</span><br><span class="line">//insideSetInterval 14:13:53</span><br><span class="line">//returning from server 14:13:53</span><br><span class="line">//insideSetInterval 14:13:55</span><br><span class="line">//returning from server 14:13:55</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>尝试一下上面的代码</p>
+</blockquote>
+<p>就像你看到的一样 setInterval 中的 console.log 一直在输出 ajax calls, 根本就不会理会之前的请求是否返回或是其他的情况。这样就会在后端 server 囤积大量的请求。</p>
+<p>现在咱们再来试试同步操作：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">var counter = 0;</span><br><span class="line"></span><br><span class="line">var fakeTimeIntensiveOperation = function() &#123;</span><br><span class="line"></span><br><span class="line">    for(var i =0; i&lt; 50000000; i++) &#123;</span><br><span class="line">        document.getElementById(&apos;random&apos;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    let insideTimeTakingFunction  = new Date().toLocaleTimeString();</span><br><span class="line"></span><br><span class="line">    console.log(&apos;insideTimeTakingFunction&apos;, insideTimeTakingFunction);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">var timer = setInterval(function()&#123;</span><br><span class="line"></span><br><span class="line">    let insideSetInterval = new Date().toLocaleTimeString();</span><br><span class="line"></span><br><span class="line">    console.log(&apos;insideSetInterval&apos;, insideSetInterval);</span><br><span class="line"></span><br><span class="line">    counter++;</span><br><span class="line">    if(counter == 1)&#123;</span><br><span class="line">        fakeTimeIntensiveOperation();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    if (counter &gt;= 5) &#123;</span><br><span class="line">       clearInterval(timer);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;, 1000);</span><br><span class="line"></span><br><span class="line">//insideSetInterval 13:50:53</span><br><span class="line">//insideTimeTakingFunction 13:50:55</span><br><span class="line">//insideSetInterval 13:50:55 &lt;---- not called after 1s</span><br><span class="line">//insideSetInterval 13:50:56</span><br><span class="line">//insideSetInterval 13:50:57</span><br><span class="line">//insideSetInterval 13:50:58</span><br></pre></td></tr></table></figure>
+<p>可以很明显的看到，当 setInterval 遇到了 cpu 敏感的操作时，setInterval 就完全乱了节奏。</p>
+<h3 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h3><p>异步操作时，setInterval 有可能会堆积很多的异步操作，而同步操作则会打乱 setInterval 的节奏。并且当函数报错时 setInterval 也是不会停止的，但其实可以使用 clearInterval 在停止 setInterval。我们可以使用 setTimeout 递归调用来模拟 setInterval 这可以让我们更好的控制代码。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/js/">js</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 hello2dj (dj_amazing@sina.com)
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

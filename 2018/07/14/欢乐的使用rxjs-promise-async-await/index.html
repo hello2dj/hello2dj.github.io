@@ -1,0 +1,150 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>欢乐的使用rxjs-promise-async-await | hello2dj | if you can&#39;t explain it simply, you don&#39;t understand it well enough</title>
+
+  
+  <meta name="author" content="hello2dj (dj_amazing@sina.com)">
+  
+
+  
+  <meta name="description" content="每个人都是带着棱角来到世上，只有磨平棱角才能走的更远">
+  
+
+  
+  
+  <meta name="keywords" content="rxjs,reactive programming,Ben Lesh(原文作者)">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="欢乐的使用rxjs-promise-async-await"/>
+
+  <meta property="og:site_name" content="hello2dj"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="hello2dj" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">hello2dj</a>
+    </h1>
+    <p class="site-description">if you can&#39;t explain it simply, you don&#39;t understand it well enough</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/categories">Categories</a></li>
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>欢乐的使用rxjs-promise-async-await</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/07/14/欢乐的使用rxjs-promise-async-await/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-07-14T13:00:30.101Z">
+          2018-07-14
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>先上图：<br><img src="https://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/02/1455228348streams.png" alt=""></p>
+<p><a href="https://medium.com/@benlesh/rxjs-observable-interop-with-promises-and-async-await-bebb05306875" target="_blank" rel="noopener">原文地址(english, 需翻墙)</a></p>
+<h3 id="Rxjs-observable和promise以及Async-Await的互相操作"><a href="#Rxjs-observable和promise以及Async-Await的互相操作" class="headerlink" title="Rxjs observable和promise以及Async-Await的互相操作"></a>Rxjs observable和promise以及Async-Await的互相操作</h3><p>无论何时我都会被问到一个问题那就是如何再使用rxjs的时候使用promise和async和await呢？或者什么时候不能混合使用？我也说过几个不要同时使用的栗子。rxjs从一开始就可以很好的和promise一起使用。希望这篇文章能够很好的阐述一下。</p>
+<h3 id="如果他接受Observable-那么他就可以接受promise"><a href="#如果他接受Observable-那么他就可以接受promise" class="headerlink" title="如果他接受Observable, 那么他就可以接受promise"></a>如果他接受Observable, 那么他就可以接受promise</h3><p>举个栗子，假如你在使用switchMap, 那么你就可以像返回一个Observable一样返回一个Promise。就像下面这样 <a href="http://jsbin.com/xevozit/edit?js,console" target="_blank" rel="noopener">jsbin</a>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">// An observable that emits 10 multiples of 100 every 1 second</span><br><span class="line">const source$ = Observable.interval(1000)</span><br><span class="line">  .take(10)</span><br><span class="line">  .map(x =&gt; x * 100);</span><br><span class="line">/**</span><br><span class="line"> * returns a promise that waits `ms` milliseconds and emits &quot;done&quot;</span><br><span class="line"> */</span><br><span class="line">function promiseDelay(ms) &#123;</span><br><span class="line">  return new Promise(resolve =&gt; &#123;</span><br><span class="line">    setTimeout(() =&gt; resolve(&apos;done&apos;), ms);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// using it in a switchMap</span><br><span class="line">source$.switchMap(x =&gt; promiseDelay(x)) // works</span><br><span class="line">  .subscribe(x =&gt; console.log(x)); </span><br><span class="line"></span><br><span class="line">source$.switchMap(promiseDelay) // just a little more terse</span><br><span class="line">  .subscribe(x =&gt; console.log(x)); </span><br><span class="line"></span><br><span class="line">// or takeUntil</span><br><span class="line">source$.takeUntil(doAsyncThing(&apos;hi&apos;)) // totally works</span><br><span class="line">  .subscribe(x =&gt; console.log(x))</span><br><span class="line"></span><br><span class="line">// or weird stuff you want to do like</span><br><span class="line">Observable.of(promiseDelay(100), promiseDelay(10000)).mergeAll()</span><br><span class="line">  .subscribe(x =&gt; console.log(x))</span><br></pre></td></tr></table></figure></p>
+<p>经验证确实工作的很好</p>
+<h3 id="使用defer函数可以让返回promise的函数可以重新执行化"><a href="#使用defer函数可以让返回promise的函数可以重新执行化" class="headerlink" title="使用defer函数可以让返回promise的函数可以重新执行化"></a>使用defer函数可以让返回promise的函数可以重新执行化</h3><p>如果你的函数返回一个promise你可以使用Observable.defer包裹他，就可以使得他在发生错误是可以进行重试<a href="http://jsbin.com/dogabof/edit?js,console" target="_blank" rel="noopener">jsbin</a>。<br>Observable.defer: Returns an observable sequence that invokes the specified factory function whenever a new observer subscribes.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">function getErroringPromise() &#123;</span><br><span class="line">  console.log(&apos;getErroringPromise called&apos;);</span><br><span class="line">  return Promise.reject(new Error(&apos;sad&apos;));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Observable.defer(getErroringPromise)</span><br><span class="line">  .retry(3)</span><br><span class="line">  .subscribe(x =&gt; console.log);</span><br><span class="line"></span><br><span class="line">// logs &quot;getErroringPromise called&quot; 4 times (once + 3 retries), then errors</span><br></pre></td></tr></table></figure></p>
+<p>经验证确实工作的很好</p>
+<h3 id="使用defer来封装async-await"><a href="#使用defer来封装async-await" class="headerlink" title="使用defer来封装async-await"></a>使用defer来封装async-await</h3><p>defer是一个强有力的工具，你也可以用它来封装async-await函数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Observable.defer(async function() &#123;</span><br><span class="line">  const a = await promiseDelay(1000).then(() =&gt; 1);</span><br><span class="line">  const b = a + await promiseDelay(1000).then(() =&gt; 2);</span><br><span class="line">  return a + b + await promiseDelay(1000).then(() =&gt; 3);</span><br><span class="line">&#125;)</span><br><span class="line">.subscribe(x =&gt; console.log(x)) // logs 7</span><br></pre></td></tr></table></figure></p>
+<p>这个没有jsbin尝试失败了呃，因为不支持async-await,估计是我的姿势错了,但我在本地试了ok。</p>
+<h3 id="用forEach订阅一个Observable-然后来创建使用async-await的函数来并发执行任务。"><a href="#用forEach订阅一个Observable-然后来创建使用async-await的函数来并发执行任务。" class="headerlink" title="用forEach订阅一个Observable, 然后来创建使用async-await的函数来并发执行任务。"></a>用forEach订阅一个Observable, 然后来创建使用async-await的函数来并发执行任务。</h3><p>forEach 介绍：<br><img src="/2018/07/14/欢乐的使用rxjs-promise-async-await/forEach.png"><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">const click$ = Observable.fromEvent(button, &apos;clicks&apos;);</span><br><span class="line">/**</span><br><span class="line"> * Waits for 10 clicks of the button</span><br><span class="line"> * then posts a timestamp of the tenth click to an endpoint</span><br><span class="line"> * using fetch</span><br><span class="line"> */</span><br><span class="line">async function doWork() &#123;</span><br><span class="line">  await click$.take(10)</span><br><span class="line">    .forEach((_, i) =&gt; console.log(`click $&#123;i + 1&#125;`));</span><br><span class="line">  return await fetch(</span><br><span class="line">    &apos;notify/tenclicks&apos;,</span><br><span class="line">    &#123; method: &apos;POST&apos;, body: Date.now() &#125;</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>经本地验证很ok</p>
+<h3 id="使用toPromise-和async-await来把最后一个订阅值返回为一个Promise"><a href="#使用toPromise-和async-await来把最后一个订阅值返回为一个Promise" class="headerlink" title="使用toPromise()和async/await来把最后一个订阅值返回为一个Promise"></a>使用toPromise()和async/await来把最后一个订阅值返回为一个Promise</h3><p>事实上toPromise比较怪异因为他并不是rxjs规范所定义的操作符，只是我们提供了而已。而且toPromise只会把最后一个值使用promise进行包装，那就意味着，若是Observable一直不触发complete那么这个promise就永远不会resolve。</p>
+<blockquote>
+<p>toPromise是一个反模式，只有在需要promise的时候才使用，不要乱用，比如await<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">const source$ = Observable.interval(1000).take(3); // 0, 1, 2</span><br><span class="line">// waits 3 seconds, then logs &quot;2&quot;.</span><br><span class="line">// because the observable takes 3 seconds to complete, and </span><br><span class="line">// the interval emits incremented numbers starting at 0</span><br><span class="line">async function test() &#123;</span><br><span class="line">  console.log(await source$.toPromise());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<p>经本地验证很ok。</p>
+<h3 id="总结：Observable-和-Promise能很好的一起使用"><a href="#总结：Observable-和-Promise能很好的一起使用" class="headerlink" title="总结：Observable 和 Promise能很好的一起使用"></a>总结：Observable 和 Promise能很好的一起使用</h3><p>基本上如果你的目的就是active programming那么就应当使用Rxjs.Observable。但为了符合人体工程学，我们还是提供了和Promise的互操作，谁让他这么流行呢！其实当我们在async/await中使用forEach的是后会带来更多的可能性。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/rxjs/">rxjs</a><a href="/tags/reactive-programming/">reactive programming</a><a href="/tags/Ben-Lesh-原文作者/">Ben Lesh(原文作者)</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 hello2dj (dj_amazing@sina.com)
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

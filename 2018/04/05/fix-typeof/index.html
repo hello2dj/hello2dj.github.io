@@ -1,0 +1,234 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Object.prototype.toString是什么鬼？ | hello2dj | if you can&#39;t explain it simply, you don&#39;t understand it well enough</title>
+
+  
+  <meta name="author" content="hello2dj (dj_amazing@sina.com)">
+  
+
+  
+  <meta name="description" content="每个人都是带着棱角来到世上，只有磨平棱角才能走的更远">
+  
+
+  
+  
+  <meta name="keywords" content="js">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="Object.prototype.toString是什么鬼？"/>
+
+  <meta property="og:site_name" content="hello2dj"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="hello2dj" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">hello2dj</a>
+    </h1>
+    <p class="site-description">if you can&#39;t explain it simply, you don&#39;t understand it well enough</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/categories">Categories</a></li>
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>Object.prototype.toString是什么鬼？</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/04/05/fix-typeof/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-04-04T16:00:00.000Z">
+          2018-04-05
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h3 id="发生了什么问题：类型的判断"><a href="#发生了什么问题：类型的判断" class="headerlink" title="发生了什么问题：类型的判断"></a>发生了什么问题：类型的判断</h3><p>我想判断一个变量 a 是什么类型，那么我们会怎么做? typeof a? ok，我们来看看</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">let a = 2;</span><br><span class="line">typeof a; // &apos;number&apos;</span><br><span class="line"></span><br><span class="line">let c = &apos;as&apos;;</span><br><span class="line">typeof c; // &apos;string&apos;</span><br></pre></td></tr></table></figure>
+<p>嗯 ：），看着不错哦！似乎我们是解决了，可惜啊，让我们来看一张表</p>
+<table>
+<thead>
+<tr>
+<th>Type of val</th>
+<th style="text-align:center">result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Undefined</td>
+<td style="text-align:center">“undefined“</td>
+</tr>
+<tr>
+<td>Null</td>
+<td style="text-align:center">“object“</td>
+</tr>
+<tr>
+<td>Boolean</td>
+<td style="text-align:center">“boolean“</td>
+</tr>
+<tr>
+<td>Number</td>
+<td style="text-align:center">“number“</td>
+</tr>
+<tr>
+<td>NaN</td>
+<td style="text-align:center">“object“</td>
+</tr>
+<tr>
+<td>String</td>
+<td style="text-align:center">“string“</td>
+</tr>
+<tr>
+<td>Object (native and not callable)</td>
+<td style="text-align:center">“object“</td>
+</tr>
+<tr>
+<td>Object (native or host and callable)</td>
+<td style="text-align:center">“function“</td>
+</tr>
+<tr>
+<td>Object (host and not callable)</td>
+<td style="text-align:center">不同实现有不同表现</td>
+</tr>
+</tbody>
+</table>
+<p>额 ：（ 看完是不是就有一丝丝不高兴了，因为他并不是很好，因为有些类型他也没办法区分比如 null, Array 他都识别为对象了，不高兴啊！总之在 js 里面进行类型判断是一件很不爽的事情，不像 java 和 golang 这种强类型的语言，他们总是有很明确的方法来判断自己是啥类型因为他们都有自己的反射机制。</p>
+<h3 id="有没有更好的办法呢：-class"><a href="#有没有更好的办法呢：-class" class="headerlink" title="有没有更好的办法呢：[[class]]"></a>有没有更好的办法呢：[[class]]</h3><p>[[class]]是什么呢？ es5 规范里面规定的所有的 js 对象都有的一个内部属性（es 规范使用[[]]表示内部属性），用来表明对象分类的字符串属性，就是说他是用来表示对象类型。对于我们来说，这意味着，所有的内置对象类型都有一个唯一的不可修改的，规范强制规定的值，很明显要是咱们能拿到这个值，对象类型识别问题就解决了。。。</p>
+<p>此时 Object.prototype.toString 就要登场了。让我们看看 <a href="http://lzw.me/pages/ecmascript/#304" target="_blank" rel="noopener">es5 规范</a>里对于他的描述</p>
+<ol>
+<li>如果 this 的值是 undefined, 返回 “[object Undefined]”.</li>
+<li>如果 this 的值是 null, 返回 “[object Null]”.</li>
+<li>令 O 为以 this 作为参数调用 ToObject 的结果 .</li>
+<li>令 class 为 O 的 [[Class]] 内部属性的值 .</li>
+<li>返回三个字符串 “[object “, class, and “]” 连起来的字符串 .</li>
+</ol>
+<blockquote>
+<p>ToObject 就是把 this 转换为对象，比如 4-&gt; Number, ‘’ -&gt; String 等等</p>
+</blockquote>
+<p>简单描述一下就是 toString 的调用会返回如下的格式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[object [[class]]]</span><br></pre></td></tr></table></figure>
+<p>看到没，通过他就可以拿到对象的内部[[class]]属性了。但这是时候有人就会说了，你瞅瞅下面的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[1,2,3].toString(); //&quot;1, 2, 3&quot;</span><br><span class="line"></span><br><span class="line">(new Date).toString(); //&quot;Sat Aug 06 2011 16:29:13 GMT-0700 (PDT)&quot;</span><br><span class="line"></span><br><span class="line">/a-z/.toString(); //&quot;/a-z/&quot;</span><br></pre></td></tr></table></figure>
+<p>你看，你看，还是不行啊！</p>
+<p>上面现象的原因在于，打部分的内置对象都重写了 Object.prototype.toString 函数。比如<a href="http://lzw.me/pages/ecmascript/#426" target="_blank" rel="noopener">Number</a>。</p>
+<p>显然直接调用时不行的，但<strong>坏就坏在我们在用 js, 好也好在我们在用 js</strong>, 估计大家都想到了，我们还有两个方法 call 和 apply， 如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Object.prototype.toString.call([1,2,3]); //&quot;[object Array]&quot;</span><br><span class="line"></span><br><span class="line">Object.prototype.toString.call(new Date); //&quot;[object Date]&quot;</span><br><span class="line"></span><br><span class="line">Object.prototype.toString.call(/a-z/); //&quot;[object RegExp]&quot;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>js 这门语言本身就积累了太多的弊端了，好<strong>好在用的人多，坏也坏在用的人多</strong> 用的人多语言本身才能发展的好，用的人多反而也会让 js 本身的发展瞻前顾后，就好比 c++似的。就 cs 发展到现在，我觉得其实是需要新的 GUI 语言的出现或者说专注于 application 的语言，比如我最近看了 Dart 就不错，语法合适，没有很多奇怪的问题，可惜也没有太好的发展，这个可以再开一篇来讲了。（劣币驱逐良币么？）</p>
+</blockquote>
+<h3 id="更好的-class-获取封装"><a href="#更好的-class-获取封装" class="headerlink" title="更好的[[class]]获取封装"></a>更好的[[class]]获取封装</h3><p>来，咱们封装一个 toType 吧！</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">const toType = function(obj) &#123;</span><br><span class="line">  return (&#123;&#125;).toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>为什么要用({}).toString.call,在我看了就是少写几个字符而已，但其实若是我调用 toType 的次数太多，({})这种方式我觉得也不行啊，因为每次调用都要再创建一个对象啊！</p>
+</blockquote>
+<p>我们来试试这个函数吧</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">toType(&#123;a: 4&#125;); //&quot;object&quot;</span><br><span class="line">toType([1, 2, 3]); //&quot;array&quot;</span><br><span class="line">(function() &#123;console.log(toType(arguments))&#125;)(); //arguments</span><br><span class="line">toType(new ReferenceError); //&quot;error&quot;</span><br><span class="line">toType(new Date); //&quot;date&quot;</span><br><span class="line">toType(/a-z/); //&quot;regexp&quot;</span><br><span class="line">toType(Math); //&quot;math&quot;</span><br><span class="line">toType(JSON); //&quot;json&quot;</span><br><span class="line">toType(new Number(4)); //&quot;number&quot;</span><br><span class="line">toType(new String(&quot;abc&quot;)); //&quot;string&quot;</span><br><span class="line">toType(new Boolean(true)); //&quot;boolean&quot;</span><br></pre></td></tr></table></figure>
+<p>我们再来看看 typeof</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">typeof &#123;a: 4&#125;; //&quot;object&quot;</span><br><span class="line">typeof [1, 2, 3]; //&quot;object&quot;</span><br><span class="line">(function() &#123;console.log(typeof arguments)&#125;)(); //object</span><br><span class="line">typeof new ReferenceError; //&quot;object&quot;</span><br><span class="line">typeof new Date; //&quot;object&quot;</span><br><span class="line">typeof /a-z/; //&quot;object&quot;</span><br><span class="line">typeof Math; //&quot;object&quot;</span><br><span class="line">typeof JSON; //&quot;object&quot;</span><br><span class="line">typeof new Number(4); //&quot;object&quot;</span><br><span class="line">typeof new String(&quot;abc&quot;); //&quot;object&quot;</span><br><span class="line">typeof new Boolean(true); //&quot;object&quot;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>其实 typeof 也可以用函数调用的方法来书写， typeof(a)，大家可以试试是 ok 的。</p>
+</blockquote>
+<h3 id="那么-instanceof-呢？"><a href="#那么-instanceof-呢？" class="headerlink" title="那么 instanceof 呢？"></a>那么 instanceof 呢？</h3><p>instanceof 又是什么呢？简单的说是用来测试一个对象是否是一个类的是实例（按照面向对象的说法）。他的实现方式是检测第二个输入参数的 prototype 是否在第一个输入参数的原型链上出现过(第二个参数必须是一个 constructor)，比如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">let a = [1,2,3];</span><br><span class="line">a.__proto__; // []</span><br><span class="line">Array.prototype; // []和上面的那个是同一个对象</span><br><span class="line">a instanceof Array; // true</span><br><span class="line"></span><br><span class="line">a.__proto__ = &#123;&#125;</span><br><span class="line">a instanceof Array; // false</span><br></pre></td></tr></table></figure>
+<p>有几个关于 instanceof 的点需要我们注意</p>
+<ol>
+<li>有一些内置对象是没有相应的 constructor 的，比如 Math, JSON and arguments, 因此他们是没办法使用 instanceof 的</li>
+<li>当我们使用 iframe 的时候，就会产生多个上下文，此时就没办法保证 instanceof 的准确行了</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">const iFrame = document.createElement(&apos;IFRAME&apos;);</span><br><span class="line">document.body.appendChild(iFrame);</span><br><span class="line"></span><br><span class="line">const IFrameArray = window.frames[1].Array;</span><br><span class="line">const array = new IFrameArray();</span><br><span class="line"></span><br><span class="line">array instanceof Array; //false</span><br><span class="line">array instanceof IFrameArray; //true;</span><br></pre></td></tr></table></figure>
+<h3 id="在-node-里面就应该到此为止了，但是对于浏览器来说还没有结束呢！因为不同的浏览器还有各自的宿主对象呢？"><a href="#在-node-里面就应该到此为止了，但是对于浏览器来说还没有结束呢！因为不同的浏览器还有各自的宿主对象呢？" class="headerlink" title="在 node 里面就应该到此为止了，但是对于浏览器来说还没有结束呢！因为不同的浏览器还有各自的宿主对象呢？"></a>在 node 里面就应该到此为止了，但是对于浏览器来说还没有结束呢！因为不同的浏览器还有各自的宿主对象呢？</h3><p>很可惜的是我们的 toType 对他们并不管用：（, 比如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">toType(window);</span><br><span class="line">//&quot;global&quot; (Chrome) &quot;domwindow&quot; (Safari) &quot;window&quot; (FF/IE9) &quot;object&quot; (IE7/IE8)</span><br><span class="line"></span><br><span class="line">toType(document);</span><br><span class="line">//&quot;htmldocument&quot; (Chrome/FF/Safari) &quot;document&quot; (IE9) &quot;object&quot; (IE7/IE8)</span><br><span class="line"></span><br><span class="line">toType(document.createElement(&apos;a&apos;));</span><br><span class="line">//&quot;htmlanchorelement&quot; (Chrome/FF/Safari/IE) &quot;object&quot; (IE7/IE8)</span><br><span class="line"></span><br><span class="line">toType(alert);</span><br><span class="line">//&quot;function&quot; (Chrome/FF/Safari/IE9) &quot;object&quot; (IE7/IE8)</span><br></pre></td></tr></table></figure>
+<p>其实对于 Dom 对象来说使用 nodeType 来判断是最好的了，兼容性也 ok。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">function isElement(obj) &#123;</span><br><span class="line">  return obj.nodeType;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>但这其实是一个 duck-typing, 因此也是没有保证的。</p>
+</blockquote>
+<h3 id="到此总结一下"><a href="#到此总结一下" class="headerlink" title="到此总结一下"></a>到此总结一下</h3><p>即使我们做了上面那么多的是事情依然不能够保证完美，因为 js 太灵活了。比如我们可以重写了 Object.prototype.toString 的实现，那么我们所提供的稍微靠谱的解决方案就 GG 了，因此我们最好不要随意去重写原生的 prototype 的方法。请避免把 toType 用到 host object 的判断以及要检查是否传入了未定义的变量。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/js/">js</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 hello2dj (dj_amazing@sina.com)
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

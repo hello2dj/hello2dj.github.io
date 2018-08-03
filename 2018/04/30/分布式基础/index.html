@@ -1,0 +1,216 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>分布式基础 | hello2dj | if you can&#39;t explain it simply, you don&#39;t understand it well enough</title>
+
+  
+  <meta name="author" content="hello2dj (dj_amazing@sina.com)">
+  
+
+  
+  <meta name="description" content="每个人都是带着棱角来到世上，只有磨平棱角才能走的更远">
+  
+
+  
+  
+  <meta name="keywords" content="">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="分布式基础"/>
+
+  <meta property="og:site_name" content="hello2dj"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="hello2dj" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">hello2dj</a>
+    </h1>
+    <p class="site-description">if you can&#39;t explain it simply, you don&#39;t understand it well enough</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/categories">Categories</a></li>
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>分布式基础</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/04/30/分布式基础/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-04-29T16:00:00.000Z">
+          2018-04-30
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h3 id="分布式的三个状态"><a href="#分布式的三个状态" class="headerlink" title="分布式的三个状态"></a>分布式的三个状态</h3><ol>
+<li>成功</li>
+<li>失败</li>
+<li>超时(未响应)<ol>
+<li>当超时了可以发起读数据操作，验证是否成功，就好比银行转账，转失败了，他会让你去看看是否成功了，避免多次操作</li>
+<li>操作幂等则可以发起重试操作</li>
+</ol>
+</li>
+</ol>
+<h3 id="tcp-不可靠就是说网络不可靠"><a href="#tcp-不可靠就是说网络不可靠" class="headerlink" title="tcp 不可靠就是说网络不可靠"></a>tcp 不可靠就是说网络不可靠</h3><ol>
+<li>应用程序的消息发给 tcp 协议栈，宕机了，消息没法出去，可是对于应用程序来说它认为消息是发出去了的。</li>
+</ol>
+<h3 id="异常处理黄金原则-任何在设计阶段考虑到的情况都会在实际系统中发生；在实际运行中发生的异常反而没有在设计阶段想到。因此不要放过，设计阶段想到的任何异常。"><a href="#异常处理黄金原则-任何在设计阶段考虑到的情况都会在实际系统中发生；在实际运行中发生的异常反而没有在设计阶段想到。因此不要放过，设计阶段想到的任何异常。" class="headerlink" title="异常处理黄金原则: 任何在设计阶段考虑到的情况都会在实际系统中发生；在实际运行中发生的异常反而没有在设计阶段想到。因此不要放过，设计阶段想到的任何异常。"></a>异常处理黄金原则: 任何在设计阶段考虑到的情况都会在实际系统中发生；在实际运行中发生的异常反而没有在设计阶段想到。因此不要放过，设计阶段想到的任何异常。</h3><h3 id="副本"><a href="#副本" class="headerlink" title="副本"></a>副本</h3><p>副本(replica/copy)指在分布式系统中为数据或服务提供的冗余。</p>
+<h4 id="副本一致性"><a href="#副本一致性" class="headerlink" title="副本一致性"></a>副本一致性</h4><p>系统通过副本控制协议，是得从系统外部读取内部各个副本的数据在一定条件下，读到的数据相同称之为副本一致性(consistency)。</p>
+<ol>
+<li>强一致性(strong consistency) 无论怎么读都 ok</li>
+<li>单调一致性(monotonic consistency)：任何时刻，任何用户一旦读到某个数据在某次更新后的数据，这个用户就不会再读到比这个值更旧的值。单调一致性弱于强一致性。确实非常实用的一种一致性。因为通常来说，用户只关心自己读到的数据，而不会关心其他人的情况。</li>
+<li>会话一致性(session consistency)：任何用户在某一次会话内一旦读到某个数据某次更新后的值，在此次会话中就不会再读到比这个值更旧的值。这个一致性比单调一致性再稍弱一些。会话一致性只保护了单个用户在单次会话内的数据一致性，不同永不不同会话之间的一致性没有保障。例如 php 中的 session 概念。可以将数据版本号等信息保存在 session 中，读取数据时验证副本的版本号，只读取版本号大于等于 session 中版本号的副本，从而实现会话一致性</li>
+<li>最终一致性(eventual consistency)：就是一旦更新了数据，各个副本最终将达到完全一致。若用户在一个副本上一直读取可以达到类似单调一致性的效果，但若是换个副本去读取就无法保证了。</li>
+<li>弱一致性(week consistency)：一旦某个更新成功，用户无法在一个确定时间内读到这次更新的 值，且即使在某个副本上读到了新的值，也不能保证在其他副本上可以读到新的值。弱一致性系统 一般很难在实际中使用，使用弱一致性系统需要应用方做更多的工作从而使得系统可用。</li>
+</ol>
+<h3 id="衡量分布式系统的指标"><a href="#衡量分布式系统的指标" class="headerlink" title="衡量分布式系统的指标"></a>衡量分布式系统的指标</h3><ol>
+<li>性能</li>
+</ol>
+<ul>
+<li>系统的吞吐能力，指系统在某一时间可以处理的数据总量，通常可以用系统每秒处理的总的数据量来衡量;</li>
+<li>系统的响应延迟，指系统完成某一功能需要使用的时间;</li>
+<li>系统的并发能力，指系统可以同时完成某一功能的能力，通常 也用 QPS(query per second)来衡量。上述三个性能指标往往会相互制约，追求高吞吐的系统，往往 很难做到低延迟;系统平均响应时间较长时，也很难提高 QPS</li>
+</ul>
+<ol start="2">
+<li>可用性</li>
+<li>可扩展性</li>
+<li>一致性</li>
+</ol>
+<h3 id="分布式系统原理"><a href="#分布式系统原理" class="headerlink" title="分布式系统原理"></a>分布式系统原理</h3><h4 id="数据分布方式"><a href="#数据分布方式" class="headerlink" title="数据分布方式"></a>数据分布方式</h4><ol>
+<li><p>哈希方式</p>
+<ul>
+<li>缺点：1.哈希分布数据的缺点同样明显，突出表现为可扩展性不高，一旦集群规模需要扩展，则几乎所 有的数据需要被迁移并重新分布，因为所有的数据都需要再次进行哈希，而哈希的结果则有可能就不同了。工程中，扩展哈希分布数据的系统时，往往使得集群规模成倍扩 展，按照数据重新计算哈希，这样原本一台机器上的数据只需迁移一半到另一台对应的机器上即可 完成扩展。2.哈希分布数据的另一个缺点是，一旦某数据特征值的数据严重不均，容易出现“数据倾斜”(data skew)问题。导致某些机器上的数据过多</li>
+</ul>
+</li>
+<li><p>按数据范围分布，比如用户 id[0-100],30 个一分区，工程中，为了数据迁移等负载均衡操作的方便， 往往利用动态划分区间的技术，使得每个区间中服务的数据量尽量的一样多。一般的，往往需要使用专门的服务器在内存中维护数据分布信息， 称这种数据的分布信息为一种元信息。实际工程中，一般也不按照某一维度划分数据范围，而是使用全部数据划分范围，从而避免数 据倾斜的问题。</p>
+</li>
+<li>按数据量分布，就是把固定大小的数据放在一起，好比 linux 中的 page，一个 page 一管理</li>
+<li>一致性哈希，一致性哈希的基本方式是使用一个哈希函数计算数据或数据特征的哈希值，令该哈希函数的输出值域为一个封闭的环，即哈希 函数输出的最大值是最小值的前序。将节点随机分布到这个环上，每个节点负责处理从自己开始顺 时针至下一个节点的全部哈希值域上的数据。一致性哈希 的优点在于可以任意动态添加、删除节点，每次添加、删除一个节点仅影响一致性哈希环上相邻的 节点。</li>
+</ol>
+<p>为此一种常见的改进算法是引入虚节点(virtual node)的概念，系统初始时就创建许多虚节点， 虚节点的个数一般远大于未来集群中机器的个数，将虚节点均匀分布到一致性哈希值域环上，其功能与基本一致性哈希算法中的节点相同。为每个节点分配若干虚节点。操作数据时，首先通过数据 的哈希值在环上找到对应的虚节点，进而查找元数据找到对应的真实节点。使用虚节点改进有多个 优点。首先，一旦某个节点不可用，该节点将使得多个虚节点不可用，从而使得多个相邻的真实节 点负载失效节点的压里。同理，一旦加入一个新节点，可以分配多个虚节点，从而使得新节点可以 负载多个原有节点的压力，从全局看，较容易实现扩容时的负载均衡。(原理是增加很多的虚拟节点，再将虚拟节点对应到真实节点<a href="http://blog.csdn.net/bluishglc/article/details/52847591" target="_blank" rel="noopener">参见</a>)</p>
+<h4 id="副本与数据分布"><a href="#副本与数据分布" class="headerlink" title="副本与数据分布"></a>副本与数据分布</h4><ol>
+<li>以机器为单位进行数据冗余，就是有 a,b,c 三台机器，b,c 分别有 a 的全量数据，但是有缺点 1.宕机恢复，若 b 挂了，就得从 a，或 c 进行全量数据同步，效率低下。2.b 挂了以后，a，c 的负载就高了，b 的负载就全到了 a,c 上了</li>
+<li>以数据块为单位进行数据冗余，将数据拆为较合理的数据段，以数据段为单位作为副本。实践中，常常使得每个数据段的大小尽量相等且控制在一定的大小以内。数据段有很多不同的称谓，segment，fragment，chunk，partition 等等。以数据段为单位的副本一旦副本分布与机器无关，数据丢失后的恢复效率将非常高，可以同时从多太物理机 copy 数据。工程中，完全按照数据段建立副本会引起需要管理的元数据的开销增大，副本维护的难度也相 应增大。一种折中的做法是将某些数据段组成一个数据段分组，按数据段分组为粒度进行副本管理。 这样做可以将副本粒度控制在一个较为合适的范围内。</li>
+</ol>
+<h4 id="本地化计算-移动数据不如移动计算"><a href="#本地化计算-移动数据不如移动计算" class="headerlink" title="本地化计算 移动数据不如移动计算"></a>本地化计算 <code>移动数据不如移动计算</code></h4><h4 id="基本副本协议"><a href="#基本副本协议" class="headerlink" title="基本副本协议"></a>基本副本协议</h4><ol>
+<li>中心化副本协议<ol>
+<li>primary-secondary 协议 * Primary-secondary 协议的数据更新流程 1. 数据更新都由 primary 节点协调完成。 2. 外部节点将更新操作发给 primary 节点 3. primary 节点进行并发控制即确定并发更新操作的先后顺序 4. primary 节点将更新操作发送给 secondary 节点 5. primary 根据 secondary 节点的完成情况决定更新是否成功并将结果返回外部节点有些系统(例如，GFS)，使用接力的方式同步数据, primary 同步给 secondary1, secondary1 同步给 secondary2</li>
+</ol>
+</li>
+<li>去中心化副本控制协议,与中心化副本系统协议最大的不同是，去中心化副本控制协议没有中心节点，协议中所有的节点都是完全对等的，节点之间通过平等协商 达到一致</li>
+</ol>
+<h3 id="Lease-机制-租赁机制"><a href="#Lease-机制-租赁机制" class="headerlink" title="Lease 机制 (租赁机制)"></a>Lease 机制 (租赁机制)</h3><p>lease 机 制最重要的应用:判定节点状态。</p>
+<h4 id="基于-lease-的分布式-cache-系统"><a href="#基于-lease-的分布式-cache-系统" class="headerlink" title="基于 lease 的分布式 cache 系统"></a>基于 lease 的分布式 cache 系统</h4><p>基本的问题背景如下:在一个分布式系统中，有一个中心服务器节点，中心服务器存储、维护 着一些数据，这些数据是系统的元数据。系统中其他的节点通过访问中心服务器节点读取、修改其 上的元数据。由于系统中各种操作都依赖于元数据，如果每次读取元数据的操作都访问中心服务器 节点，那么中心服务器节点的性能成为系统的瓶颈。为此，设计一种元数据 cache，在各个节点上 cache 元数据信息，从而减少对中心服务器节点的访问，提高性能。另一方面，系统的正确运行严 格依赖于元数据的正确，这就要求各个节点上 cache 的数据始终与中心服务器上的数据一致，cache 中的数据不能是旧的脏数据。最后，设计的 cache 系统要能最大可能的处理节点宕机、网络中断等 异常，最大程度的提高系统的可用性。</p>
+<h4 id="lease-cache-的实现原理"><a href="#lease-cache-的实现原理" class="headerlink" title="lease cache 的实现原理"></a>lease cache 的实现原理</h4><ol>
+<li><p>首先假设中心服务器与节点之间的时间同步。中心服务器向 cache 节点发送数据的同时下发一个 lease,每个 lease 都一个过期时间，并且这个过期时间是一个明确的时间点，例如 12：00 一旦过了这个时间，那么所有的缓存数据都将过期，lease 失效。这也意味着 lease 的过期时间与发放时间无关，也就是说有可能节点收到数据时 lease 就已经过期了。中心发出的 lease 的含义是：在 lease 时间内服务器保证不修改数据。</p>
+<ol>
+<li>cache 节点收到 lease 以及数据后，把数据加入 cache，所有的在 lease 时间内的读请求都可以直接返回</li>
+<li>当 lease 到期后，清掉本地缓存，并向中心服务器发出获取数据的请求，此时到 cache 节点的请求都会被阻塞，直到中心服务器返回新的数据以及 lease</li>
+<li>当修改数据时，修改请求发到中心服务器，此时应当等到所有发出的 lease 都过期后，再修改中心服务器，并且再把数据发给 cache 节点。此时若是有 cache 的读请求，应当阻塞</li>
+</ol>
+<p>读流程：判断元数据是否已经处于本地 cache 且 lease 处于有效期内<br>1.1 是:直接返回 cache 中的元数据<br>1.2 否:向中心服务器节点请求读取元数据信息<br>1.2.1 服务器收到读取请求后，返回元数据及一个对应的 lease<br>1.2.2 客户端是否成功收到服务器返回的数据<br>1.2.2.1 失败或超时:退出流程，读取失败，可重试<br>1.2.2.2 成功:将元数据与该元数据的 lease 记录到内存中，返回元数据</p>
+<p>修改流程：</p>
+<ol>
+<li>节点向中心服务器发起修改元数据请求。</li>
+<li>服务器收到修改请求后，阻塞所有新的来自 cache 的读数据请求，即接收读请求，但不返回数据。</li>
+<li>服务器等待所有与该元数据相关的 lease 超时。</li>
+<li>服务器修改元数据并向客户端节点返回修改成功。优化</li>
+<li>中心服务器收到修改请求时，会阻塞所有的新的来自 cache 节点。这么做是为了防止一直在发放 lease, 导致一直无法等到所有的 lease 过期。但是我们可以不阻塞，直接返回新的数据却不发放 lease。</li>
+<li>中心服务器可以不等待，而是主动通知各个 cache 节点数据过期，让 lease 失效，若是所有节点均返回 true，则可以进行更新，若有一个返回 false 则不可以更新。经过这两个优化，则可以大大提高性能，cache 的数据可以随时丢弃，可是副本的数据却不可以丢弃。</li>
+</ol>
+</li>
+</ol>
+<h4 id="lease-机制的分析"><a href="#lease-机制的分析" class="headerlink" title="lease 机制的分析"></a>lease 机制的分析</h4><p>首先给出本文对 lease 的定义:Lease 是由颁发者授予的在某一有效期内的承诺。颁发者一旦发 出 lease，则无论接受方是否收到，也无论后续接收方处于何种状态，只要 lease 不过期，颁发者一 定严守承诺;另一方面，接收方在 lease 的有效期内可以使用颁发者的承诺，但一旦 lease 过期，接 收方一定不能继续使用颁发者的承诺。</p>
+<p>由于 lease 是一种承诺，具体的承诺内容可以非常宽泛，可以是上节的例子中数据的正确性;也 可以是某种权限，例如当需要做并发控制时，同一时刻只给某一个节点颁发 lease，只有持有 lease 的节点才可以修改数据;也可以是某种身份，例如在 primary-secondary(2.2.2 )架构中，给节点颁发 lease，只有持有 lease 的节点才具有 primary 身份。Lease 的承诺的内涵还可以非常宽泛，这里不再 一一列举。</p>
+<p>关于时钟同步问题可以让 client 在申请 lease 时带上自己的时间戳，server 判断若是相差太大就不允许接入</p>
+<h4 id="基于-lease-机制确定节点状态"><a href="#基于-lease-机制确定节点状态" class="headerlink" title="基于 lease 机制确定节点状态"></a>基于 lease 机制确定节点状态</h4><h4 id="分布式主要是-3-点"><a href="#分布式主要是-3-点" class="headerlink" title="分布式主要是 3 点"></a>分布式主要是 3 点</h4><ol>
+<li>节点 – 系统中按照协议完成计算工作的一个逻辑实体，可能是执行某些工作的进程或机器</li>
+<li>网络 – 系统的数据传输通道，用来彼此通信。通信是具有方向性的。</li>
+<li>存储 – 系统中持久化数据的数据库或者文件存储。</li>
+</ol>
+<h4 id="心跳无法解决节点状态问题"><a href="#心跳无法解决节点状态问题" class="headerlink" title="心跳无法解决节点状态问题"></a>心跳无法解决节点状态问题</h4><p>是指分布式系统的状态，点对点的还是可以使用的</p>
+<h4 id="lease-的有效期时间选择"><a href="#lease-的有效期时间选择" class="headerlink" title="lease 的有效期时间选择"></a>lease 的有效期时间选择</h4><p>Lease 的有效期虽然是一个确定的时间点，当颁发者在发布 lease 时通常都是将当前时间加上一 个固定的时长从而计算出 lease 的有效期。如何选择 Lease 的时长在工程实践中是一个值得讨论的问 题。如果 lease 的时长太短，例如 1s，一旦出现网络抖动 lease 很容易丢失，从而造成节点失去 lease， 使得依赖 lease 的服务停止;如果 lease 的时长太大，例如 1 分钟，则一旦接受者异常，颁发者需要 过长的时间收回 lease 承诺。例如，使用 lease 确定节点状态时，若 lease 时间过短，有可能造成网络 瞬断时节点收不到 lease 从而引起服务不稳定，若 lease 时间过长，则一旦某节点宕机异常，需要较 大的时间等待 lease 过期才能发现节点异常。工程中，常选择的 lease 时长是 10 秒级别，这是一个经 过验证的经验值，实践中可以作为参考并综合选择合适的时长。</p>
+<h3 id="一致性种类"><a href="#一致性种类" class="headerlink" title="一致性种类"></a>一致性种类</h3><p>于是就有人提出相对弱一点的一致性模型，这些模型包括：线性一致性，原子一致性，顺序一致性，缓存一致性，静态一致性，处理器一致性，PRAM一致性，释放一致性，因果一致性，TSO一致性，PSO一致性，弱序一致性，本地一致性，连续一致性等等，当然，也包括我们要详细介绍的最终一致性。</p>
+<p><a href="https://pure-earth-7284.herokuapp.com/2016/02/14/talk-about-consistency/" target="_blank" rel="noopener">https://pure-earth-7284.herokuapp.com/2016/02/14/talk-about-consistency/</a></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 hello2dj (dj_amazing@sina.com)
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,1326 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Page 4 | hello2dj | if you can&#39;t explain it simply, you don&#39;t understand it well enough</title>
+
+  
+  <meta name="author" content="hello2dj (dj_amazing@sina.com)">
+  
+
+  
+  <meta name="description" content="每个人都是带着棱角来到世上，只有磨平棱角才能走的更远">
+  
+
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  
+
+  <meta property="og:site_name" content="hello2dj"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="hello2dj" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">hello2dj</a>
+    </h1>
+    <p class="site-description">if you can&#39;t explain it simply, you don&#39;t understand it well enough</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/categories">Categories</a></li>
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/04/06/css-variables/"><span>css 变量(慎重，有大图)</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/04/06/css-variables/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-04-06T02:05:27.000Z">
+          2018-04-06
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p><a href="https://medium.freecodecamp.org/everything-you-need-to-know-about-css-variables-c74d922ea855" target="_blank" rel="noopener">原文地址</a></p>
+<p><img src="https://cdn-images-1.medium.com/max/2000/1*Im5WsB6Y7CubjWRx9hH7Gg.png" alt=""></p>
+<blockquote>
+<p>本文是 CSS Variables 的第一章(<a href="https://gumroad.com/l/lwaUh" target="_blank" rel="noopener">作者的新书</a>)</p>
+</blockquote>
+<p>大多数的语言都有变量，可是 css 里面是没有的（话说 css 是编程语言么？）</p>
+<p>但是像一些 css 预处理器如 sass 等都会提供对变量的支持</p>
+<p>值得高兴的是 css 现在也开始支持变量了(<a href="https://caniuse.com/#search=css%20variables" target="_blank" rel="noopener">can i use</a>)。</p>
+<p>这篇文章里我会介绍一下 css variables 的使用，让我们 css 更利于维护吧！</p>
+<h3 id="我们会学到什么？"><a href="#我们会学到什么？" class="headerlink" title="我们会学到什么？"></a>我们会学到什么？</h3><p>学习基础知识是非常好玩的，尤其是当我们用这些知识构造一个真实的 app。</p>
+<h4 id="Project-1-使用-css-Variables-创建一个可变的组件"><a href="#Project-1-使用-css-Variables-创建一个可变的组件" class="headerlink" title="Project 1: 使用 css Variables 创建一个可变的组件"></a>Project 1: 使用 css Variables 创建一个可变的组件</h4><p><img src="https://cdn-images-1.medium.com/max/1600/1*qElS3I43_SdpdRA8-m2iew.gif" alt=""></p>
+<p><a href="https://codepen.io/ohansemmanuel/full/PQYzvv/" target="_blank" rel="noopener">Codepen</a></p>
+<h4 id="Project2-使用-CSS-Variables-改变主题"><a href="#Project2-使用-CSS-Variables-改变主题" class="headerlink" title="Project2: 使用 CSS Variables 改变主题"></a>Project2: 使用 CSS Variables 改变主题</h4><p><img src="https://cdn-images-1.medium.com/max/1600/1*r2TrlsC-gWRD5Hu6Tp2gjQ.gif" alt=""></p>
+<p><a href="https://codepen.io/ohansemmanuel/full/xYKgwE/" target="_blank" rel="noopener">Codepen</a></p>
+<h4 id="Project3-创建-CSS-Variable-booth"><a href="#Project3-创建-CSS-Variable-booth" class="headerlink" title="Project3: 创建 CSS Variable booth"></a>Project3: 创建 CSS Variable booth</h4><p><img src="https://cdn-images-1.medium.com/max/1600/1*E6H-wT6a0BDR9OJK7Z0dTA.gif" alt=""></p>
+<p><a href="https://codepen.io/ohansemmanuel/full/EoBLgd/" target="_blank" rel="noopener">Codepen</a></p>
+<h3 id="为什么变量这么重要呢？"><a href="#为什么变量这么重要呢？" class="headerlink" title="为什么变量这么重要呢？"></a>为什么变量这么重要呢？</h3><p>这里有几个原因大家可以一起看看</p>
+<ol>
+<li><p>代码可阅读性增强，这个很明显，不会看到的都是字面量比如 #0f0f0f 等等，而可以看到的是 bg-color</p>
+</li>
+<li><p>修改也变得容易了，好比我们的盒子高度都是 40px，我想都修改为 42px，我就不需要一个一个去改了。。。</p>
+</li>
+<li><p>快速定位错误，你写一堆的 42px, 手一抖写了个 41px 咋办? 还有其他的由于不小心敲错的错误等等。。。</p>
+</li>
+</ol>
+<p>我们可以看到 css variables 的 可读性，可维护性都是很好的。</p>
+<h3 id="定义-css-variables"><a href="#定义-css-variables" class="headerlink" title="定义 css variables"></a>定义 css variables</h3><p>在 css 中 css variables 是以–开头的‘property’, 如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">/* can you spot the variable here ? */</span><br><span class="line">.block &#123;</span><br><span class="line">    color: #8cacea;</span><br><span class="line">    --color: blue;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://cdn-images-1.medium.com/max/1600/0*2Pl5qBF8DCTGL_np.png" alt="CSS Variables are also called “Custom Properties”"></p>
+<h3 id="css-variables-的作用域"><a href="#css-variables-的作用域" class="headerlink" title="css variables 的作用域"></a>css variables 的作用域</h3><p>我们都知道在 js 里面，变量都是有作用域的。在 css 里也是一样的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">:root &#123;</span><br><span class="line">    --main-color: red;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>:root 选择器允许我们指定 DOM 中最顶级的元素或者是 document tree</p>
+<p>因此我们在这个范围指定的 css variables 就是在全局范围内都可以使用的了。<br><img src="https://cdn-images-1.medium.com/max/1600/0*GLjARI5CCGA3xJAx.png" alt="Local and Globally scoped variables"></p>
+<h3 id="举个-🌰1："><a href="#举个-🌰1：" class="headerlink" title="举个 🌰1："></a>举个 🌰1：</h3><p>假设你想创建一个 css variable 来存储主题的主色</p>
+<ol>
+<li>先创建:root 选择器来指定‘全局’变量</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">:root &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>定义变量</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">:root &#123;</span><br><span class="line">    --primary-color: red</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>一定要记住 css variable 必须以‘–’开头 eg: –color</p>
+<h3 id="使用-css-variables"><a href="#使用-css-variables" class="headerlink" title="使用 css variables"></a>使用 css variables</h3><p>一旦一个变量被定义了且初始化了，你就可以使用了。</p>
+<p>这里有一些小陷阱。</p>
+<p>如果你用过 css 预处理器，那么你就知道他们的变量的使用方式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$font-size: 20px;</span><br><span class="line"></span><br><span class="line">.test &#123;</span><br><span class="line">    font-size: $font-size</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但是 css variables 的使用时不同的， 你需要是用 var()来使用变量。如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">:root &#123;</span><br><span class="line">    --font-size: 20px</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.test &#123;</span><br><span class="line">    font-size: var(--font-size, 30px)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>注意其中的第二个参数，是的 var 允许设置默认值，若是–font-size 未定义他就会使用默认值</strong></p>
+<p><img src="https://cdn-images-1.medium.com/max/1600/0*Gv8Nci9VTrJBxpBe.png" alt="Remember to use the var function"></p>
+<p>另一个需要注意的地方是，css variables 不想预处理器里的变量那样，可以用在很多的地方以及进行数学运算，css variables 值允许作为属性值来使用。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">/*this is wrong*/</span><br><span class="line">.margin &#123;</span><br><span class="line">    --side: margin-top;</span><br><span class="line">    var(--side): 20px;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://cdn-images-1.medium.com/max/1600/0*vtIhP9EGm_vTxeio.png" alt="The declaration is thrown away as a syntax error for having an invalid property name"></p>
+<p>你也不可以进行数学运算，除非使用 calc()</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">/*this is wrong*/</span><br><span class="line">.margin &#123;</span><br><span class="line">    --space: 20px * 2;</span><br><span class="line">    font-size: var(--space); // not 40px</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>而应该使用下面这种方式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">.margin &#123;</span><br><span class="line">    --space: calc(20px * 2);</span><br><span class="line">    font-size: var(--space); /*equals 40px*/</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="值得一提的地方"><a href="#值得一提的地方" class="headerlink" title="值得一提的地方"></a>值得一提的地方</h3><p>这里还有一些其他需要值得注意的地方</p>
+<ol>
+<li><h4 id="自定义属性（css-variables）就是普通的属性，因此你可以在任何元素中声明他们可以在-p-section-aside-root-设置伪元素中使用。"><a href="#自定义属性（css-variables）就是普通的属性，因此你可以在任何元素中声明他们可以在-p-section-aside-root-设置伪元素中使用。" class="headerlink" title="自定义属性（css variables）就是普通的属性，因此你可以在任何元素中声明他们可以在 p, section, aside, root 设置伪元素中使用。"></a>自定义属性（css variables）就是普通的属性，因此你可以在任何元素中声明他们可以在 p, section, aside, root 设置伪元素中使用。</h4></li>
+</ol>
+<p><img src="https://cdn-images-1.medium.com/max/1600/0*plpQVof3v3JrzC1P.png" alt="They behave like normal properties"></p>
+<ol start="2">
+<li><h4 id="css-variables-也拥有正常继承和层叠规则就像其他属性似的（例如-color-属性可以被继承似的）"><a href="#css-variables-也拥有正常继承和层叠规则就像其他属性似的（例如-color-属性可以被继承似的）" class="headerlink" title="css variables 也拥有正常继承和层叠规则就像其他属性似的（例如 color 属性可以被继承似的）"></a>css variables 也拥有正常继承和层叠规则就像其他属性似的（例如 color 属性可以被继承似的）</h4></li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">div &#123;</span><br><span class="line">    --color: red;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">div.test &#123;</span><br><span class="line">    color: var(--color);</span><br><span class="line">&#125;</span><br><span class="line">div.ew &#123;</span><br><span class="line">    color: var(--color);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>–color 会被 divs 所继承。<br><img src="https://cdn-images-1.medium.com/max/1600/0*GNSU5IDdk7dx3B8t.png" alt=""></p>
+<ol start="3">
+<li><h4 id="css-variables-也可以使用在媒体查询里面或者其他条件规则"><a href="#css-variables-也可以使用在媒体查询里面或者其他条件规则" class="headerlink" title="css variables 也可以使用在媒体查询里面或者其他条件规则"></a>css variables 也可以使用在媒体查询里面或者其他条件规则</h4>例如</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">:root &#123;</span><br><span class="line">    --gutter: 10px</span><br><span class="line">&#125;</span><br><span class="line">@media screen and (min-width: 768px) &#123;</span><br><span class="line">    --gutter: 30px;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://cdn-images-1.medium.com/max/1600/0*qmsVGjnWjLCKfyvt.png" alt="Useful bit for responsive design"></p>
+<ol start="4">
+<li><h4 id="css-variables-还可以在-html-style-属性里面使用"><a href="#css-variables-还可以在-html-style-属性里面使用" class="headerlink" title="css variables 还可以在 html style 属性里面使用"></a>css variables 还可以在 html style 属性里面使用</h4></li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;!--HTML--&gt;</span><br><span class="line">&lt;html style=&quot;--color: red&quot;&gt;</span><br><span class="line"></span><br><span class="line">&lt;!--CSS--&gt;</span><br><span class="line">body &#123;</span><br><span class="line">  color: var(--color)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://cdn-images-1.medium.com/max/1600/0*EQiFgdDyNBQ1AfDk.png" alt="Set variables inline"><br>还有就是 css variables 是大小写敏感的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">/*these are two different variables*/</span><br><span class="line">:root &#123;</span><br><span class="line"> --color: blue;</span><br><span class="line">--COLOR: red;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="5">
+<li><h4 id="多次声明"><a href="#多次声明" class="headerlink" title="多次声明"></a>多次声明</h4></li>
+</ol>
+<p>多次声明同一个 variable</p>
+<p>如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">/*define the variables*/</span><br><span class="line">:root &#123; --color: blue; &#125;</span><br><span class="line">div &#123; --color: green; &#125;</span><br><span class="line">#alert &#123; --color: red; &#125;</span><br><span class="line"></span><br><span class="line">/*use the variable */</span><br><span class="line">* &#123; color: var(--color); &#125;</span><br></pre></td></tr></table></figure>
+<p>然后看看下面这写元素的颜色吧</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;p&gt;What&apos;s my color?&lt;/p&gt;</span><br><span class="line">&lt;div&gt;and me?&lt;/div&gt;</span><br><span class="line">&lt;div id=&apos;alert&apos;&gt;</span><br><span class="line">  What&apos;s my color too?</span><br><span class="line">  &lt;p&gt;color?&lt;/p&gt;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure>
+<p>第一个 p 的颜色是 blue, 因为 p 没有直接的–color 定义，因此继承了:root 内的–color 定义。</p>
+<p>第一个 div 是绿色的 因为 div 内有直接的–color 定义</p>
+<p>id 是 alert 的 div 是 red，因为#alert 也有直接的–color 定义，按照 css 选择器的权重来看也是 red，因为 id 选择器是仅次于内联 和 important 的, so…</p>
+<p>最后在#alert 里的 p 也是红色的，因为 p 继承了#alert 的–color 属性</p>
+<p><img src="https://cdn-images-1.medium.com/max/1600/1*lGioVJqkKo0N91R9eMvywQ.png" alt="The solution to the Quiz"></p>
+<ol start="6">
+<li><h4 id="循环依赖的解析"><a href="#循环依赖的解析" class="headerlink" title="循环依赖的解析"></a>循环依赖的解析</h4></li>
+</ol>
+<p>看下面</p>
+<ol>
+<li>当一个变量依赖他自己时使用 var()来引用</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">:root &#123;</span><br><span class="line">    --m: var(--m)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">body &#123;</span><br><span class="line">    margin: var(--m)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>当多个变量相互依赖</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">:root &#123;</span><br><span class="line">  --one: calc(var(--two) + 10px);</span><br><span class="line">  --two: calc(var(--one) - 10px);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意千万不要创建循环依赖发，循环依赖是不 ok 的。</p>
+<ol start="7">
+<li><h4 id="使用无效的变量会发什么什么？"><a href="#使用无效的变量会发什么什么？" class="headerlink" title="使用无效的变量会发什么什么？"></a>使用无效的变量会发什么什么？</h4></li>
+</ol>
+<p>语法错误会被丢弃，那么无效的 var()会发生什么？</p>
+<p>看下面：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">:root &#123;</span><br><span class="line">    --color: 20px;</span><br><span class="line">&#125;</span><br><span class="line">p &#123; background-color: red; &#125;</span><br><span class="line">p &#123; background-color: var(--color); &#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://cdn-images-1.medium.com/max/1600/0*fa59XRLGKo5Rsqm4.png" alt=""></p>
+<p>–color 会被替换为 20px, 然而 20px 这个值对于 background-color 是个无效的值，并且他是非继承属性，因此它的值会被设置为 initial: transparent。尴尬了吧。</p>
+<p><img src="https://cdn-images-1.medium.com/max/1600/0*uVic7R1o96n-T1l5.png" alt=""></p>
+<p>接下来高能了，上面那个呢是给设置成了 initial 值，那么要是不用 css 变量直接写个 20px 呢，这个属性会被丢弃的，啥都木有<br><img src="https://cdn-images-1.medium.com/max/1600/0*9HzCVQdyvqeo5dZq.png" alt=""></p>
+<p>可以再 dev-tools 里面验证一下就得到了，直接写错是无效的。</p>
+<blockquote>
+<p>在 chrome65 下验证过了，确实是的</p>
+</blockquote>
+<ol start="8">
+<li><h4 id="设置数值请注意–单一实体"><a href="#设置数值请注意–单一实体" class="headerlink" title="设置数值请注意–单一实体"></a>设置数值请注意–单一实体</h4></li>
+</ol>
+<p>见下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">font-size: 20px;</span><br></pre></td></tr></table></figure>
+<p>20px 就是一个单一实体，是个整体</p>
+<p>当使用 css variables 时一定要注意，如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">:root &#123;</span><br><span class="line">    --size: 20</span><br><span class="line">&#125;</span><br><span class="line">div &#123;</span><br><span class="line">    font-size: var(--size)px /*wrong*/</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如上的代码你可能想要的结果是 20px,可惜你错了， 浏览器会把他解析为 20 px;</p>
+<p>请注意 20 和 px 中间有空格哦！说白了就无法生效</p>
+<p>如果一定要这么用的话就得这么用 calc(var(–size) * 1px), ok!</p>
+<h3 id="下面来一点儿实操"><a href="#下面来一点儿实操" class="headerlink" title="下面来一点儿实操"></a>下面来一点儿实操</h3><p>创建颜色不同的 button</p>
+<p><img src="https://cdn-images-1.medium.com/max/1600/1*qElS3I43_SdpdRA8-m2iew.gif" alt=""></p>
+<p>可以看到他们的不同是 border-color 和 background-color，那么我们会怎么做呢？</p>
+<p>如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;button class=&quot;btn&quot;&gt;Hello&lt;/button&gt;</span><br><span class="line">&lt;button class=&quot;btn red&quot;&gt;Hello&lt;/button&gt;</span><br></pre></td></tr></table></figure>
+<p>.btn 会包含基本的 style,如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">.btn &#123;</span><br><span class="line">    padding: 2rem 4rem;</span><br><span class="line">    border: 2px solid black;</span><br><span class="line">    background: transparent;</span><br><span class="line">    font-size: 0.6em;</span><br><span class="line">    border-radius: 2px;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/*on hover */</span><br><span class="line">.btn:hover &#123;</span><br><span class="line">  cursor: pointer;</span><br><span class="line">  background: black;</span><br><span class="line">  color: white;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>那么那些可变的因素在哪呢？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">.btn.red &#123;</span><br><span class="line">    border-color: red</span><br><span class="line">&#125;</span><br><span class="line">.btn.red:hover &#123;</span><br><span class="line">    background: red</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接下来我们用 css 变量来改写一下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">.btn &#123;</span><br><span class="line">   padding: 2rem 4rem;</span><br><span class="line">   border: 2px solid var(--color, black);</span><br><span class="line">   background: transparent;</span><br><span class="line">   font-size: 0.6em;</span><br><span class="line">   border-radius: 2px;</span><br><span class="line"> &#125;</span><br><span class="line"> /*on hover*/</span><br><span class="line"> .btn:hover &#123;</span><br><span class="line">  cursor: pointer;</span><br><span class="line">   background: var(--color, black);</span><br><span class="line">   color: white;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>var 第二个参数在上面我们说过了是 default value</p>
+<p>接下来看</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">.btn.red &#123;</span><br><span class="line">    --color: red</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此时再来看看比较<br><img src="https://cdn-images-1.medium.com/max/1600/1*bdT9ITBx1wpXjLOYoWBI7w.png" alt="Without CSS Variables VS with CSS Variables"></p>
+<p>如果你有更多的颜色的 button,如下</p>
+<p><img src="https://cdn-images-1.medium.com/max/1600/1*erZb3Z5FtTIR8EV9fl0QOA.png" alt="See the difference??"></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>其实变量这个东西是个语言都支持了，为啥 css 没有呢，在我看来因为是一开始就没把 css 当做编程语言来用。</p>
+<p>其实 web 也是 GUI 编程，我们纵观一下 GUI 编程，其实一开始都是直接语言去控制的，比如 QT, 所有的图形都是 C++去操作的，无论是按钮啊，tabel 啊都是的。可是人们就发现 UI 是可以和逻辑分开的。于是就出了可视化的 GUI 编程，妥妥拽拽啥的，最后是用 XML 来表达的，android,ios 都是差不多的。</p>
+<p>那 web 呢，我在我的一片文章里说过了，一开始 web 就不是打算来进行 UI 的，他只是像做一些文档展示的工作，可是社会是前进的，web 越来越火，对页面样式的控制也是极度强烈，但一开始都是一些简单的控制，一点一点才复杂化的，从简单开始 css 就出现了，在我看来 css 就好比是 GUI 中的 XML，但是用他们总是会有限制的。</p>
+<p>因此 css 的出现就好比是 XML 我只需要配置就好了，那么复杂干什么！！！要啥变量啊！要啥变量！！</p>
+<p>可随着 web 的功能性越来越强他需要 GUI 的能力，于是出现了 canvas, css variables, 硬件加速等等。</p>
+<p>web 的发展已经完全超出了他最初的目的，只要性能问题解决了，往后哪有 GUI 编程啊，都是 web(虽然 web 也可以看做 GUI，但他的限制还是太多了)。</p>
+<p>写到这其实我觉 GUI 编程或者说 application 的编程需要新的语言来解决一些问题了，无论是包袱太多还是什么其他问题，web 不应该再用 js 了(可惜不现实)，因为 js 的缺点确实多，历史包袱多，很难再有大的进化了。GUI 也不应该再用 C#, Java, C++了，他们都带繁重了。我看到了 Dart, 虽然出了很久了，可惜不火，dart 是新时代设计的语言，经过深思熟虑，不想 js 10 天就出来。</p>
+<p>新的时代就应该用新的语言。当然这很难…</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/css/">css</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/04/05/js中的委托和继承/"><span>js中的委托vs继承</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/04/05/js中的委托和继承/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-04-04T16:00:00.000Z">
+          2018-04-05
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>曾经 James Gosling（java 之父） 回答过一个问题，那就是如果让他从头重写一遍 java，那会有什么不同的地方？他回答说那就是不要继承只有委托。</p>
+<p>使用继承来重用代码就好比是你想要一个塑料碗于是你定了一个外卖似的。事实上当你按照教课书似的来使用继承，你回发现你的整个继承架构是那么的脆弱和随意。子类会一直拥有它根本不需要的方法或者属性，这就违背了最小知识原则。</p>
+<p>而委托则是通过运行时在具体的实例上下文中进行函数调用来实现代码重用的。如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Object.prototype.toString.call(&#123;&#125;);</span><br></pre></td></tr></table></figure>
+<p>在 js 中同 call 和 apply 我们可以很轻松的实现委托。</p>
+<h3 id="自定义函数委托"><a href="#自定义函数委托" class="headerlink" title="自定义函数委托"></a>自定义函数委托</h3><p>假设我们的有一款绘画 app, 我们需要一个矩形对象。我们先用如下的方法实现：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">const Rectangle = function(left, top, length, width, options) &#123;</span><br><span class="line">    this.left = left;</span><br><span class="line">    this.top = top;</span><br><span class="line">    this.length = length;</span><br><span class="line">    this.width = width;</span><br><span class="line">    if (options) &#123;</span><br><span class="line">        this.color = options.color;</span><br><span class="line">        this.border = options.border;</span><br><span class="line">        this.opacity = options.opacity;</span><br><span class="line">        //... etc.</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">const myRectangle = new Rectangle(10, 10, 30, 20, &#123;color:&apos;#FAFAFA&apos;, opacity:0.7&#125;);</span><br></pre></td></tr></table></figure>
+<p>我们也需要知道两个矩形是否重叠，因此有如下的方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Rectangle.prototype.overlaps = function(another) &#123;</span><br><span class="line">    const r1x1 = this.left,</span><br><span class="line">        r1x2 = this.left + this.width,</span><br><span class="line">        r1y1 = this.top,</span><br><span class="line">        r1y2 = this.top + this.height,</span><br><span class="line">        r2x1 = another.left,</span><br><span class="line">        r2x2 = another.left + another.width,</span><br><span class="line">        r2y1 = another.top,</span><br><span class="line">        r2y2 = another.top + another.height;</span><br><span class="line"></span><br><span class="line">    return (r1x2 &gt;= r2x1) &amp;&amp; (r1y2 &gt;= r2y1) &amp;&amp; (r1x1 &lt;= r2x2) &amp;&amp; (r1y1 &lt;= r2y2);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">myRectangle.overlaps(myOtherRectangle);</span><br></pre></td></tr></table></figure>
+<p>现在假设我们的 app 有一个用来渲染 dashlets 的 dashbord。我们也需要判断这些 dashlets 是否重叠。因此我们可以使用继承，然后让他们继承自 Rectangle。但其实我们也可以使用委托来实现</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Rectangle.prototype.overlaps.call(dashlet1, dashlet2);</span><br></pre></td></tr></table></figure>
+<p>完整的如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">const Rectangle = function(left, top, length, width, options) &#123;</span><br><span class="line">    //whatever...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Rectangle.prototype.overlaps = function(another) &#123;</span><br><span class="line">    const r1x1 = this.left,</span><br><span class="line">        r1x2 = this.left + this.width,</span><br><span class="line">        r1y1 = this.top,</span><br><span class="line">        r1y2 = this.top + this.height,</span><br><span class="line">        r2x1 = another.left,</span><br><span class="line">        r2x2 = another.left + another.width,</span><br><span class="line">        r2y1 = another.top,</span><br><span class="line">        r2y2 = another.top + another.height;</span><br><span class="line"></span><br><span class="line">    return (r1x2 &gt;= r2x1) &amp;&amp; (r1y2 &gt;= r2y1) &amp;&amp; (r1x1 &lt;= r2x2) &amp;&amp; (r1y1 &lt;= r2y2));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Rectangle.prototype.overlaps.call(</span><br><span class="line">    &#123;left: 10, top: 10, width 12, height: 6&#125;,</span><br><span class="line">    &#123;left: 8, top: 15, width 9, height: 16&#125;);</span><br><span class="line">//true  </span><br><span class="line">Rectangle.prototype.overlaps.call(</span><br><span class="line">    &#123;left: 10, top: 10, width 12, height: 6&#125;,</span><br><span class="line">    &#123;left: 8, top: 25, width 9, height: 16&#125;);</span><br><span class="line">//false;</span><br></pre></td></tr></table></figure>
+<h3 id="泛型函数（generic）"><a href="#泛型函数（generic）" class="headerlink" title="泛型函数（generic）"></a>泛型函数（generic）</h3><p>那么内置函数是否都可以像上面那么使用么？不幸的是许多内置函数都不行，若是 this 不是指定的类型就会抛出 TypeError。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Date.prototype.getMilliseconds.apply(&#123;year:2010&#125;);</span><br><span class="line">//TypeError: Date.prototype.getMilliseconds called on incompatible Object</span><br></pre></td></tr></table></figure>
+<p>幸运的是 es5 规范明确的描述了 generic functions 的概念。泛型函数是指那些允许 this 的类型是任意类型的函数。举个例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">const hasNumbers = &apos;&apos;.search.call([&apos;a&apos;, &apos;b&apos;, &apos;c&apos;], /[0-9]/) &gt; -1</span><br></pre></td></tr></table></figure>
+<h3 id="委托，组合，继承"><a href="#委托，组合，继承" class="headerlink" title="委托，组合，继承"></a>委托，组合，继承</h3><p>继承链太长，继承结构机会很脆弱，就会给子孙添加很多不必要的东西。能用委托和组合就不要使用继承。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/js/">js</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/04/05/fix-typeof/"><span>Object.prototype.toString是什么鬼？</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/04/05/fix-typeof/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-04-04T16:00:00.000Z">
+          2018-04-05
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h3 id="发生了什么问题：类型的判断"><a href="#发生了什么问题：类型的判断" class="headerlink" title="发生了什么问题：类型的判断"></a>发生了什么问题：类型的判断</h3><p>我想判断一个变量 a 是什么类型，那么我们会怎么做? typeof a? ok，我们来看看</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">let a = 2;</span><br><span class="line">typeof a; // &apos;number&apos;</span><br><span class="line"></span><br><span class="line">let c = &apos;as&apos;;</span><br><span class="line">typeof c; // &apos;string&apos;</span><br></pre></td></tr></table></figure>
+<p>嗯 ：），看着不错哦！似乎我们是解决了，可惜啊，让我们来看一张表</p>
+<table>
+<thead>
+<tr>
+<th>Type of val</th>
+<th style="text-align:center">result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Undefined</td>
+<td style="text-align:center">“undefined“</td>
+</tr>
+<tr>
+<td>Null</td>
+<td style="text-align:center">“object“</td>
+</tr>
+<tr>
+<td>Boolean</td>
+<td style="text-align:center">“boolean“</td>
+</tr>
+<tr>
+<td>Number</td>
+<td style="text-align:center">“number“</td>
+</tr>
+<tr>
+<td>NaN</td>
+<td style="text-align:center">“object“</td>
+</tr>
+<tr>
+<td>String</td>
+<td style="text-align:center">“string“</td>
+</tr>
+<tr>
+<td>Object (native and not callable)</td>
+<td style="text-align:center">“object“</td>
+</tr>
+<tr>
+<td>Object (native or host and callable)</td>
+<td style="text-align:center">“function“</td>
+</tr>
+<tr>
+<td>Object (host and not callable)</td>
+<td style="text-align:center">不同实现有不同表现</td>
+</tr>
+</tbody>
+</table>
+<p>额 ：（ 看完是不是就有一丝丝不高兴了，因为他并不是很好，因为有些类型他也没办法区分比如 null, Array 他都识别为对象了，不高兴啊！总之在 js 里面进行类型判断是一件很不爽的事情，不像 java 和 golang 这种强类型的语言，他们总是有很明确的方法来判断自己是啥类型因为他们都有自己的反射机制。</p>
+<h3 id="有没有更好的办法呢：-class"><a href="#有没有更好的办法呢：-class" class="headerlink" title="有没有更好的办法呢：[[class]]"></a>有没有更好的办法呢：[[class]]</h3><p>[[class]]是什么呢？ es5 规范里面规定的所有的 js 对象都有的一个内部属性（es 规范使用[[]]表示内部属性），用来表明对象分类的字符串属性，就是说他是用来表示对象类型。对于我们来说，这意味着，所有的内置对象类型都有一个唯一的不可修改的，规范强制规定的值，很明显要是咱们能拿到这个值，对象类型识别问题就解决了。。。</p>
+<p>此时 Object.prototype.toString 就要登场了。让我们看看 <a href="http://lzw.me/pages/ecmascript/#304" target="_blank" rel="noopener">es5 规范</a>里对于他的描述</p>
+<ol>
+<li>如果 this 的值是 undefined, 返回 “[object Undefined]”.</li>
+<li>如果 this 的值是 null, 返回 “[object Null]”.</li>
+<li>令 O 为以 this 作为参数调用 ToObject 的结果 .</li>
+<li>令 class 为 O 的 [[Class]] 内部属性的值 .</li>
+<li>返回三个字符串 “[object “, class, and “]” 连起来的字符串 .</li>
+</ol>
+<blockquote>
+<p>ToObject 就是把 this 转换为对象，比如 4-&gt; Number, ‘’ -&gt; String 等等</p>
+</blockquote>
+<p>简单描述一下就是 toString 的调用会返回如下的格式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[object [[class]]]</span><br></pre></td></tr></table></figure>
+<p>看到没，通过他就可以拿到对象的内部[[class]]属性了。但这是时候有人就会说了，你瞅瞅下面的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[1,2,3].toString(); //&quot;1, 2, 3&quot;</span><br><span class="line"></span><br><span class="line">(new Date).toString(); //&quot;Sat Aug 06 2011 16:29:13 GMT-0700 (PDT)&quot;</span><br><span class="line"></span><br><span class="line">/a-z/.toString(); //&quot;/a-z/&quot;</span><br></pre></td></tr></table></figure>
+<p>你看，你看，还是不行啊！</p>
+<p>上面现象的原因在于，打部分的内置对象都重写了 Object.prototype.toString 函数。比如<a href="http://lzw.me/pages/ecmascript/#426" target="_blank" rel="noopener">Number</a>。</p>
+<p>显然直接调用时不行的，但<strong>坏就坏在我们在用 js, 好也好在我们在用 js</strong>, 估计大家都想到了，我们还有两个方法 call 和 apply， 如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Object.prototype.toString.call([1,2,3]); //&quot;[object Array]&quot;</span><br><span class="line"></span><br><span class="line">Object.prototype.toString.call(new Date); //&quot;[object Date]&quot;</span><br><span class="line"></span><br><span class="line">Object.prototype.toString.call(/a-z/); //&quot;[object RegExp]&quot;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>js 这门语言本身就积累了太多的弊端了，好<strong>好在用的人多，坏也坏在用的人多</strong> 用的人多语言本身才能发展的好，用的人多反而也会让 js 本身的发展瞻前顾后，就好比 c++似的。就 cs 发展到现在，我觉得其实是需要新的 GUI 语言的出现或者说专注于 application 的语言，比如我最近看了 Dart 就不错，语法合适，没有很多奇怪的问题，可惜也没有太好的发展，这个可以再开一篇来讲了。（劣币驱逐良币么？）</p>
+</blockquote>
+<h3 id="更好的-class-获取封装"><a href="#更好的-class-获取封装" class="headerlink" title="更好的[[class]]获取封装"></a>更好的[[class]]获取封装</h3><p>来，咱们封装一个 toType 吧！</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">const toType = function(obj) &#123;</span><br><span class="line">  return (&#123;&#125;).toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>为什么要用({}).toString.call,在我看了就是少写几个字符而已，但其实若是我调用 toType 的次数太多，({})这种方式我觉得也不行啊，因为每次调用都要再创建一个对象啊！</p>
+</blockquote>
+<p>我们来试试这个函数吧</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">toType(&#123;a: 4&#125;); //&quot;object&quot;</span><br><span class="line">toType([1, 2, 3]); //&quot;array&quot;</span><br><span class="line">(function() &#123;console.log(toType(arguments))&#125;)(); //arguments</span><br><span class="line">toType(new ReferenceError); //&quot;error&quot;</span><br><span class="line">toType(new Date); //&quot;date&quot;</span><br><span class="line">toType(/a-z/); //&quot;regexp&quot;</span><br><span class="line">toType(Math); //&quot;math&quot;</span><br><span class="line">toType(JSON); //&quot;json&quot;</span><br><span class="line">toType(new Number(4)); //&quot;number&quot;</span><br><span class="line">toType(new String(&quot;abc&quot;)); //&quot;string&quot;</span><br><span class="line">toType(new Boolean(true)); //&quot;boolean&quot;</span><br></pre></td></tr></table></figure>
+<p>我们再来看看 typeof</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">typeof &#123;a: 4&#125;; //&quot;object&quot;</span><br><span class="line">typeof [1, 2, 3]; //&quot;object&quot;</span><br><span class="line">(function() &#123;console.log(typeof arguments)&#125;)(); //object</span><br><span class="line">typeof new ReferenceError; //&quot;object&quot;</span><br><span class="line">typeof new Date; //&quot;object&quot;</span><br><span class="line">typeof /a-z/; //&quot;object&quot;</span><br><span class="line">typeof Math; //&quot;object&quot;</span><br><span class="line">typeof JSON; //&quot;object&quot;</span><br><span class="line">typeof new Number(4); //&quot;object&quot;</span><br><span class="line">typeof new String(&quot;abc&quot;); //&quot;object&quot;</span><br><span class="line">typeof new Boolean(true); //&quot;object&quot;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>其实 typeof 也可以用函数调用的方法来书写， typeof(a)，大家可以试试是 ok 的。</p>
+</blockquote>
+<h3 id="那么-instanceof-呢？"><a href="#那么-instanceof-呢？" class="headerlink" title="那么 instanceof 呢？"></a>那么 instanceof 呢？</h3><p>instanceof 又是什么呢？简单的说是用来测试一个对象是否是一个类的是实例（按照面向对象的说法）。他的实现方式是检测第二个输入参数的 prototype 是否在第一个输入参数的原型链上出现过(第二个参数必须是一个 constructor)，比如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">let a = [1,2,3];</span><br><span class="line">a.__proto__; // []</span><br><span class="line">Array.prototype; // []和上面的那个是同一个对象</span><br><span class="line">a instanceof Array; // true</span><br><span class="line"></span><br><span class="line">a.__proto__ = &#123;&#125;</span><br><span class="line">a instanceof Array; // false</span><br></pre></td></tr></table></figure>
+<p>有几个关于 instanceof 的点需要我们注意</p>
+<ol>
+<li>有一些内置对象是没有相应的 constructor 的，比如 Math, JSON and arguments, 因此他们是没办法使用 instanceof 的</li>
+<li>当我们使用 iframe 的时候，就会产生多个上下文，此时就没办法保证 instanceof 的准确行了</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">const iFrame = document.createElement(&apos;IFRAME&apos;);</span><br><span class="line">document.body.appendChild(iFrame);</span><br><span class="line"></span><br><span class="line">const IFrameArray = window.frames[1].Array;</span><br><span class="line">const array = new IFrameArray();</span><br><span class="line"></span><br><span class="line">array instanceof Array; //false</span><br><span class="line">array instanceof IFrameArray; //true;</span><br></pre></td></tr></table></figure>
+<h3 id="在-node-里面就应该到此为止了，但是对于浏览器来说还没有结束呢！因为不同的浏览器还有各自的宿主对象呢？"><a href="#在-node-里面就应该到此为止了，但是对于浏览器来说还没有结束呢！因为不同的浏览器还有各自的宿主对象呢？" class="headerlink" title="在 node 里面就应该到此为止了，但是对于浏览器来说还没有结束呢！因为不同的浏览器还有各自的宿主对象呢？"></a>在 node 里面就应该到此为止了，但是对于浏览器来说还没有结束呢！因为不同的浏览器还有各自的宿主对象呢？</h3><p>很可惜的是我们的 toType 对他们并不管用：（, 比如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">toType(window);</span><br><span class="line">//&quot;global&quot; (Chrome) &quot;domwindow&quot; (Safari) &quot;window&quot; (FF/IE9) &quot;object&quot; (IE7/IE8)</span><br><span class="line"></span><br><span class="line">toType(document);</span><br><span class="line">//&quot;htmldocument&quot; (Chrome/FF/Safari) &quot;document&quot; (IE9) &quot;object&quot; (IE7/IE8)</span><br><span class="line"></span><br><span class="line">toType(document.createElement(&apos;a&apos;));</span><br><span class="line">//&quot;htmlanchorelement&quot; (Chrome/FF/Safari/IE) &quot;object&quot; (IE7/IE8)</span><br><span class="line"></span><br><span class="line">toType(alert);</span><br><span class="line">//&quot;function&quot; (Chrome/FF/Safari/IE9) &quot;object&quot; (IE7/IE8)</span><br></pre></td></tr></table></figure>
+<p>其实对于 Dom 对象来说使用 nodeType 来判断是最好的了，兼容性也 ok。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">function isElement(obj) &#123;</span><br><span class="line">  return obj.nodeType;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>但这其实是一个 duck-typing, 因此也是没有保证的。</p>
+</blockquote>
+<h3 id="到此总结一下"><a href="#到此总结一下" class="headerlink" title="到此总结一下"></a>到此总结一下</h3><p>即使我们做了上面那么多的是事情依然不能够保证完美，因为 js 太灵活了。比如我们可以重写了 Object.prototype.toString 的实现，那么我们所提供的稍微靠谱的解决方案就 GG 了，因此我们最好不要随意去重写原生的 prototype 的方法。请避免把 toType 用到 host object 的判断以及要检查是否传入了未定义的变量。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/js/">js</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/04/04/postgres基础学习/"><span>postgres基础学习</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/04/04/postgres基础学习/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-04-03T16:00:00.000Z">
+          2018-04-04
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h3 id="sql-语句就好比pipeline似的，上一个的执行结果喂给下个语句（select-语句永远在最后）"><a href="#sql-语句就好比pipeline似的，上一个的执行结果喂给下个语句（select-语句永远在最后）" class="headerlink" title="sql 语句就好比pipeline似的，上一个的执行结果喂给下个语句（select 语句永远在最后）"></a>sql 语句就好比pipeline似的，上一个的执行结果喂给下个语句（select 语句永远在最后）</h3><h3 id="使用汉语时需要使用’’单引号"><a href="#使用汉语时需要使用’’单引号" class="headerlink" title="使用汉语时需要使用’’单引号"></a>使用汉语时需要使用’’单引号</h3><h3 id="select-不但可以使用列名还可以写常量比如“商品”等字符串。"><a href="#select-不但可以使用列名还可以写常量比如“商品”等字符串。" class="headerlink" title="select 不但可以使用列名还可以写常量比如“商品”等字符串。"></a>select 不但可以使用列名还可以写常量比如“商品”等字符串。</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select &quot;商品&quot; as &apos;name&apos;, id from product;</span><br></pre></td></tr></table></figure>
+<h3 id="在-SELECT-语句中使用-DISTINCT-可以删除重复行-DISTINCT-关键字只能用在第一个列名之前"><a href="#在-SELECT-语句中使用-DISTINCT-可以删除重复行-DISTINCT-关键字只能用在第一个列名之前" class="headerlink" title="在 SELECT 语句中使用 DISTINCT 可以删除重复行, DISTINCT 关键字只能用在第一个列名之前"></a>在 SELECT 语句中使用 DISTINCT 可以删除重复行, DISTINCT 关键字只能用在第一个列名之前</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">select distinct product_id from product;</span><br><span class="line">or </span><br><span class="line">select distinct product_id, purchase_price from product;</span><br><span class="line">// 这是会按照product_id, 和purchase_price进行合并去重的</span><br><span class="line">// 因此如下写是错误的</span><br><span class="line">select product_id, distinct purchase_price from product; // error</span><br></pre></td></tr></table></figure>
+<h3 id="WHERE-子句要紧跟在-FROM-子句之后。"><a href="#WHERE-子句要紧跟在-FROM-子句之后。" class="headerlink" title="WHERE 子句要紧跟在 FROM 子句之后。"></a>WHERE 子句要紧跟在 FROM 子句之后。</h3><h3 id="单行注释"><a href="#单行注释" class="headerlink" title="单行注释"></a>单行注释</h3><p>书写在“–”之后，只能写在同一行</p>
+<h3 id="多行注释"><a href="#多行注释" class="headerlink" title="多行注释"></a>多行注释</h3><p>/<em> </em>/类c</p>
+<h3 id="select-字句也可以使用算数运算，比如2倍价钱，-常用的4则运算，当查询结果是null时，那所有的运算结果都是null"><a href="#select-字句也可以使用算数运算，比如2倍价钱，-常用的4则运算，当查询结果是null时，那所有的运算结果都是null" class="headerlink" title="select 字句也可以使用算数运算，比如2倍价钱， 常用的4则运算，当查询结果是null时，那所有的运算结果都是null"></a>select 字句也可以使用算数运算，比如2倍价钱， 常用的4则运算，当查询结果是null时，那所有的运算结果都是null</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select purchase_price * 2 as &apos;purchase_price2&apos; from product;</span><br></pre></td></tr></table></figure>
+<h3 id="运算就是这样以’行’为单位执行的-查出一行执行一行"><a href="#运算就是这样以’行’为单位执行的-查出一行执行一行" class="headerlink" title="运算就是这样以’行’为单位执行的, 查出一行执行一行"></a>运算就是这样以’行’为单位执行的, 查出一行执行一行</h3><h3 id="SELECT-子句中可以使用常数或者表达式"><a href="#SELECT-子句中可以使用常数或者表达式" class="headerlink" title="SELECT 子句中可以使用常数或者表达式"></a>SELECT 子句中可以使用常数或者表达式</h3><h3 id="比较运算符在where字句中的有-相等，-lt-gt-不等-gt-lt-lt-gt"><a href="#比较运算符在where字句中的有-相等，-lt-gt-不等-gt-lt-lt-gt" class="headerlink" title="比较运算符在where字句中的有 = 相等， &lt;&gt; 不等 &gt;=, &lt;=, &lt;, &gt;"></a>比较运算符在where字句中的有 = 相等， &lt;&gt; 不等 &gt;=, &lt;=, &lt;, &gt;</h3><h3 id="WHERE-子句的条件表达式中也可以使用计算表达式-比如查询卖出价比买入价多600的商品-相当与在找单品利润大于600的"><a href="#WHERE-子句的条件表达式中也可以使用计算表达式-比如查询卖出价比买入价多600的商品-相当与在找单品利润大于600的" class="headerlink" title="WHERE 子句的条件表达式中也可以使用计算表达式 比如查询卖出价比买入价多600的商品,相当与在找单品利润大于600的"></a>WHERE 子句的条件表达式中也可以使用计算表达式 比如查询卖出价比买入价多600的商品,相当与在找单品利润大于600的</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">select product_id, product_name, product_type from product</span><br><span class="line">where sale_price - purchase_price &gt; 600</span><br></pre></td></tr></table></figure>
+<h3 id="insert-into-table-name-values-‘field’-…-‘field-value’-…-…-插入多行数据"><a href="#insert-into-table-name-values-‘field’-…-‘field-value’-…-…-插入多行数据" class="headerlink" title="insert into table_name values (‘field’, …), (‘field_value’, …) …;插入多行数据"></a>insert into table_name values (‘field’, …), (‘field_value’, …) …;插入多行数据</h3><h3 id="字符串类型的数据原则上按照字典顺序进行排序，不能与数字的大小顺序混淆说白了，就是ascii的大小"><a href="#字符串类型的数据原则上按照字典顺序进行排序，不能与数字的大小顺序混淆说白了，就是ascii的大小" class="headerlink" title="字符串类型的数据原则上按照字典顺序进行排序，不能与数字的大小顺序混淆说白了，就是ascii的大小"></a>字符串类型的数据原则上按照字典顺序进行排序，不能与数字的大小顺序混淆说白了，就是ascii的大小</h3><h3 id="对null-不能使用比较运算符，sql-有专门的is-null-和is-not-null来判断"><a href="#对null-不能使用比较运算符，sql-有专门的is-null-和is-not-null来判断" class="headerlink" title="对null 不能使用比较运算符，sql 有专门的is null 和is not null来判断"></a>对null 不能使用比较运算符，sql 有专门的is null 和is not null来判断</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">select product_name from product</span><br><span class="line">where purchase_price is null;</span><br></pre></td></tr></table></figure>
+<h3 id="逻辑运算符，not-and-or"><a href="#逻辑运算符，not-and-or" class="headerlink" title="逻辑运算符，not, and, or"></a>逻辑运算符，not, and, or</h3><ul>
+<li><p>售价不大于1000的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">select product_name from product</span><br><span class="line">where not sale_price &gt; 1000;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>and 条件都满足, 售价大于100的衣服</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">select product_name from product</span><br><span class="line">where sale_price &gt; 100 and product_type = &apos;衣服&apos;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="AND-运算符的优先级高于-OR-运算符。想要优先执行-OR-运算符时可以使用括号"><a href="#AND-运算符的优先级高于-OR-运算符。想要优先执行-OR-运算符时可以使用括号" class="headerlink" title="AND 运算符的优先级高于 OR 运算符。想要优先执行 OR 运算符时可以使用括号"></a>AND 运算符的优先级高于 OR 运算符。想要优先执行 OR 运算符时可以使用括号</h3><h3 id="count聚合函数应用在具体列时，不会对null进行计算就是不包括null"><a href="#count聚合函数应用在具体列时，不会对null进行计算就是不包括null" class="headerlink" title="count聚合函数应用在具体列时，不会对null进行计算就是不包括null"></a>count聚合函数应用在具体列时，不会对null进行计算就是不包括null</h3><p>COUNT 函数的结果根据参数的不同而不同。COUNT(*) 会得到包含 NULL 的数据 行数，而 COUNT(&lt; 列名 &gt;) 会得到 NULL 之外的数据行数。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">select count(purchase_price) from product;</span><br><span class="line">// 假设一共有8行2行purchase_price是null，则上面的输出是6</span><br></pre></td></tr></table></figure></p>
+<h3 id="当select字句中使用了聚合函数后，则整个select语句中只能使用聚合函数，或者常量而不允许在直接使用列名了。"><a href="#当select字句中使用了聚合函数后，则整个select语句中只能使用聚合函数，或者常量而不允许在直接使用列名了。" class="headerlink" title="当select字句中使用了聚合函数后，则整个select语句中只能使用聚合函数，或者常量而不允许在直接使用列名了。"></a>当select字句中使用了聚合函数后，则整个select语句中只能使用聚合函数，或者常量而不允许在直接使用列名了。</h3><h3 id="所有的聚合函数，如果以列名为参数，那么在计算之前就已经把-NULL-排除在外了，聚合函数会将-NULL-排除在外。但-COUNT-例外，并不会排除-NULL。"><a href="#所有的聚合函数，如果以列名为参数，那么在计算之前就已经把-NULL-排除在外了，聚合函数会将-NULL-排除在外。但-COUNT-例外，并不会排除-NULL。" class="headerlink" title="所有的聚合函数，如果以列名为参数，那么在计算之前就已经把 NULL 排除在外了，聚合函数会将 NULL 排除在外。但 COUNT(*) 例外，并不会排除 NULL。"></a>所有的聚合函数，如果以列名为参数，那么在计算之前就已经把 NULL 排除在外了，聚合函数会将 NULL 排除在外。但 COUNT(*) 例外，并不会排除 NULL。</h3><h3 id="由于有上述原因所以在我们计算平均值时avg，也会出问题，他会把null也排除，那么平均值得分母也就少了。"><a href="#由于有上述原因所以在我们计算平均值时avg，也会出问题，他会把null也排除，那么平均值得分母也就少了。" class="headerlink" title="由于有上述原因所以在我们计算平均值时avg，也会出问题，他会把null也排除，那么平均值得分母也就少了。"></a>由于有上述原因所以在我们计算平均值时avg，也会出问题，他会把null也排除，那么平均值得分母也就少了。</h3><h3 id="MAX-MIN-函数几乎适用于所有数据类型的列。SUM-AVG-函数只适用于数值类型的列。"><a href="#MAX-MIN-函数几乎适用于所有数据类型的列。SUM-AVG-函数只适用于数值类型的列。" class="headerlink" title="MAX/MIN 函数几乎适用于所有数据类型的列。SUM/AVG 函数只适用于数值类型的列。"></a>MAX/MIN 函数几乎适用于所有数据类型的列。SUM/AVG 函数只适用于数值类型的列。</h3><h3 id="想要计算值的种类时，可以在-COUNT-函数的参数中使用-DISTINCT。"><a href="#想要计算值的种类时，可以在-COUNT-函数的参数中使用-DISTINCT。" class="headerlink" title="想要计算值的种类时，可以在 COUNT 函数的参数中使用 DISTINCT。"></a>想要计算值的种类时，可以在 COUNT 函数的参数中使用 DISTINCT。</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select count (distinct product_type) form product</span><br></pre></td></tr></table></figure>
+<h3 id="所有的聚合函数都可以使用-DISTINCT-在聚合函数的参数中使用-DISTINCT，可以删除重复数据。"><a href="#所有的聚合函数都可以使用-DISTINCT-在聚合函数的参数中使用-DISTINCT，可以删除重复数据。" class="headerlink" title="所有的聚合函数都可以使用 DISTINCT, 在聚合函数的参数中使用 DISTINCT，可以删除重复数据。"></a>所有的聚合函数都可以使用 DISTINCT, 在聚合函数的参数中使用 DISTINCT，可以删除重复数据。</h3><h3 id="使用聚合函数和GROUP-BY子句时需要注意以下4点。-GROUP-BY子句也和SELECT子句一样，-可以通过逗号分隔指定多列。GROUP-BY-就像是切分表的一把刀。"><a href="#使用聚合函数和GROUP-BY子句时需要注意以下4点。-GROUP-BY子句也和SELECT子句一样，-可以通过逗号分隔指定多列。GROUP-BY-就像是切分表的一把刀。" class="headerlink" title="使用聚合函数和GROUP BY子句时需要注意以下4点。 GROUP BY子句也和SELECT子句一样， 可以通过逗号分隔指定多列。GROUP BY 就像是切分表的一把刀。"></a>使用聚合函数和GROUP BY子句时需要注意以下4点。 GROUP BY子句也和SELECT子句一样， 可以通过逗号分隔指定多列。GROUP BY 就像是切分表的一把刀。</h3><blockquote>
+<p>此外，GROUP BY子句的书写位置也有严格要求，一定要写在 FROM 语句之后(如果有 WHERE 子句的话需要写在 WHERE 子句之后)。</p>
+</blockquote>
+<ol>
+<li>聚合函数只能写在SELECT子句之中</li>
+<li>GROUP BY子句中不能使用SELECT子句中列的别名 </li>
+<li>GROUP BY子句的聚合结果是无序的</li>
+<li>WHERE子句中不能使用聚合函数</li>
+</ol>
+<h3 id="聚合键中包含-NULL-时，在结果中会以“不确定”行-空行-的形式表现出来。"><a href="#聚合键中包含-NULL-时，在结果中会以“不确定”行-空行-的形式表现出来。" class="headerlink" title="聚合键中包含 NULL 时，在结果中会以“不确定”行(空行)的形式表现出来。"></a>聚合键中包含 NULL 时，在结果中会以“不确定”行(空行)的形式表现出来。</h3><h3 id="GROUP-BY和WHERE并用时SELECT语句的执行顺序"><a href="#GROUP-BY和WHERE并用时SELECT语句的执行顺序" class="headerlink" title="GROUP BY和WHERE并用时SELECT语句的执行顺序"></a>GROUP BY和WHERE并用时SELECT语句的执行顺序</h3><p>FROM → WHERE → GROUP BY → SELECT</p>
+<h3 id="使用聚合函数与group-by字句时常见的错误"><a href="#使用聚合函数与group-by字句时常见的错误" class="headerlink" title="使用聚合函数与group by字句时常见的错误"></a>使用聚合函数与group by字句时常见的错误</h3><ol>
+<li>在select 语句中写了多余的列<br>在使用了聚合函数，以及group by字句时，select字句中的列是有严格限制的<ul>
+<li>常数</li>
+<li>聚合函数</li>
+<li>group by 字句中指定的列名（就是聚合键）<blockquote>
+<p>使用 GROUP BY 子句时，SELECT 子句中不能出现聚合键之外的列名。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li>使用 GROUP BY 子句时，SELECT 子句中不能出现聚合键之外的列名。</li>
+<li>GROUP BY子句的结果能排序吗? 答案随机的， GROUP BY 子句结果的显示是无序的。</li>
+<li>在 WHERE 子句中使用聚合函数, where 字句中是不能使用字句的。</li>
+</ol>
+<h3 id="只有SELECT子句和HAVING子句-以及ORDER-BY子句-中能够使用聚合函数，-where是不对分组数据处理的where处理的是单行数据。"><a href="#只有SELECT子句和HAVING子句-以及ORDER-BY子句-中能够使用聚合函数，-where是不对分组数据处理的where处理的是单行数据。" class="headerlink" title="只有SELECT子句和HAVING子句(以及ORDER BY子句)中能够使用聚合函数， where是不对分组数据处理的where处理的是单行数据。"></a>只有SELECT子句和HAVING子句(以及ORDER BY子句)中能够使用聚合函数， where是不对分组数据处理的where处理的是单行数据。</h3><h3 id="对聚合结果操作，指定条件having-子句"><a href="#对聚合结果操作，指定条件having-子句" class="headerlink" title="对聚合结果操作，指定条件having 子句"></a>对聚合结果操作，指定条件having 子句</h3><h3 id="HAVING-子句要写在-GROUP-BY-子句之后"><a href="#HAVING-子句要写在-GROUP-BY-子句之后" class="headerlink" title="HAVING 子句要写在 GROUP BY 子句之后"></a>HAVING 子句要写在 GROUP BY 子句之后</h3><h3 id="having-子句与select子句类似只能包含以下"><a href="#having-子句与select子句类似只能包含以下" class="headerlink" title="having 子句与select子句类似只能包含以下"></a>having 子句与select子句类似只能包含以下</h3><ol>
+<li>常数</li>
+<li>聚合函数</li>
+<li>group by 字句中指定的列名（就是聚合键）<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">select product_type, count(*) from product</span><br><span class="line">group by product_type</span><br><span class="line">having product_name = &apos;圆柱笔&apos;</span><br><span class="line">//  error 错误</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="在where字句中和having字句中都可以出现的条件是聚合键所对应的条件"><a href="#在where字句中和having字句中都可以出现的条件是聚合键所对应的条件" class="headerlink" title="在where字句中和having字句中都可以出现的条件是聚合键所对应的条件"></a>在where字句中和having字句中都可以出现的条件是聚合键所对应的条件</h3><ul>
+<li>WHERE 子句 = 指定行所对应的条件</li>
+<li>HAVING 子句 = 指定组所对应的条件<br>但应当符合上述的要求，聚合键的条件写在where子句会更好</li>
+</ul>
+<h3 id="where字句中的条件执行速度会比having子句的执行性能好一些"><a href="#where字句中的条件执行速度会比having子句的执行性能好一些" class="headerlink" title="where字句中的条件执行速度会比having子句的执行性能好一些"></a>where字句中的条件执行速度会比having子句的执行性能好一些</h3><h3 id="ORDER-BY-子句通常写在-SELECT-语句的末尾。"><a href="#ORDER-BY-子句通常写在-SELECT-语句的末尾。" class="headerlink" title="ORDER BY 子句通常写在 SELECT 语句的末尾。"></a>ORDER BY 子句通常写在 SELECT 语句的末尾。</h3><h3 id="排序键中包含-NULL-时，会在开头或末尾进行汇总。"><a href="#排序键中包含-NULL-时，会在开头或末尾进行汇总。" class="headerlink" title="排序键中包含 NULL 时，会在开头或末尾进行汇总。"></a>排序键中包含 NULL 时，会在开头或末尾进行汇总。</h3><h3 id="带有order-by-子句的整体执行流程"><a href="#带有order-by-子句的整体执行流程" class="headerlink" title="带有order by 子句的整体执行流程"></a>带有order by 子句的整体执行流程</h3><p>FROM→WHERE→GROUP BY→HAVING→SELECT→ORDER BY</p>
+<h3 id="在-ORDER-BY-子句中可以使用-SELECT-子句中定义的别名。"><a href="#在-ORDER-BY-子句中可以使用-SELECT-子句中定义的别名。" class="headerlink" title="在 ORDER BY 子句中可以使用 SELECT 子句中定义的别名。"></a>在 ORDER BY 子句中可以使用 SELECT 子句中定义的别名。</h3><h3 id="在-ORDER-BY-子句中可以使用-SELECT-子句中未使用的列和聚合函数"><a href="#在-ORDER-BY-子句中可以使用-SELECT-子句中未使用的列和聚合函数" class="headerlink" title="在 ORDER BY 子句中可以使用 SELECT 子句中未使用的列和聚合函数"></a>在 ORDER BY 子句中可以使用 SELECT 子句中未使用的列和聚合函数</h3><h3 id="在-ORDER-BY-子句中可以使用-SELECT-子句中使用的列和聚合函数"><a href="#在-ORDER-BY-子句中可以使用-SELECT-子句中使用的列和聚合函数" class="headerlink" title="在 ORDER BY 子句中可以使用 SELECT 子句中使用的列和聚合函数"></a>在 ORDER BY 子句中可以使用 SELECT 子句中使用的列和聚合函数</h3><h3 id="定义视图时不要使用ORDER-BY子句"><a href="#定义视图时不要使用ORDER-BY子句" class="headerlink" title="定义视图时不要使用ORDER BY子句"></a>定义视图时不要使用ORDER BY子句</h3><h1 id="子查询"><a href="#子查询" class="headerlink" title="子查询"></a>子查询</h1><h3 id="一言以蔽之，子查询就是一次性视图-SELECT语句-。与视图不同，子查-询在-SELECT-语句执行完毕之后就会消失"><a href="#一言以蔽之，子查询就是一次性视图-SELECT语句-。与视图不同，子查-询在-SELECT-语句执行完毕之后就会消失" class="headerlink" title="一言以蔽之，子查询就是一次性视图(SELECT语句)。与视图不同，子查 询在 SELECT 语句执行完毕之后就会消失"></a>一言以蔽之，子查询就是一次性视图(SELECT语句)。与视图不同，子查 询在 SELECT 语句执行完毕之后就会消失</h3><h3 id="子查询作为内层查询会首先执行。"><a href="#子查询作为内层查询会首先执行。" class="headerlink" title="子查询作为内层查询会首先执行。"></a>子查询作为内层查询会首先执行。</h3><h1 id="标量子查询"><a href="#标量子查询" class="headerlink" title="标量子查询"></a>标量子查询</h1><h3 id="标量子查询就是返回单一值的子查询。"><a href="#标量子查询就是返回单一值的子查询。" class="headerlink" title="标量子查询就是返回单一值的子查询。"></a>标量子查询就是返回单一值的子查询。</h3><p>标量子查询有一个特殊的限制，那就是必须而且只能返回 1 行 1<br>列的结果，也就是返回表中某一行的某一列的值，例如“10”或者“东京都” 这样的值。</p>
+<h3 id="标量子查询的书写位置并不仅仅局限于-WHERE-子句中，通常任何可-以使用单一值的位置都可以使用。也就是说，能够使用常数或者列名的-地方，无论是-SELECT-子句、GROUP-BY-子句、HAVING-子句，还是-ORDER-BY子句，几乎所有的地方都可以使用。"><a href="#标量子查询的书写位置并不仅仅局限于-WHERE-子句中，通常任何可-以使用单一值的位置都可以使用。也就是说，能够使用常数或者列名的-地方，无论是-SELECT-子句、GROUP-BY-子句、HAVING-子句，还是-ORDER-BY子句，几乎所有的地方都可以使用。" class="headerlink" title="标量子查询的书写位置并不仅仅局限于 WHERE 子句中，通常任何可 以使用单一值的位置都可以使用。也就是说，能够使用常数或者列名的 地方，无论是 SELECT 子句、GROUP BY 子句、HAVING 子句，还是 ORDER BY子句，几乎所有的地方都可以使用。"></a>标量子查询的书写位置并不仅仅局限于 WHERE 子句中，通常任何可 以使用单一值的位置都可以使用。也就是说，能够使用常数或者列名的 地方，无论是 SELECT 子句、GROUP BY 子句、HAVING 子句，还是 ORDER BY子句，几乎所有的地方都可以使用。</h3><h3 id="使用标量子查询时的注意事项，那就是该子查询-绝对不能返回多行结果"><a href="#使用标量子查询时的注意事项，那就是该子查询-绝对不能返回多行结果" class="headerlink" title="使用标量子查询时的注意事项，那就是该子查询 绝对不能返回多行结果"></a>使用标量子查询时的注意事项，那就是该子查询 绝对不能返回多行结果</h3><h3 id="where-子句是一行一行处理数据的，所以不能使用聚合函数，WHERE-子句中不能使用聚合函数"><a href="#where-子句是一行一行处理数据的，所以不能使用聚合函数，WHERE-子句中不能使用聚合函数" class="headerlink" title="where 子句是一行一行处理数据的，所以不能使用聚合函数，WHERE 子句中不能使用聚合函数"></a>where 子句是一行一行处理数据的，所以不能使用聚合函数，WHERE 子句中不能使用聚合函数</h3><h1 id="关联子查询是指内部自查使用了外包部查询的变量"><a href="#关联子查询是指内部自查使用了外包部查询的变量" class="headerlink" title="关联子查询是指内部自查使用了外包部查询的变量"></a>关联子查询是指内部自查使用了外包部查询的变量</h1><h3 id="在细分的组内进行比较时，需要使用关联子查询。"><a href="#在细分的组内进行比较时，需要使用关联子查询。" class="headerlink" title="在细分的组内进行比较时，需要使用关联子查询。"></a>在细分的组内进行比较时，需要使用关联子查询。</h3><h3 id="关联子查询也是用来对集合进行切分的-作用group-by-类似"><a href="#关联子查询也是用来对集合进行切分的-作用group-by-类似" class="headerlink" title="关联子查询也是用来对集合进行切分的 作用group by 类似"></a>关联子查询也是用来对集合进行切分的 作用group by 类似</h3><h3 id="别名的使用’内部可以看到外部，而外部看不到内部‘"><a href="#别名的使用’内部可以看到外部，而外部看不到内部‘" class="headerlink" title="别名的使用’内部可以看到外部，而外部看不到内部‘"></a>别名的使用’内部可以看到外部，而外部看不到内部‘</h3><h1 id="select-子句中若是出现了，聚合函数则其他列就不能使用，除非这个列是聚合件"><a href="#select-子句中若是出现了，聚合函数则其他列就不能使用，除非这个列是聚合件" class="headerlink" title="select 子句中若是出现了，聚合函数则其他列就不能使用，除非这个列是聚合件"></a>select 子句中若是出现了，聚合函数则其他列就不能使用，除非这个列是聚合件</h1><h2 id="exist-谓词"><a href="#exist-谓词" class="headerlink" title="exist 谓词"></a>exist 谓词</h2><h3 id="通常指定关联子查询作为-EXIST-的参数"><a href="#通常指定关联子查询作为-EXIST-的参数" class="headerlink" title="通常指定关联子查询作为 EXIST 的参数"></a>通常指定关联子查询作为 EXIST 的参数</h3><h2 id="dt-显示表详细信息"><a href="#dt-显示表详细信息" class="headerlink" title="\dt 显示表详细信息"></a>\dt 显示表详细信息</h2><h2 id="关于数据库join的问题"><a href="#关于数据库join的问题" class="headerlink" title="关于数据库join的问题"></a>关于数据库join的问题</h2><ol>
+<li>数据库join</li>
+<li>service应用层join<br><a href="https://www.zhihu.com/question/68258877" target="_blank" rel="noopener">https://www.zhihu.com/question/68258877</a></li>
+</ol>
+<h2 id="重代码和重sql的两种编码方式"><a href="#重代码和重sql的两种编码方式" class="headerlink" title="重代码和重sql的两种编码方式"></a>重代码和重sql的两种编码方式</h2><p><a href="https://zhuanlan.zhihu.com/p/36585028" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/36585028</a> </p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/sql-postgres/">sql postgres</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/04/02/why-not-use-setinterval/"><span>为什么不要使用setInterval?</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/04/02/why-not-use-setinterval/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-04-01T16:00:00.000Z">
+          2018-04-02
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <blockquote>
+<p>最近我遇到了一个情况，就是需要在一个特定的时间间隔后调用一个函数。好比说每隔十秒就发送一个 ajax 请求。显然，最好的选项似乎是 setInterval, 但是我被分分钟搞得灰头土脸。</p>
+</blockquote>
+<p>为了了解为甚么 setInterval 是邪恶的，那么我们得先搞清楚一个事实那就是 js 是单线程的，也就是同一时间只能执行一个操作。</p>
+<p>如果我们的函数的执行时间都比咱么的延时时间还长（好比 ajax call）, 我们就会发现我们的 setInterval 就不会准时触发了，事实上 js 的定时器就是这么无奈，他的定时总是不准时。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">const fakeCallToServer = () &#123;</span><br><span class="line">    setTimeou(() =&gt; &#123;</span><br><span class="line">        console.log(&apos;returning from server&apos;, new Date().toLocaleTimeString());</span><br><span class="line">    &#125;, 4000)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">setInterval(function()&#123;</span><br><span class="line"></span><br><span class="line">    let insideSetInterval = new Date().toLocaleTimeString();</span><br><span class="line"></span><br><span class="line">    console.log(&apos;insideSetInterval&apos;, insideSetInterval);</span><br><span class="line"></span><br><span class="line">    fakeCallToServer();</span><br><span class="line">&#125;, 2000);</span><br><span class="line"></span><br><span class="line">//insideSetInterval 14:13:47</span><br><span class="line">//insideSetInterval 14:13:49</span><br><span class="line">//insideSetInterval 14:13:51</span><br><span class="line">//returning from server 14:13:51</span><br><span class="line">//insideSetInterval 14:13:53</span><br><span class="line">//returning from server 14:13:53</span><br><span class="line">//insideSetInterval 14:13:55</span><br><span class="line">//returning from server 14:13:55</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>尝试一下上面的代码</p>
+</blockquote>
+<p>就像你看到的一样 setInterval 中的 console.log 一直在输出 ajax calls, 根本就不会理会之前的请求是否返回或是其他的情况。这样就会在后端 server 囤积大量的请求。</p>
+<p>现在咱们再来试试同步操作：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">var counter = 0;</span><br><span class="line"></span><br><span class="line">var fakeTimeIntensiveOperation = function() &#123;</span><br><span class="line"></span><br><span class="line">    for(var i =0; i&lt; 50000000; i++) &#123;</span><br><span class="line">        document.getElementById(&apos;random&apos;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    let insideTimeTakingFunction  = new Date().toLocaleTimeString();</span><br><span class="line"></span><br><span class="line">    console.log(&apos;insideTimeTakingFunction&apos;, insideTimeTakingFunction);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">var timer = setInterval(function()&#123;</span><br><span class="line"></span><br><span class="line">    let insideSetInterval = new Date().toLocaleTimeString();</span><br><span class="line"></span><br><span class="line">    console.log(&apos;insideSetInterval&apos;, insideSetInterval);</span><br><span class="line"></span><br><span class="line">    counter++;</span><br><span class="line">    if(counter == 1)&#123;</span><br><span class="line">        fakeTimeIntensiveOperation();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    if (counter &gt;= 5) &#123;</span><br><span class="line">       clearInterval(timer);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;, 1000);</span><br><span class="line"></span><br><span class="line">//insideSetInterval 13:50:53</span><br><span class="line">//insideTimeTakingFunction 13:50:55</span><br><span class="line">//insideSetInterval 13:50:55 &lt;---- not called after 1s</span><br><span class="line">//insideSetInterval 13:50:56</span><br><span class="line">//insideSetInterval 13:50:57</span><br><span class="line">//insideSetInterval 13:50:58</span><br></pre></td></tr></table></figure>
+<p>可以很明显的看到，当 setInterval 遇到了 cpu 敏感的操作时，setInterval 就完全乱了节奏。</p>
+<h3 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h3><p>异步操作时，setInterval 有可能会堆积很多的异步操作，而同步操作则会打乱 setInterval 的节奏。并且当函数报错时 setInterval 也是不会停止的，但其实可以使用 clearInterval 在停止 setInterval。我们可以使用 setTimeout 递归调用来模拟 setInterval 这可以让我们更好的控制代码。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/js/">js</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/03/05/mirror-git/"><span>mirror-git</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/03/05/mirror-git/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-03-05T14:00:59.000Z">
+          2018-03-05
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h4 id="镜像代码库的方法"><a href="#镜像代码库的方法" class="headerlink" title="镜像代码库的方法"></a>镜像代码库的方法</h4><p>我希望这篇文章能够清晰的描述一下如何镜像 git 仓库—即我有一个 github 仓库 example.git, 还有一个 sourceforge 仓库 example.git, 我希望这两个仓库的代码可以镜像同步，就是我无论更新哪一个都会同步到另一个仓库上去。</p>
+<h5 id="建立一个本地的仓库，并且设置-upstream-就是添加-remote-。重点：这得是个-bare-仓库"><a href="#建立一个本地的仓库，并且设置-upstream-就是添加-remote-。重点：这得是个-bare-仓库" class="headerlink" title="建立一个本地的仓库，并且设置 upstream(就是添加 remote)。重点：这得是个 bare 仓库"></a>建立一个本地的仓库，并且设置 upstream(就是添加 remote)。重点：这得是个 bare 仓库</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd /srv/gitsync</span><br><span class="line">git clone --bare git@github.com:[account]/[repository].git</span><br><span class="line">mv [repository].git [repository]</span><br></pre></td></tr></table></figure>
+<p>接下来，我们删除 origin ‘remote’，并且配置两个远程仓库为 upstream 就是添加 remote,看代码更详细：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cd [repository]</span><br><span class="line">git remote remove origin</span><br><span class="line">git remote add github  git@github.com:[account]/[repository].git</span><br><span class="line">git remote add sourceforge  ssh://[account]@git.code.sf.net/p/[repository]/code</span><br></pre></td></tr></table></figure>
+<p>镜像意味着无论哪个仓库有更新都会同步到另外一个仓库上去。因此我们应当有个 webhook 来触发我们镜像脚本。每个代码管理都会提供这样的 hook 的。</p>
+<h5 id="镜像脚本我们使用如下的代码来实现真正的同步逻辑。"><a href="#镜像脚本我们使用如下的代码来实现真正的同步逻辑。" class="headerlink" title="镜像脚本我们使用如下的代码来实现真正的同步逻辑。"></a>镜像脚本我们使用如下的代码来实现真正的同步逻辑。</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line"></span><br><span class="line">function sync_repo &#123;</span><br><span class="line">    cd /srv/gitsync</span><br><span class="line">    cd $1</span><br><span class="line">    echo $1</span><br><span class="line">    # fetch all known remotes 获取所有remote的代码更新</span><br><span class="line">    git fetch --all -p</span><br><span class="line">    # 我们可以看同步就在下面进行</span><br><span class="line">    # push branches from sourceforge to github and via versa. 先同步sourceforge 到github. 注意 push的目的remote是github, 源remote是在refs/remote中指定的sourcefore</span><br><span class="line">    git push github &quot;refs/remotes/sourceforge/*:refs/heads/*&quot;</span><br><span class="line">    # 同理推送 github上的代码更新到sourceforge</span><br><span class="line">    git push sourceforge &quot;refs/remotes/github/*:refs/heads/*&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># 处理参数，进入指定的bare仓库进行推送</span><br><span class="line">cd /srv/gitsync</span><br><span class="line">if [ &quot;$1&quot; == &quot;&quot; ]; then</span><br><span class="line">    # no command line parameters, print help message</span><br><span class="line">    echo &quot;gitsync [report]|--all&quot;</span><br><span class="line">elif [ &quot;$1&quot; == &quot;--all&quot; ]; then</span><br><span class="line">    # &quot;--all&quot;: for all known repositories</span><br><span class="line">    for D in *; do</span><br><span class="line">    if [ -d &quot;$&#123;D&#125;&quot; ]; then</span><br><span class="line">            sync_repo $D</span><br><span class="line">            cd /srv/gitsync</span><br><span class="line">    fi</span><br><span class="line">    done</span><br><span class="line">elif [ -d &quot;$1&quot; ]; then</span><br><span class="line">    # sync only the specified repository</span><br><span class="line">    sync_repo $1</span><br><span class="line">else echo &quot;gitsync [report]|--all&quot;</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+<p>我们可以看到在 sync_repo 函数中我们把 github 和 sourceforge 进行了互相推送。当然你还可以进行更多的映射。</p>
+<p>就像我们上面讨论的，我门使用 webhooks 来触发我们的 mirror 行为。可以使用如下的 php 脚本</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">if ($_SERVER[&apos;REQUEST_METHOD&apos;] !== &apos;POST&apos;) &#123;</span><br><span class="line">    die(&apos;POST required&apos;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">if (!isset($_REQUEST[&apos;repository&apos;])) &#123;</span><br><span class="line">    die(&apos;repository not specified&apos;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// validate repository name to prevent injection and traversing attacks</span><br><span class="line">$repo = $_REQUEST[&apos;repository&apos;];</span><br><span class="line">if (!preg_match(&apos;/^[a-zA-Z0-9]+$/&apos;, $repo)) &#123;</span><br><span class="line">    die(&apos;invalid repository name&apos;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">header(&apos;HTTP/1.0 204 Found&apos;);</span><br><span class="line">system(&apos;sudo -Hu gitsync /usr/local/bin/gitsync &apos;.$repo);</span><br></pre></td></tr></table></figure>
+<h5 id="安全"><a href="#安全" class="headerlink" title="安全"></a>安全</h5><ul>
+<li><p>我们必须的校验仓库名称，以防止 shell 命令注入，git 命令注入，以及目录遍历等非法行为。</p>
+</li>
+<li><p>上面的代码使用了 sudo 的权限，显然 webserver 不应该拥有可访问仓库的权限。</p>
+</li>
+<li><p>大部分代码管理都支持 webhook 验证，但是我么上面的例子没有使用验证，那意味着任何人都可以触发我们的同步行为。</p>
+</li>
+</ul>
+<h5 id="删除分支这里还没有好的方法可以让我们同步删除分支的行为。但是我们还是通过我们脚本以-push-的方法来进行删除。且看下面的方法"><a href="#删除分支这里还没有好的方法可以让我们同步删除分支的行为。但是我们还是通过我们脚本以-push-的方法来进行删除。且看下面的方法" class="headerlink" title="删除分支这里还没有好的方法可以让我们同步删除分支的行为。但是我们还是通过我们脚本以 push 的方法来进行删除。且看下面的方法"></a>删除分支这里还没有好的方法可以让我们同步删除分支的行为。但是我们还是通过我们脚本以 push 的方法来进行删除。且看下面的方法</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git branch -d [branchName]</span><br><span class="line">git push github --delete [branchName]</span><br><span class="line">git push sourceforge --delete [branchName]</span><br></pre></td></tr></table></figure>
+<p>虽然麻烦但是我们还是实现了：)。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/git-mirror/">git mirror</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/01/30/从web的历史看起来/"><span>从web的历史看起来，说不定会有收获哦！</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/01/30/从web的历史看起来/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-01-30T05:05:06.000Z">
+          2018-01-30
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>啥都不说先上图</p>
+<p><img src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1517319556099&amp;di=9a896e93fd40371a629ae7b86da01a13&amp;imgtype=0&amp;src=http%3A%2F%2Fg.hiphotos.baidu.com%2Fbaike%2Fw%253D268%2Fsign%3D2da2b172510fd9f9a017526f1d2cd42b%2Fcaef76094b36acafe88708f27cd98d1000e93901213fbc65.jpg" alt=""></p>
+<p>题目有些大，我肯定cover不住，只是最近了有这么个想法，看看能不能梳理一下。</p>
+<p>其中多是猜测臆想，见识浅陋还请担当。接下来带领大家看看当年的牛人是有多凶残！！</p>
+<h1 id="别跟老夫说什么语言说什么技术，说什么计算机理论，老夫做东西那都是原创的都是独自发明！！！"><a href="#别跟老夫说什么语言说什么技术，说什么计算机理论，老夫做东西那都是原创的都是独自发明！！！" class="headerlink" title="别跟老夫说什么语言说什么技术，说什么计算机理论，老夫做东西那都是原创的都是独自发明！！！"></a>别跟老夫说什么语言说什么技术，说什么计算机理论，老夫做东西那都是原创的都是独自发明！！！</h1><h2 id="前期哥都做了啥"><a href="#前期哥都做了啥" class="headerlink" title="前期哥都做了啥"></a>前期哥都做了啥</h2><h3 id="我是谁？"><a href="#我是谁？" class="headerlink" title="我是谁？"></a>我是谁？</h3><p>我是大名鼎鼎的蒂姆·伯纳斯-邓，我工作在CERN，这是哪呢？<a href="https://zh.wikipedia.org/wiki/%E6%AD%90%E6%B4%B2%E6%A0%B8%E5%AD%90%E7%A0%94%E7%A9%B6%E7%B5%84%E7%B9%94" target="_blank" rel="noopener">欧洲核子研究组织</a>。</p>
+<h3 id="我要做啥呢？"><a href="#我要做啥呢？" class="headerlink" title="我要做啥呢？"></a>我要做啥呢？</h3><p>刚开始我也不知道，反正我在那里工作着工作着，我就发现了可以把<a href="https://zh.wikipedia.org/wiki/%E8%B6%85%E6%96%87%E6%9C%AC%E7%B3%BB%E7%BB%9F" target="_blank" rel="noopener">超文本系统</a>与互联网结合在一起, 具体是干啥呢？就是把超文本系统，<a href="https://zh.wikipedia.org/wiki/%E4%BC%A0%E8%BE%93%E6%8E%A7%E5%88%B6%E5%8D%8F%E8%AE%AE" target="_blank" rel="noopener">传输控制协议</a>，<a href="https://zh.wikipedia.org/wiki/%E5%9F%9F%E5%90%8D%E7%B3%BB%E7%BB%9F" target="_blank" rel="noopener">域名系统</a>给结合起来。</p>
+<h3 id="我为啥发现我要做这个呢？"><a href="#我为啥发现我要做这个呢？" class="headerlink" title="我为啥发现我要做这个呢？"></a>我为啥发现我要做这个呢？</h3><p>哎，还不是为了那帮不争气的人儿啊？那么的文档，咋才能让大家都共享阅读使用呢？这是个问题！</p>
+<h3 id="我要先准备点儿啥呢？"><a href="#我要先准备点儿啥呢？" class="headerlink" title="我要先准备点儿啥呢？"></a>我要先准备点儿啥呢？</h3><ol>
+<li>话说我知道一个东西叫<a href="https://zh.wikipedia.org/wiki/%E8%B6%85%E6%96%87%E6%9C%AC" target="_blank" rel="noopener">超文本</a>,可这些东西都是大家自己写的啊？也没个规范啥的，呃😂,这群不省心的人儿啊！不怕，哥无敌啊，于是哥-DD发明了HTML(HyperTextMarkupLunguage)-超文本标记语言,咳咳，你们这群鳖孙往后都用这个标记语言来写你们的文档(一种Markdown的即时感)。不过有点儿low的是哥这是<a href="http://cetus.sakura.ne.jp/htmllint/tagslist.cgi?HTMLVersion=html10" target="_blank" rel="noopener">1.0</a>的标记不多先凑合用吧啊。</li>
+<li>我还有另外一个东西要做呢，就是得把这群鳖孙写的HTML，显示出来给大家看啊？于是呢，DD哥魔性大发有写了个软件来阅读我发明的html(说白了我其实写的是个html阅读器😎)。</li>
+<li>哎呦哟，我好像还忘了另外一个事儿？我写个html阅读器，然后html问价我咋传输呢？哥哥要的可是超文本系统，可以随意跳转查看的哦！<br>嗯，定了，DD哥再给这群鳖孙写个服务器端的软件让他们可以从服务器获取html文档，正好可以用到我另一个发明的<a href="https://en.wikipedia.org/wiki/Uniform_Resource_Identifier" target="_blank" rel="noopener">uri</a>。坏了，那怎么招也得来个html文档的传输协议吧？嗯，机智如我这个也不能少，哦了，那个DD哥我在造个传输协议吧，有了就它了<a href="https://zh.wikipedia.org/wiki/%E8%B6%85%E6%96%87%E6%9C%AC%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE" target="_blank" rel="noopener">HTTP(HyperTextTransportProtocol)</a>。哦了，这就彻底ok了！</li>
+</ol>
+<h3 id="终于给那群鳖孙搞定了，那我就可以把这个玩意儿给他们用了，妈妈再也不用担心他们看文档费事儿了。-因为得到处找，共享也不方便"><a href="#终于给那群鳖孙搞定了，那我就可以把这个玩意儿给他们用了，妈妈再也不用担心他们看文档费事儿了。-因为得到处找，共享也不方便" class="headerlink" title="终于给那群鳖孙搞定了，那我就可以把这个玩意儿给他们用了，妈妈再也不用担心他们看文档费事儿了。(因为得到处找，共享也不方便)"></a>终于给那群鳖孙搞定了，那我就可以把这个玩意儿给他们用了，妈妈再也不用担心他们看文档费事儿了。(因为得到处找，共享也不方便)</h3><p>带领大家看看我的第一个website, 是的website我管我发布的那个域名 <a href="http://info.cern.ch/" target="_blank" rel="noopener">http://info.cern.ch/</a>。哦我还给我的html阅读器取起了名字叫WorldWideWeb, 可惜后来改名了叫Nexus，来再给你们看看他的<a href="https://www.w3.org/History/1991-WWW-NeXT/Implementation/" target="_blank" rel="noopener">源代码</a>，不用说谢谢。</p>
+<h3 id="哥做了个伟大的决定"><a href="#哥做了个伟大的决定" class="headerlink" title="哥做了个伟大的决定"></a>哥做了个伟大的决定</h3><p>我把我发明的所有的东西都无偿开放出来了，为哥<a href="https://zh.wikipedia.org/wiki/%E8%92%82%E5%A7%86%C2%B7%E4%BC%AF%E7%BA%B3%E6%96%AF-%E6%9D%8E" target="_blank" rel="noopener">点赞</a>吧！向<a href="https://zh.wikipedia.org/wiki/%E8%92%82%E5%A7%86%C2%B7%E4%BC%AF%E7%BA%B3%E6%96%AF-%E6%9D%8E" target="_blank" rel="noopener">蒂姆·伯纳斯-李</a>，脱帽致敬。(提供岗位并不一定伟大的，但创造岗位的一定是伟大的-不准跟哥叫板)</p>
+<h2 id="前期哥都是咋做的"><a href="#前期哥都是咋做的" class="headerlink" title="前期哥都是咋做的"></a>前期哥都是咋做的</h2><h3 id="哎，创新力爆棚，不要问我为什么就会有这些想法，一句话哥就是厉害。"><a href="#哎，创新力爆棚，不要问我为什么就会有这些想法，一句话哥就是厉害。" class="headerlink" title="哎，创新力爆棚，不要问我为什么就会有这些想法，一句话哥就是厉害。"></a>哎，创新力爆棚，不要问我为什么就会有这些想法，一句话哥就是厉害。</h3><h3 id="先说说我是咋做的html阅读吧-现在都叫浏览器了，哎，得持续学习啊"><a href="#先说说我是咋做的html阅读吧-现在都叫浏览器了，哎，得持续学习啊" class="headerlink" title="先说说我是咋做的html阅读吧(现在都叫浏览器了，哎，得持续学习啊)"></a>先说说我是咋做的html阅读吧(现在都叫浏览器了，哎，得持续学习啊)</h3><p>其实大家看看我的1.0规范会看到里面其实没啥太多的标签，都是基本常用的，比如a, plaintext,title, ul/li, h2等等。我既然要做规范，那我也得让我的阅读器显示是规范的哦了，走起。(以下纯属臆想，如有冒犯，删，图形库代码以skia(blink使用gui2D库)函数名字为例（就像用canvas画图是一样的）)</p>
+<ul>
+<li><p>那哥这个阅读器得用GUI编程了，可哥最烦的就是这个了。。。呃好吧，我决定了，我要把我的没个标签长啥样都给定死咯，大小，我定，宽度我定，统统都放进长宽固定的盒子里就像乐高似的，为啥，好实现啊。。。就是。。。厉害</p>
+<ul>
+<li>a，标签加个下划线就行了，😎可以，这样我只需要调用gui接口的drawText,drawPath就好了，哎，机智</li>
+<li>plaintext，就直接drawText就好了，别跟我说什么字体,系统用啥字体我就用啥字体，服不服！还有也别和哥说什么baseline，说什么行高,说什么大小，哎，大小可以说，我都固定就14px吧。 哥用的gui库咋处理，哥都随他，谁让哥这会懒了呢？ 都不听，哦了plaintext标签页搞定了, 哦 对了，听说你们想换色，嘿嘿，哥不支持，谁让这是哥写的浏览器呢。</li>
+<li><p>最后再举一个栗子吧，比如ul列表，嗯，这个吗我给你们个前缀图形吧，就圆吧，黑色，不允许再挑了，要不连这个都没有！</p>
+</li>
+<li><p>最后总结一下啊，就是我看到plaintext标签呢，我就drawText,不序调色，不许换字体，总之啥都不许。然后看到a标签呢？我就drawText,和drawPath就好了，其他都不许，没有事件，没有颜色。。。其他同理</p>
+<p>请看1.0版预览图</p>
+<img src="/2018/01/30/从web的历史看起来/preview.png">
+<p>看到没有我的第一个html阅读器就在这样的思想下完成了，yes! 哎我好想少了点儿啥？我的这些标签的展示顺序是啥啊？呵呵，哥会忘么，自上之下，就行了，yes!呵呵空格统统忽略，哥就是任性。</p>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>接下来是我怎么拿到html文档了，我按照http协议像后台服务器发起一个tcp连接，然后把http协议内容发送到后台，后台再把html返回给我，我再解析，遍历html每个标签生成一个标签树，然后在我的浏览器按照1的步骤遍历标签树，画出整个html。 ok。</li>
+</ul>
+<h3 id="好了该哥的服务器端了"><a href="#好了该哥的服务器端了" class="headerlink" title="好了该哥的服务器端了"></a>好了该哥的服务器端了</h3><p>呃，这个还要说么？要得，哥的浏览器按照我的http协议向我发起tcp连接我收到内容得解析啊，看看请求的是哪个html，然后在文件系统中找到再返回回去就好了。</p>
+<h3 id="大功告成"><a href="#大功告成" class="headerlink" title="大功告成"></a>大功告成</h3><p>嗯，哥的浏览器，后台服务程序都成功完成了，可以给那帮鳖孙使用了。哎，不对啊，那html文件谁来写呢，呵呵，他们的文档让他们自己写去，前提得用的标记语法！什么嫌我的标记语法太简单了要更多功能，呵呵，哥没时间。</p>
+<h2 id="接下来哥发明创造发光发亮的历程啊！！！"><a href="#接下来哥发明创造发光发亮的历程啊！！！" class="headerlink" title="接下来哥发明创造发光发亮的历程啊！！！"></a>接下来哥发明创造发光发亮的历程啊！！！</h2><h3 id="第一个普遍可用的使用GUI的网页浏览器是Erwise"><a href="#第一个普遍可用的使用GUI的网页浏览器是Erwise" class="headerlink" title="第一个普遍可用的使用GUI的网页浏览器是Erwise"></a>第一个普遍可用的使用GUI的网页浏览器是Erwise</h3><h3 id="接下来是Mosaic浏览器，紧接着是Netscape"><a href="#接下来是Mosaic浏览器，紧接着是Netscape" class="headerlink" title="接下来是Mosaic浏览器，紧接着是Netscape"></a>接下来是Mosaic浏览器，紧接着是Netscape</h3><p>这个可以多说几句</p>
+<ol>
+<li>这货嫌哥的html标签不够多还添加了几个</li>
+<li>他还觉得哥设计的http是无协议，还来了个cookie</li>
+<li>更甚至他还来个js,放到浏览器里，方便与用户交互(mmt,哥只是想让大家好好的分享文档啊！！！！，瞎说的，文档也是可以交互的文档啊！)</li>
+<li>呃，他还嫌我的协议没有保密性，于是又来了个ssl<h3 id="ie-浏览器的届无耻流氓，很显然，我也没办法"><a href="#ie-浏览器的届无耻流氓，很显然，我也没办法" class="headerlink" title="ie(浏览器的届无耻流氓，很显然，我也没办法)"></a>ie(浏览器的届无耻流氓，很显然，我也没办法)</h3><h3 id="opera-safari-firefox-chrome等等。"><a href="#opera-safari-firefox-chrome等等。" class="headerlink" title="opera, safari, firefox, chrome等等。"></a>opera, safari, firefox, chrome等等。</h3><blockquote>
+<p>web 到底如何改变了我们生活想必大家都有感受</p>
+</blockquote>
+</li>
+</ol>
+<h3 id="那么这么厉害的netscape，吃瓜群众现在为啥都看不到了呢？请参考浏览器大战，哥痛心啊"><a href="#那么这么厉害的netscape，吃瓜群众现在为啥都看不到了呢？请参考浏览器大战，哥痛心啊" class="headerlink" title="那么这么厉害的netscape，吃瓜群众现在为啥都看不到了呢？请参考浏览器大战，哥痛心啊"></a>那么这么厉害的netscape，吃瓜群众现在为啥都看不到了呢？请参考<a href="https://zh.wikipedia.org/wiki/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%A4%A7%E6%88%98" target="_blank" rel="noopener">浏览器大战，哥痛心啊</a></h3><h2 id="呵呵哥才是朕"><a href="#呵呵哥才是朕" class="headerlink" title="呵呵哥才是朕"></a>呵呵哥才是朕</h2><p>鉴于这么多中的浏览器，他们都有自己随意添加的html标签，以及标签样式也有可能实现的不一样。于是哥牵头成立了w3c-万维网联盟，来制定各种标准，你们都得按照哥说的来做ok？<br>比如html标准，我说有哪些标签就得有哪些，功能是啥样交互是啥样也得听哥的，长啥样么？这个可以交给你们！(当然这不是真的，哥还得考虑各大浏览器厂商的实现，以及一线开发人员的需要)</p>
+<h2 id="哎嗨，此时就会有群众问了，我们经常见的css呢？js，cookie是netscape-那么css呢？"><a href="#哎嗨，此时就会有群众问了，我们经常见的css呢？js，cookie是netscape-那么css呢？" class="headerlink" title="哎嗨，此时就会有群众问了，我们经常见的css呢？js，cookie是netscape, 那么css呢？"></a>哎嗨，此时就会有群众问了，我们经常见的css呢？js，cookie是netscape, 那么css呢？</h2><p>惭愧啊，他们这些鳖孙都嫌我设计的样式不好看，我就想说了，看个文档要啥样式，要啥样式？不过我是大度的，好啊，我给html标签加点儿属性，比如：width, 让你来告诉我我的标签有多夸好吧，mmt的，不对啊，你要是不给我，我还得自己设置宽度，又得自己干了，mmt的。啥这样写不好维护？结构与样式分离？ 你咋不上天去呢？ 文档还要维护啊？mmt的。(显然我们doctor 李肯定不是我这样，人肯定是开放包容的态度。。。)</p>
+<h3 id="此时有人站出来了-吃瓜的你们看看去吧"><a href="#此时有人站出来了-吃瓜的你们看看去吧" class="headerlink" title="此时有人站出来了, 吃瓜的你们看看去吧"></a><a href="https://zh.wikipedia.org/wiki/%E5%B1%82%E5%8F%A0%E6%A0%B7%E5%BC%8F%E8%A1%A8#%E5%8F%91%E5%B1%95%E5%8E%86%E5%8F%B2" target="_blank" rel="noopener">此时有人站出来了</a>, 吃瓜的你们看看去吧</h3><p>你别说，这玩意儿也还凑活着用。</p>
+<p>嘚吧嘚吧的也差不多了，web的历史就是这么一步一步的走过来了。<br>小总结一下：我觉得web的核心思想还在于李博士创建的初期思想，共享与开放！而不是现在的某鹅或者其他什么的动不动就屏蔽啥的！他有屏蔽的能力并且做了，那就说明他已经在违背的道路上开始行走了，他若是走的越远，那我们的世界就真越窄。</p>
+<p>ps: 下面是附带的关于在构建我的第一版浏览器时对css的一些总结。当我开始思考我的浏览器的实现的时候就发现了一些问题诸如元素怎么计算宽度，怎么定位，怎么布局？在联合css一想发现这些属性的存在都是很有道理的。</p>
+<h2 id="接下来我想接着上面我的那版粗糙的浏览器实现讲讲css的一些东西"><a href="#接下来我想接着上面我的那版粗糙的浏览器实现讲讲css的一些东西" class="headerlink" title="接下来我想接着上面我的那版粗糙的浏览器实现讲讲css的一些东西"></a>接下来我想接着上面我的那版粗糙的浏览器实现讲讲css的一些东西</h2><h3 id="布局，什么是布局，我觉得得是页面的整体框架"><a href="#布局，什么是布局，我觉得得是页面的整体框架" class="headerlink" title="布局，什么是布局，我觉得得是页面的整体框架"></a>布局，什么是布局，我觉得得是页面的整体框架</h3><p>我们的1.0版本啥都不支持，其实css中目前也没有哪个具体说就是用来布局的除了grid还有flexbox，这两个对布局来说是利器，可是要是有浏览器兼容性问题的话就惨喽。那么flexbox在我们的版本中如何实现呢？我不知道，得先看看flexbox的规范😇，那么我们以前的布局都用的啥呢？都是再用定位来做布局的工作。</p>
+<h3 id="定位"><a href="#定位" class="headerlink" title="定位"></a>定位</h3><p>我们看了我的1.0版本中时不支持定位的就是说标签都是一行一个排列的，显然对于想要，左移一点儿右移一点儿的需求就实现不了了。那么我们定位到底咋来呢？按照规范来说就是使用flow算法来的。分为normal flow、float flow 和 absolutely flow。至于具体就得去啃规范了 <a href="http://www.cnblogs.com/ginowang42/archive/2013/05/20/3089088.html" target="_blank" rel="noopener">这里有某人总结的</a>, 很不错，显然我们若是照着这个算法，咱们的1.0也行啊！！！！</p>
+<ul>
+<li>插一个浮动的问题，加入我想让我的1.0实现文字绕着元素周围布局我该怎么做呢？思考一下我发现让他从常规定位中独立出来反而最好实现的了，我可以给他一个特殊标记，就好比float: left, 那么我就知道他要文字绕着他，那我就把他后面的文字绕着他呗，而且他不参与其他元素的属性计算，但是他还占着父元素的布局位置，只是不参与其他属性计算如高度等。很显然我的想法很幼稚，其实可以参考一下规范到底实现算法是咋样的！！！<a href="http://www.zhangxinxu.com/wordpress/2010/01/css-float%E6%B5%AE%E5%8A%A8%E7%9A%84%E6%B7%B1%E5%85%A5%E7%A0%94%E7%A9%B6%E3%80%81%E8%AF%A6%E8%A7%A3%E5%8F%8A%E6%8B%93%E5%B1%95%E4%B8%80/" target="_blank" rel="noopener">参见张鑫旭关于float的看法</a></li>
+</ul>
+<h3 id="排版"><a href="#排版" class="headerlink" title="排版"></a>排版</h3><p>这里的排版是指文字的排版，比如行间距，行高，我们1.0的版本就不支持你们设置这些东西，因为我们就不解析他们啊哈哈哈。这个要实现就好办了，在drawText的时候把这些属性都加上，但是我们是否应该直接给出行间距这个属性呢?显然现在的css中并没有。而是根据line-height, vertical-align等值计算出来的。那么baseline呢 所有的文本排版的时候得有个纵向的对比啊，大家纵向是不是得和谁对齐啊。等等等，这都在这里了</p>
+<h3 id="层叠和继承"><a href="#层叠和继承" class="headerlink" title="层叠和继承"></a>层叠和继承</h3><p>我们第一版没有样式可供你调整的，但是有了css就不一样了，有html作者写的样式有我的浏览器自定义的样式，有css的样式，这么多的样式怎么处理呢，于是就有了层叠和权值的概念。我的浏览器可以根据这些来决定用哪个样式。那么还有我我希望我的所有的字体都是12px大小那么，我总不能每一个标签都去设置一边吧，我的浏览器可以实现一个继承的概念，我解读到顶层的font-size后我就设置他的子标签都继承他。</p>
+<h3 id="盒式模型"><a href="#盒式模型" class="headerlink" title="盒式模型"></a>盒式模型</h3><p>我们的1.0版本在实现时就没考虑这些，我们把宽度，大小统统都定死了。但是我们也可以从这里看到其实我们所有的元素最终都是有个大小的，在我们的版本里，其实我们把所有的元素都放进了相同的盒子，实现省事儿啊！css也是盒式模型的，感觉就和咱们的思想很像所有的元素都放进一个盒子里这样就都是矩形，实现时布局也省事儿啊！只是css的盒子比咱们的有些复杂，他还有margin,padding,border等。但最起码为啥是盒式的我觉得我的理由就很有说服力，好实现，易于理解。</p>
+<h3 id="块级元素和行内元素"><a href="#块级元素和行内元素" class="headerlink" title="块级元素和行内元素"></a>块级元素和行内元素</h3><p>为啥会有这些区别呢？在我们1.0里那全都是块级的，不也好好的啊，不是的，我们的1.0里两个文本是没办法放在一行的，多尴尬，我写了两个plaintext标签一个是‘我’另一个是‘你’，f**k他俩居然还换行。。。因此行内元素的左右就有了。有些标签我们总是不想让他们换行的。。。</p>
+<h3 id="块级元素和行内元素的嵌套问题"><a href="#块级元素和行内元素的嵌套问题" class="headerlink" title="块级元素和行内元素的嵌套问题"></a>块级元素和行内元素的嵌套问题</h3><p>行内元素尽量不要嵌套块级元素语义不符合，而且浏览器的处理也不统一。尽量不要。但是块级元素可以嵌套行内和块级元素，并且这里有个知识点，块级元素内要是块级源，要么是一个ifc，显然这是在说要么里面全是块级要么全是行内元素，可事实我们可以两掺啊？为什么呢？因为若是两掺了，w3c规范规定，会为行内元素再生成一个匿名块级元素的。其实想想也可以的，好比让我们的1.0版来实现的话，显然也是按照规范的来走比较简单，当我们解析了块级元素那么他的内部布局就只有2种方式。</p>
+<h3 id="BFC和IFC"><a href="#BFC和IFC" class="headerlink" title="BFC和IFC"></a>BFC和IFC</h3><p>我们既然有了块级和行内很显然，咱们的1.0版本要想实现他俩，那就意味着我们看到不同标签就应当采用不同的绘制方式，因为我们的块级元素要换行，行内不换行，那我们就对不同的元素采用不同的渲染方式，于是就有了BFC和IFC，但事实也不一定所有的块级元素就会触发BFC,是要满足一定的条件的，在我看来就是我们的渲染方式不止只有BFC和IFC还有一中就是遇到块级元素时默认采取的。</p>
+<h3 id="值和单位"><a href="#值和单位" class="headerlink" title="值和单位"></a>值和单位</h3><p>在我们的1.0里显然我是自己定义的，可若是用css的话，那么css的单位我们如何转换就又一个问题了，他的1px我们是否就要画1px呢？在pc端好像是的，但是在移动端就不一样了。一说到单位，那么我们的浏览器的画布宽度设置多少呢？是否是和设备宽度一致还是说要大一些，这方面我还有太多实践也就没有啥可说的。其实我们这里是有术语的<a href="https://www.cnblogs.com/2050/p/3877280.html" target="_blank" rel="noopener">viewport</a>。显然我们的1.0升级时也得考虑这个问题，并且还有单位可不止只有px哦，rem,em,pt等等，我们在实现时又得考虑哪些问题呢？我是蒙了，再说吧！</p>
+<p>参考:</p>
+<ol>
+<li><a href="https://zh.wikipedia.org/wiki/%E5%B1%82%E5%8F%A0%E6%A0%B7%E5%BC%8F%E8%A1%A8#%E5%8E%86%E5%8F%B2" target="_blank" rel="noopener">css wiki</a></li>
+<li><a href="https://zh.wikipedia.org/wiki/HTML#%E5%8F%91%E5%B1%95" target="_blank" rel="noopener">html wiki</a></li>
+<li><a href="https://zh.wikipedia.org/wiki/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%A4%A7%E6%88%98" target="_blank" rel="noopener">浏览器大战</a></li>
+<li><a href="https://zh.wikipedia.org/wiki/%E8%B6%85%E6%96%87%E6%9C%AC%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE" target="_blank" rel="noopener">http wiki</a></li>
+<li><a href="https://zh.wikipedia.org/wiki/%E7%B6%B2%E6%99%AF" target="_blank" rel="noopener">netscape</a></li>
+</ol>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/css/">css</a><a href="/tags/web历史/">web历史</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/01/21/iterator/"><span>关闭迭代器是一个抽象漏洞</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/01/21/iterator/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-01-21T09:30:06.000Z">
+          2018-01-21
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p><a href="http://raganwald.com/2017/07/22/closing-iterables-is-a-leaky-abstraction.html" target="_blank" rel="noopener">原文地址</a></p>
+<p>先上图<br><img src="http://exploringjs.com/es6/images/iteration----consumers_sources.jpg" alt=""></p>
+<p>先来普及一下<br><a href="https://zh.wikipedia.org/zh-hans/%E6%8A%BD%E8%B1%A1%E6%BC%8F%E6%B4%9E%E5%AE%9A%E5%BE%8B" target="_blank" rel="noopener">抽象漏洞wiki</a><br><a href="http://www.jdon.com/46006" target="_blank" rel="noopener">抽象漏洞</a><br>总结一小下：抽象漏洞告诉我们出来混早晚要还的，无论你怎么去屏蔽复杂，怎么去抽象，总是不完整的总是会有漏洞的。</p>
+<h3 id="迭代器和可迭代对象的一个概述"><a href="#迭代器和可迭代对象的一个概述" class="headerlink" title="迭代器和可迭代对象的一个概述"></a>迭代器和可迭代对象的一个概述</h3><p>在js中，迭代器和可迭代对象是顺序访问数据的抽象层接口。我们可以在数组或者优先级队列中看到他们。</p>
+<p>一个迭代器就是一个拥有next方法的对象。当你调用next()的时候，他会返回一个Plain Old Javascript Object。 这个返回值拥有done属性，当done值是false的时候，这个返回值还会有个value属性，数据就是value属性中的值。反而如果done是true，那么就应该不会有value属性。</p>
+<blockquote>
+<p>迭代器不可以是async/await等异步方法</p>
+</blockquote>
+<p>迭代器被设计为一个有状态的对象：重复调用next方法通常能获取到一系列的数据直到done为止。<br>这里有一个栗子: <a href="http://jsbin.com/gibadoxato/edit?js,console" target="_blank" rel="noopener">jsbin</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">const iCountdown = &#123;</span><br><span class="line">  value: 10,</span><br><span class="line">  done: false,</span><br><span class="line">  next() &#123;</span><br><span class="line">    this.done = this.done || this.value &lt; 0;</span><br><span class="line"></span><br><span class="line">    if (this.done) &#123;</span><br><span class="line">      return &#123; done: true &#125;;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      return &#123; done: false, value: this.value-- &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">iCountdown.next()</span><br><span class="line">  //=&gt; &#123; done: false, value: 10 &#125;</span><br><span class="line"></span><br><span class="line">iCountdown.next()</span><br><span class="line">  //=&gt; &#123; done: false, value: 9 &#125;</span><br><span class="line"></span><br><span class="line">iCountdown.next()</span><br><span class="line">  //=&gt; &#123; done: false, value: 8 &#125;</span><br><span class="line"></span><br><span class="line">// ...</span><br><span class="line"></span><br><span class="line">iCountdown.next()</span><br><span class="line">  //=&gt; &#123; done: false, value: 1 &#125;</span><br><span class="line"></span><br><span class="line">iCountdown.next()</span><br><span class="line">  //=&gt; &#123; done: true &#125;</span><br></pre></td></tr></table></figure></p>
+<p>可迭代对象是一个拥有[Symbol.iterator]方法的对象。当调用这个方法的时候他会返回一个迭代器。<br>举个栗子：<a href="http://jsbin.com/labibimani/edit?js,console" target="_blank" rel="noopener">jsbin</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">const countdown = &#123;</span><br><span class="line">  [Symbol.iterator]() &#123;</span><br><span class="line">    const iterator = &#123;</span><br><span class="line">      value: 10,</span><br><span class="line">      done: false,</span><br><span class="line">      next() &#123;</span><br><span class="line">        this.done = this.done || this.value &lt; 0;</span><br><span class="line"></span><br><span class="line">        if (this.done) &#123;</span><br><span class="line">          return &#123; done: true &#125;;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">          return &#123; done: false, value: this.value-- &#125;;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    return iterator;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>我们可以使用for … of 来对这个对象进行迭代<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">for (const count of countdown) &#123;</span><br><span class="line">  console.log(count);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>或者我们还可以对他进行解构<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">const [ten, nine, eight, ...rest] = countdown;</span><br><span class="line"></span><br><span class="line">ten</span><br><span class="line">  //=&gt; 10</span><br><span class="line">nine</span><br><span class="line">  //=&gt; 9</span><br><span class="line">eight</span><br><span class="line">  //=&gt; 8</span><br><span class="line">rest</span><br><span class="line">  //=&gt; [7, 6, 5, 4, 3, 2, 1]</span><br></pre></td></tr></table></figure></p>
+<p>接下来让我们看看如何对一个文件进行迭代？<br>在看之前我们得先想想node有对文件有按行读的同步方法(上面我们提过了，迭代器只能使用同步方法)么？我找了一圈发现了一个异步读的方法，readline，这个包可以对文件流进行异步按行读取。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">const readline = require(&apos;readline&apos;);</span><br><span class="line">const fs = require(&apos;fs&apos;);</span><br><span class="line"></span><br><span class="line">const rl = readline.createInterface(&#123;</span><br><span class="line">  input: fs.createReadStream(&apos;sample.txt&apos;),</span><br><span class="line">  crlfDelay: Infinity</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">rl.on(&apos;line&apos;, (line) =&gt; &#123;</span><br><span class="line">  console.log(`Line from file: $&#123;line&#125;`);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>可以肯定的是node本身没有提供同步的按行读取文件的方法，那么我们就只能利用node的同步读方法来模拟按行读取了。每次读取一部分然后检查换行符，fs.readSync(fd, buffer, offset, length, position)。当然这里已然有一个包了‘n-readlines’。<a href="https://stackoverflow.com/questions/7545147/nodejs-synchronization-read-large-file-line-by-line" target="_blank" rel="noopener">参见</a></p>
+<p>好了这下我们可以看看对文件的按行迭代了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">const fs = require(&apos;fs&apos;);</span><br><span class="line">const lineByLine = require(&apos;n-readlines&apos;);</span><br><span class="line"></span><br><span class="line">function lines (path) &#123;</span><br><span class="line">  return &#123;</span><br><span class="line">    [Symbol.iterator]() &#123;</span><br><span class="line">      return &#123;</span><br><span class="line">        done: false,</span><br><span class="line">        fileDescriptor: new lineByLine(path),</span><br><span class="line">        next() &#123;</span><br><span class="line">          if (this.done) return &#123; done: true &#125;;</span><br><span class="line">					const line = this.fileDescriptor.next();</span><br><span class="line">					</span><br><span class="line">          this.done = !line;</span><br><span class="line"></span><br><span class="line">          if (this.done) &#123;</span><br><span class="line">						this.fileDescriptor.fd &amp;&amp; fs.closeSync(this.fileDescriptor.fd);</span><br><span class="line">            return &#123; done: true &#125;;</span><br><span class="line">          &#125; else &#123;</span><br><span class="line">            return &#123; done: false, value: line &#125;;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>当我们想要对一个文件进行按行迭代时，我们就可以这么使用lines(‘./README.md’);</p>
+<p>当我们调用了<a href="">Symbol.iterator</a>我们就会得到一个文件的迭代器。</p>
+<p>如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">for (const line of lines(&apos;./iter.js&apos;)) &#123;</span><br><span class="line">	console.log(line.toString());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>当我们把文件内容都迭代的读取完了以后，我们自然会关闭了文件。</p>
+<p>可是若是我们只想读取第一行呢？<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">for (const line of lines(&apos;./iter.js&apos;)) &#123;</span><br><span class="line">	console.log(line.toString());</span><br><span class="line">	break;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这样我们就会有一个问题了，就是该如何关闭文件。我们上面的代码是在读完以后回去检查文件是否关闭然后关闭。可是当我们只读取了一行就退出时，我们的文件时未关闭的。。。</p>
+<p>这肯定是不好的。并且上面也不是唯一的情况，有时我们可能使用迭代器去管理我们的异步任务，比如我们通过指定端口和其他进程交互，很显然当我们完成了交互时我们会显式的去关闭指定的端口，我们可不想在使用中却被gc给收集了。</p>
+<p>通过上面的描述，很明显我们需要一个能显式关闭迭代器的方法，以便迭代器能够释放他们所占用的资源。接下来让我们做一些尝试。</p>
+<p>幸运的是，这里确实有这么一种机制来关闭迭代器。他设计的意图就是用来处理那些拥有各种各样的资源的迭代器，好比是文件描述符，一个打开的端口，大量的内存等等。</p>
+<p>迭代器需要释放资源这是个问题，js为我们提供的机制来解决这些问题。但是我们依然先采用自己的方式来试试。</p>
+<p>我们来看看</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">const countdown = &#123;</span><br><span class="line">  [Symbol.iterator]() &#123;</span><br><span class="line">    const iterator = &#123;</span><br><span class="line">      value: 10,</span><br><span class="line">      done: false,</span><br><span class="line">      next() &#123;</span><br><span class="line">        this.done = this.done || this.value &lt; 0;</span><br><span class="line"></span><br><span class="line">        if (this.done) &#123;</span><br><span class="line">          return &#123; done: true &#125;;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">          return &#123; done: false, value: this.value-- &#125;;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      return(value) &#123;</span><br><span class="line">        this.done = true;</span><br><span class="line">        if (arguments.length === 1) &#123;</span><br><span class="line">          return &#123; done: true, value &#125;;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">          return &#123; done: true &#125;;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    return iterator;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="永远都会被调用的return"><a href="#永远都会被调用的return" class="headerlink" title="永远都会被调用的return"></a>永远都会被调用的return</h3><p>我们在前面看到了迭代器的主要方法next,其实这里还有一个return方法，它的签名时return(optionalValue),它的使用如下</p>
+<ul>
+<li>当optionalValue为空时他应当返回{ done: true }， 否则返回{ done: true, value: optionalValue }</li>
+<li>此后，再调用next方法时迭代器应当永远都返回 { done: true }</li>
+</ul>
+<p>我们再回头看看我们的countdown,来实现一下.return<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">const countdown = &#123;</span><br><span class="line">  [Symbol.iterator]() &#123;</span><br><span class="line">    const iterator = &#123;</span><br><span class="line">      value: 10,</span><br><span class="line">      done: false,</span><br><span class="line">      next() &#123;</span><br><span class="line">        this.done = this.done || this.value &lt; 0;</span><br><span class="line"></span><br><span class="line">        if (this.done) &#123;</span><br><span class="line">          return &#123; done: true &#125;;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">          return &#123; done: false, value: this.value-- &#125;;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      return(value) &#123;</span><br><span class="line">        this.done = true;</span><br><span class="line">        if (arguments.length === 1) &#123;</span><br><span class="line">          return &#123; done: true, value &#125;;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">          return &#123; done: true &#125;;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    return iterator;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>这里我们看到了一些重复的逻辑，但他们是有用的，尤其是释放资源时，让我们再整理一下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">const countdown = &#123;</span><br><span class="line">  [Symbol.iterator]() &#123;</span><br><span class="line">    const iterator = &#123;</span><br><span class="line">      value: 10,</span><br><span class="line">      done: false,</span><br><span class="line">      next() &#123;</span><br><span class="line">        if (this.done) &#123;</span><br><span class="line">          return &#123; done: true &#125;;</span><br><span class="line">        &#125; else if (this.value &lt; 0) &#123;</span><br><span class="line">          return this.return();</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">          return &#123; done: false, value: this.value-- &#125;;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      return(value) &#123;</span><br><span class="line">        this.done = true;</span><br><span class="line">        if (arguments.length === 1) &#123;</span><br><span class="line">          return &#123; done: true, value &#125;;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">          return &#123; done: true &#125;;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    return iterator;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>现在我们可以看到如何编写一个在耗尽整个迭代器之前打破的循环：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">count iCountdown = countdown[Symbol.iterator]();</span><br><span class="line"></span><br><span class="line">while (true) &#123;</span><br><span class="line">  const &#123; done, value: count &#125; = iCountdown.next();</span><br><span class="line"></span><br><span class="line">  if (done) break;</span><br><span class="line"></span><br><span class="line">  console.log(count);</span><br><span class="line"></span><br><span class="line">  if (count === 6) &#123;</span><br><span class="line">    iCountdown.return();</span><br><span class="line">    break;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>调用return可以保证我们的iCountdown能够释放资源。那么如果for…of也是这么做的话(先调用next,最后调用return)那就完美了。<br>我们可以加一个输出<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">return(value) &#123;</span><br><span class="line">  if (!this.done) &#123;</span><br><span class="line">    console.log(&apos;Return to Forever&apos;);</span><br><span class="line">    this.done = true;</span><br><span class="line">  &#125;</span><br><span class="line">  if (arguments.length === 1) &#123;</span><br><span class="line">    return &#123; done: true, value &#125;;</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    return &#123; done: true &#125;;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>接着可以尝试<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">for (const count of countdown) &#123;</span><br><span class="line">  console.log(count);</span><br><span class="line">  if (count === 6) break;</span><br><span class="line">&#125;</span><br><span class="line">  //=&gt;</span><br><span class="line">    10</span><br><span class="line">    9</span><br><span class="line">    8</span><br><span class="line">    7</span><br><span class="line">    6</span><br><span class="line">    Return to Forever</span><br></pre></td></tr></table></figure></p>
+<p>并且<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">const [ten, nine, eight] = countdown;</span><br><span class="line">  //=&gt; Return to Forever</span><br></pre></td></tr></table></figure></p>
+<p>整体<a href="http://jsbin.com/yatorehivu/edit?js,console" target="_blank" rel="noopener">jsbin</a></p>
+<p>当我们没有消费整个迭代器时,就是说中途break，js会自动调用return方法<a href="http://jsbin.com/nucixineru/edit?js,console" target="_blank" rel="noopener">jsbin</a></p>
+<p>我们也可以看出来return方法是可选的，若是实现了js就会去自动调用，没有则不回去调用。</p>
+<h3 id="调用return也不总是那么简单"><a href="#调用return也不总是那么简单" class="headerlink" title="调用return也不总是那么简单"></a>调用return也不总是那么简单</h3><p>看了上面，我们就会为我们的可迭代对象实现return方法尤其是那些需要释放资源的迭代对象，以便js为我们自动调用。</p>
+<p>来看一个比较棘手的问题，若是我们就像构造一个函数来返回迭代对象的第一个元素(如果有的话)，如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function first (iterable) &#123;</span><br><span class="line">  const [value] = iterable;</span><br><span class="line"></span><br><span class="line">  return value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>解构会替我们把迭代对象的迭代器给关掉。当然如果我们高兴我们也可以自己来手动实现<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">function first (iterable) &#123;</span><br><span class="line">  const iterator = iterable[Symbol.iterator]();</span><br><span class="line">  const &#123; done, value &#125; = iterator.next();</span><br><span class="line"></span><br><span class="line">  if (!done) return value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>但我们可能会忽略了关闭我们所提取的迭代器，所以我们又必须得这么做：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">function first (iterable) &#123;</span><br><span class="line">  const iterator = iterable[Symbol.iterator]();</span><br><span class="line">  const &#123; done, value &#125; = iterator.next();</span><br><span class="line"></span><br><span class="line">  if (typeof iterator.return === &apos;function&apos;) &#123;</span><br><span class="line">    iterator.return();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  if (!done) return value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>一个很好的启发是，我们可以使用JavaScript的内置功能来关闭从可迭代对象中提取的迭代器。</p>
+<p>而我们也知道解构会为我们关闭迭代器。我们也知道打断for … of 循环也会关闭迭代器， 不管我们是否消费了整个迭代器。</p>
+<p>还有上面所说的对于在一个生成器内从for … of 中yield数据也是成立的。举个栗子，我们可以看看下面的函数mapWith<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function * mapWith (mapFn, iterable) &#123;</span><br><span class="line">  for (const value of iterable) &#123;</span><br><span class="line">    yield mapFn(value);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这是个generator函数接收了一个迭代对象作为参数，并且返回一个可迭代对象。当我消耗了返回的迭代对象，那么内部的迭代对象也会被消耗掉，可若是我们中途断了，又会如何呢？<a href="http://jsbin.com/xomulexazu/edit?js,console" target="_blank" rel="noopener">jsbin</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">const countdownInWords = mapWith(n =&gt; words[n], countdown);</span><br><span class="line"></span><br><span class="line">for (const word of countdownInWords) &#123;</span><br><span class="line">  break;</span><br><span class="line">&#125;</span><br><span class="line">//=&gt; Return to Forever</span><br></pre></td></tr></table></figure></p>
+<p>是的完全ok js的内置功能又帮了我们, 而且在这里我们也看到了，生成器的返回值是可以和for…of一起使用的。</p>
+<p>但不幸的是我们也不能总是成功</p>
+<h3 id="更多关于显示关闭迭代器的栗子"><a href="#更多关于显示关闭迭代器的栗子" class="headerlink" title="更多关于显示关闭迭代器的栗子"></a>更多关于显示关闭迭代器的栗子</h3><p>zipWith 函数会接受多个可迭代对象，并且把他们’zip’到一起返回，若是把他也写成一个生成器函数，我们是无法依靠js的内置功能去关闭所有的迭代器的。<br>来看<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">function * zipWith (zipper, ...iterables) &#123;</span><br><span class="line">  const iterators = iterables.map(i =&gt; i[Symbol.iterator]());</span><br><span class="line"></span><br><span class="line">  while (true) &#123;</span><br><span class="line">    const pairs = iterators.map(j =&gt; j.next()),</span><br><span class="line">          dones = pairs.map(p =&gt; p.done),</span><br><span class="line">          values = pairs.map(p =&gt; p.value);</span><br><span class="line"></span><br><span class="line">    if (dones.indexOf(true) &gt;= 0) &#123;</span><br><span class="line">      for (const iterator of iterators) &#123;</span><br><span class="line">        if (typeof iterator.return === &apos;function&apos;) &#123;</span><br><span class="line">          iterator.return();</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      return;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    yield zipper(...values);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">const fewWords = [&apos;alper&apos;, &apos;bethe&apos;, &apos;gamow&apos;];</span><br><span class="line"></span><br><span class="line">for (const pair of zipWith((l, r) =&gt; [l, r], countdown, fewWords)) &#123;</span><br><span class="line">  //... diddley</span><br><span class="line">&#125;</span><br><span class="line">  //=&gt; Return to Forever</span><br></pre></td></tr></table></figure></p>
+<p>这段代码我们使用了显式关闭的方法，当所有迭代对象中的任何一个消耗尽了我们就显示关闭所有的迭代器(<a href="http://jsbin.com/nomefozagi/edit?js,console" target="_blank" rel="noopener">jsbin</a>)。但是若是我们提前终止了外部循环，sorry是没人来擦屁股的(<a href="http://jsbin.com/regibijohu/edit?js,console" target="_blank" rel="noopener">jsbin</a>)。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">const [[firstCount, firstWord]] = zipWith((l, r) =&gt; [l, r], countdown, fewWords);</span><br><span class="line">  //=&gt;</span><br></pre></td></tr></table></figure></p>
+<p>试过栗子就知道了，没有Return to Forever输出，尽管js的内置功能帮我们把generator返回的迭代器关闭了，但其他的都没有关闭。但是也很明显，我们的迭代器和generator返回的迭代器毛关系都没有，他哪知道啥时候关闭啊。</p>
+<p>根据 <a href="https://www.reddit.com/user/jaffathecake" target="_blank" rel="noopener">jaffathecake</a>的建议，我们可以这么来<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">function * zipWith (zipper, ...iterables) &#123;</span><br><span class="line">  const iterators = iterables.map(i =&gt; i[Symbol.iterator]());</span><br><span class="line"></span><br><span class="line">  try &#123;</span><br><span class="line">    while (true) &#123;</span><br><span class="line">      const pairs = iterators.map(j =&gt; j.next()),</span><br><span class="line">            dones = pairs.map(p =&gt; p.done),</span><br><span class="line">            values = pairs.map(p =&gt; p.value);</span><br><span class="line"></span><br><span class="line">      if (dones.indexOf(true) &gt;= 0) &#123;</span><br><span class="line">        for (const iterator of iterators) &#123;</span><br><span class="line">          if (typeof iterator.return === &apos;function&apos;) &#123;</span><br><span class="line">            iterator.return();</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      yield zipper(...values);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  finally &#123;</span><br><span class="line">    for (const iterator of iterators) &#123;</span><br><span class="line">      if (typeof iterator.return === &apos;function&apos;) &#123;</span><br><span class="line">        iterator.return();</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这个时候我们要是关闭了那肯定可以啊，这就是借助了，try/catch/finally, 就不试了，大家可以试试</p>
+<p>还有另外一招我们也可以实现上述目的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">function zipWith (zipper, ...iterables) &#123;</span><br><span class="line">  return &#123;</span><br><span class="line">    [Symbol.iterator]() &#123;</span><br><span class="line">      return &#123;</span><br><span class="line">        done: false,</span><br><span class="line">        iterators: iterables.map(i =&gt; i[Symbol.iterator]()),</span><br><span class="line">        zipper,</span><br><span class="line">        next() &#123;</span><br><span class="line">          const pairs = this.iterators.map(j =&gt; j.next()),</span><br><span class="line">                dones = pairs.map(p =&gt; p.done),</span><br><span class="line">                values = pairs.map(p =&gt; p.value);</span><br><span class="line"></span><br><span class="line">          if (dones.indexOf(true) &gt;= 0) &#123;</span><br><span class="line">            return this.return();</span><br><span class="line">          &#125; else &#123;</span><br><span class="line">            return &#123; done: false, value: this.zipper(...values) &#125;;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        return(optionalValue) &#123;</span><br><span class="line">          if (!this.done) &#123;</span><br><span class="line">            this.done = true;</span><br><span class="line"></span><br><span class="line">            for (const iterable of this.iterators) &#123;</span><br><span class="line">              if (typeof iterable.return === &apos;function&apos;) &#123;</span><br><span class="line">                iterable.return();</span><br><span class="line">              &#125;</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line"></span><br><span class="line">          if (arguments.length === 1) &#123;</span><br><span class="line">            return &#123; done: true, value:optionalValue &#125;;</span><br><span class="line">          &#125; else &#123;</span><br><span class="line">            return &#123; done: true &#125;;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><a href="http://jsbin.com/vakodeyawi/edit?js,console" target="_blank" rel="noopener">jsbin</a>, 这相当于显示实现了一个可迭代对象。<br>无论哪种方式，我们都必须明确地安排这样的事情，当它自己的迭代器关闭时，zipWith关闭所有的迭代器。</p>
+<ul>
+<li>到了这步我们可以来说说迭代器和生成器了，生成器可以看做对coder友好的迭代器。因为迭代器虽然很强大但是需要我们自己去维护迭代器的状态，而生成器则无须我们来维护状态，他会替我们去维护，而我们只需要告诉生成器如何产生数据就好了。很显然生成器的返回值就是个迭代器无疑了。</li>
+<li>可迭代对象，可迭代对象就是那些实现了Symbol.iterator这个方法的对象，就是说若是调用Symbol.iterator这个方法会返回一个迭代器。</li>
+</ul>
+<p>那么什么语法可以用于迭代器呢？</p>
+<ul>
+<li>for-of 循环， 我们见过了</li>
+<li><p>spread syntax, 意味着我们可以这么使用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">const a = &#123; ...iterable &#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>yield<em> 我们知道yield</em> 后面跟的是另一个生成器，事实他还可以跟一个可迭代对象</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function* gen() &#123;</span><br><span class="line">  yield* [&apos;a&apos;, &apos;b&apos;, &apos;c&apos;];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">gen().next(); // &#123; value: &quot;a&quot;, done: false &#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>destructuring assignment解构我们也见过了</p>
+</li>
+</ul>
+<p>怎么样突然发现可迭代对象居然这么厉害了吧</p>
+<p>总结一小下生成器就是coder友好版的迭代器，而可迭代对象则是实现了Symbol.iterator方法的对象且该方法返回一个迭代器。而且迭代器可以使用的语法，显然生成器的返回值当然也可以哦。</p>
+<p>好了我们言归正传，接上话。</p>
+<h3 id="隐藏的功能"><a href="#隐藏的功能" class="headerlink" title="隐藏的功能"></a>隐藏的功能</h3><p>我们已经看到了，迭代器需要关闭。我们还知道迭代器的关闭是不可见的。有个return 方法需要我们去实现，并且需要被调用。但通常我们都是把迭代器和生成器，for … of循环或者解构一起使用，他们把调用return这件事给我们隐藏了。</p>
+<p>这种有意识的设计让我们对迭代器的学习和使用变得容易。当我们看到下面的代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">function * take (numberToTake, iterable) &#123;</span><br><span class="line">  const iterator = iterable[Symbol.iterator]();</span><br><span class="line"></span><br><span class="line">  for (let i = 0; i &lt; numberToTake; ++i) &#123;</span><br><span class="line">    const &#123; done, value &#125; = iterator.next();</span><br><span class="line">    if (!done) yield value;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>我们可以很快的明白这段代码是要干啥了，但是下面这段代码是不是更好呢:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">function * take (numberToTake, iterable) &#123;</span><br><span class="line">  let i = 0;</span><br><span class="line"></span><br><span class="line">  for (const value of iterable) &#123;</span><br><span class="line">    if (i++ === numberToTake) &#123;</span><br><span class="line">      return;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      yield value;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>但这里有一个关于显式还是隐式的永恒争论点<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">function * take (numberToTake, iterable) &#123;</span><br><span class="line">  const iterator = iterable[Symbol.iterator]();</span><br><span class="line"></span><br><span class="line">  try &#123;</span><br><span class="line">    for (let i = 0; i &lt; numberToTake; ++i) &#123;</span><br><span class="line">      const &#123; done, value &#125; = iterator.next();</span><br><span class="line">      if (!done) yield value;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  finally &#123;</span><br><span class="line">    if (typeof iterator.return === &apos;function&apos;) &#123;</span><br><span class="line">      iterator.return();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>for … of 是不是更优雅？若是for(let i = 0; i &lt; numberToTake; ++i)更快呢？ try…finally是不是更好呢？因为他显式的关闭了迭代器。又或者他是不好的因为他引进了额外的代码？</p>
+<p>所有的所有我觉得又回到了那句话：写代码写程序没有最好的，都是取舍问题。你们觉得呢？虽然我还做不到，因为取舍很难确定，因为有的时候是自己写的代码总想找点儿理由来维护他。</p>
+<h3 id="chesterton’s-的围栏和抽象漏洞"><a href="#chesterton’s-的围栏和抽象漏洞" class="headerlink" title="chesterton’s 的围栏和抽象漏洞"></a>chesterton’s 的围栏和抽象漏洞</h3><p>在改造事物方面，不同于改变事物，有一个简单朴素的原则;这个原则我们或许可以称之为悖论。在这种情况下存在某种制度或定理;为了简单起见，我们可以这么举例，有一个围栏或者大门设置在了路上。更现代的改革者到了这里并且说“我看不见他的作用，把他清理了吧”，对于更有智慧的改革者会说“如果你看不见他的用处，我是不会让你清理的，再去想想吧，等你想明白了，并且告诉我你看到了他的用处，那么我就会允许你把他彻底毁了。” - G.K.Chesterton</p>
+<p>…省略一万字看原文吧<br>总结一小下就是：无论我们是函数式或者是OO，还是其他的，我们都会有像迭代器一样的抽象漏洞。当我们在大多数情况下使用他是好的，当我们到达使用的边缘的时候就会出问题。因此我们需要了解他的底层原理，若是不了解就不会知道到底除了啥问题。</p>
+<h3 id="结尾"><a href="#结尾" class="headerlink" title="结尾"></a>结尾</h3><p>我们有时候还是需要去了解一些底层的问题，否则有时候会真的很无能为力，尤其是出错的时候，我们可以使用抽象去减少一些复杂度，但这不代表我们完全不需要去了解抽象。</p>
+<p><a href="https://www.reddit.com/r/javascript/comments/6sdmk9/closing_iterables_is_a_leaky_abstraction/" target="_blank" rel="noopener">reddi讨论</a></p>
+<h3 id="大大的总结一下"><a href="#大大的总结一下" class="headerlink" title="大大的总结一下"></a>大大的总结一下</h3><p>第一次听说抽象漏洞，学习了，非不证自明的东西总是会存在漏洞的。也加深了对迭代器，迭代对象，生成器的理解。其实还有一个更重要的就是，资源的关闭，我们的资源是有限的，一定要有收尾操作。</p>
+<p>再来列举一下迭代对象可以使用的语法，生成器(准确说他的返回值)也可以哦</p>
+<ul>
+<li>for … of</li>
+<li>解构赋值</li>
+<li>rest syntax</li>
+<li>yield *</li>
+</ul>
+<p>迭代对象的三个方法</p>
+<ul>
+<li>next</li>
+<li>return (可选)</li>
+<li>throw (可选)</li>
+</ul>
+<p>js 会在for… of, 解构赋值，之后为我们自动调用return，当然是在没有完全消费掉数据的时候才会为我们调用。注意释放资源。我们可以利用这个功能。</p>
+<p>在使用generator和迭代器的过程中要注意释放资源。能用js内置的最好不能就try/catch/finally</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/js/">js</a><a href="/tags/iterator/">iterator</a><a href="/tags/iterable/">iterable</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/01/10/node定时器相关详解/"><span>node，setImmeidate, setTimeout, nextTick你真的了解么？</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/01/10/node定时器相关详解/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-01-10T12:27:18.000Z">
+          2018-01-10
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9leykiCi69dcz6PgtAdOLnqaQG934yIqpSitu_3YCoQ3eDxKpZQ" alt=""></p>
+<h3 id="先来温习一下event-loop中的几个phase可参见我的上篇文章libuv概览"><a href="#先来温习一下event-loop中的几个phase可参见我的上篇文章libuv概览" class="headerlink" title="先来温习一下event loop中的几个phase可参见我的上篇文章libuv概览"></a>先来温习一下event loop中的几个phase可参见我的上篇文章<a href="https://hello2dj.github.io/2018/01/10/libuv%E6%A6%82%E8%A7%88/" target="_blank" rel="noopener">libuv概览</a></h3><ul>
+<li>timers: 这个phase是来检查定时器是否到期的，并执行的</li>
+<li>poll(I/O): 这个是用来监听fd的事件的，比如socket的可读，可写，文件的可读可等</li>
+<li>check: 当事件循环被I/O阻塞结束之后立刻调用check handle的回调。本质上他是和prepare phase(在循环被I/O阻塞之前（right before the loop will block for I/O）prepare回调就会立即被调用) 相反的。</li>
+</ul>
+<h3 id="为什么会强调上述几个阶段呢？可以参见一下node官网对于event-loop的解释"><a href="#为什么会强调上述几个阶段呢？可以参见一下node官网对于event-loop的解释" class="headerlink" title="为什么会强调上述几个阶段呢？可以参见一下node官网对于event loop的解释"></a>为什么会强调上述几个阶段呢？可以参见一下<a href="https://nodejs.org/en/docs/guides/event-loop-timers-and-nexttick/" target="_blank" rel="noopener">node官网对于event loop的解释</a></h3><ol>
+<li>node的定时器setTimeout,setInterval是在timers 阶段检查是否过期执行的</li>
+<li>node的setImmediate 是在check阶段执行的</li>
+<li>其他的一些监听文件描述符而执行的cb是在poll(I/O)阶段执行的</li>
+</ol>
+<h3 id="其实我们可以总解一下js代码的执行时间有哪些？"><a href="#其实我们可以总解一下js代码的执行时间有哪些？" class="headerlink" title="其实我们可以总解一下js代码的执行时间有哪些？"></a>其实我们可以总解一下js代码的执行时间有哪些？</h3><ol>
+<li>event loop 开始之前的代码</li>
+<li>event loop 中各个phase执行的代码<br>也就是说node的js代码会在两种情况下执行(纯属自己的看法)</li>
+</ol>
+<h3 id="接下来就是解析一下他们的执行顺序问题"><a href="#接下来就是解析一下他们的执行顺序问题" class="headerlink" title="接下来就是解析一下他们的执行顺序问题"></a>接下来就是解析一下他们的执行顺序问题</h3><ol>
+<li>setTimeout(n) VS setImmediate<blockquote>
+<p>setImmediate 一定会在本轮event loop内的check 阶段执行，若是check阶段已经错过了，那就只能在下一轮的check阶段执行了。<br>参见<a href="(https://hello2dj.github.io/2018/01/10/libuv%E6%A6%82%E8%A7%88/">上篇文章</a>)，见下图</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">   ┌───────────────────────┐</span><br><span class="line">┌─&gt;│        timers         │</span><br><span class="line">│  └──────────┬────────────┘</span><br><span class="line">│  ┌──────────┴────────────┐</span><br><span class="line">│  │     I/O callbacks     │</span><br><span class="line">│  └──────────┬────────────┘</span><br><span class="line">│  ┌──────────┴────────────┐</span><br><span class="line">│  │     idle, prepare     │</span><br><span class="line">│  └──────────┬────────────┘      ┌───────────────┐</span><br><span class="line">│  ┌──────────┴────────────┐      │   incoming:   │</span><br><span class="line">│  │         poll          │&lt;─────┤  connections, │</span><br><span class="line">│  └──────────┬────────────┘      │   data, etc.  │</span><br><span class="line">│  ┌──────────┴────────────┐      └───────────────┘</span><br><span class="line">│  │        check          │</span><br><span class="line">│  └──────────┬────────────┘</span><br><span class="line">│  ┌──────────┴────────────┐</span><br><span class="line">└──┤    close callbacks    │</span><br><span class="line">   └───────────────────────┘</span><br></pre></td></tr></table></figure>
+</blockquote>
+</li>
+</ol>
+<p>可以看出来在同一次event loop内，timers阶段是在check阶段之前的,也就是说若是在同一个event loop内既有定时器到期又有setImmediate那肯定是setTimeout先执行。若不在一个event loop内那就不好说了，要具体情况具体分析了。<br>那么setTimeout(n) 和 setImmediate的执行顺序到底是啥？</p>
+<ul>
+<li><p>当setTimeout与setImmediate在同一时间执行且是在event loop之前执行的设置代码, 又且 n &lt;= t(t是当执行event loop时setTimeout刚好过期的那个时间)<br>此时就相当于 在第一次event loop内既有setTimeout 过期又有 setImmediate，显然 setTimeout先执行。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// test.js</span><br><span class="line">setTimeout(() =&gt; &#123;</span><br><span class="line">  console.log(&apos;setTimeout&apos;);</span><br><span class="line">&#125;, 1)</span><br><span class="line">setImmediate(() =&gt; &#123;</span><br><span class="line">  console.log(&apos;setImmediate&apos;);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">// 假设我的t 是2，那么输出就是</span><br><span class="line"># setTimeout</span><br><span class="line"># setImmediate</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>当setTimeout与setImmediate在同一时间执行且是在event loop之前执行的设置代码, 又且 n &gt; t(t是当执行event loop时setTimeout刚好过期的那个时间)<br>此时就相当于 在第一次event loop内只有 setImmediate，setTimeout的过期只有在接下来的event loop内被检查到了显然 setImmediate先执行。<br>代码同上，把n 换成 大于2的时间。</p>
+<blockquote>
+<p>t的抉择就完全取决于机器的性能了<br>而且在此处还有一个问题就是node中setTimeout最小时间1毫秒，见源码如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">//lib/internal/timers.js~line#34</span><br><span class="line">after *= 1; // coalesce to number or NaN</span><br><span class="line">if (!(after &gt;= 1 &amp;&amp; after &lt;= TIMEOUT_MAX)) &#123;</span><br><span class="line">  if (after &gt; TIMEOUT_MAX) &#123;</span><br><span class="line">    process.emitWarning(`$&#123;after&#125; does not fit into` +</span><br><span class="line">                        &apos; a 32-bit signed integer.&apos; +</span><br><span class="line">                        &apos;\nTimeout duration was set to 1.&apos;,</span><br><span class="line">                        &apos;TimeoutOverflowWarning&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">  after = 1; // schedule on next tick, follows browser behavior</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>也就是说你设置0，最下也是1，那么就是说若你的机器性能很好，在1毫秒之前就开始执行event loop了，那么将会永远只看到setImmediate在setTimeout之前执行了。</p>
+</li>
+<li><p>前面说的都是在event loop之前设置，那么在event loop的期间执行js代码时设置的呢（我们只说同时设置的执行顺序）？(参见我前面的关于js代码的执行时机解释)</p>
+<ul>
+<li>timers阶段设置<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">setTimeout(() =&gt; &#123; // 1</span><br><span class="line">  console.log(&apos;外层timeout&apos;);</span><br><span class="line">  setTimeout(() =&gt; &#123; // 2</span><br><span class="line">    console.log(&apos;set timeout in timeout&apos;);</span><br><span class="line">  &#125;);</span><br><span class="line">  setImmediate(() =&gt; &#123; // 3</span><br><span class="line">    console.log(&apos;set immediate in timeout&apos;);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>1的回调是在timers阶段执行的，而setTimeout内部的定时器一定是不可能在本次event loop的timers阶段执行的(分析后面再说)，那就是说2的回调一定是在本次event loop之后的某次loop中的timers阶段执行的，可我们也要注意，本次loop的check阶段还没执行，因此就很明显了，3的回调会在本次loop的check阶段执行，因此得到总结<strong>在timer阶段设置的setTimeout和setImmediate一定是setImmediate先执行</strong>。</p>
+<ul>
+<li><p>I/O callbacks, idle, prepare, poll, 同理这些阶段也一定是setImmediate先执行，我们最常处于的阶段可能就是poll阶段了，因为这是描述符事件回调的触发阶段，在这个阶段，本轮loop的timers阶段已经执行过了，所以setTimeout,一定是后面的loop timers阶段执行，而本轮loop的check阶段还没有执行，因此在这些阶段设置的setImmediate可以在本轮loop得到执行，所以<strong>在timer阶段之后，check阶段之前设置的setTimeout和setImmediate一定是setImmediate先执行</strong>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">const fs = require(&apos;fs&apos;);</span><br><span class="line"></span><br><span class="line">fs.readFile(&apos;./test.js&apos;, () =&gt; &#123;</span><br><span class="line">  setTimeout(() =&gt; &#123;</span><br><span class="line">    console.log(&apos;set timeout in poll phase&apos;);</span><br><span class="line">  &#125;);</span><br><span class="line">  setImmediate(() =&gt; &#123;</span><br><span class="line">    console.log(&apos;set immediate in poll phase&apos;);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>check阶段，在本轮设置的setTimeout和setImmediate执行顺序与在event loop执行之前设置的是一样的，执行顺序不定取决于设置的超时时间t(原因同在event loop执行之前设置的是一样，甚至可以说两者就是可以看做是等同的)。因为在这一阶段设置的setImmediate是不会在本轮check阶段执行的，同理setTimeout也是没办法在本轮执行的。</p>
+</li>
+</ul>
+<p>总的可以用一个流程图来概括</p>
+<img src="/2018/01/10/node定时器相关详解/timerheimmediate.png" title="timer & check phase">
+<h3 id="接下来-process-nextTick-VS-setImmediate"><a href="#接下来-process-nextTick-VS-setImmediate" class="headerlink" title="接下来 process.nextTick VS setImmediate"></a>接下来 process.nextTick VS setImmediate</h3><p>事实上这两者是没有可比的</p>
+</li>
+</ul>
+<ol>
+<li><p>process.nextTick的实现是基于v8 MicroTask(是在当前js call stack 中没有可执行代码才会执行的队列,低于js call stack 代码，但高于事件循环，浏览器中也是如此<a href="https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/" target="_blank" rel="noopener">可参见</a>)机制的。不属于event loop(v8 microtask是怎么和node结合起来的还没看明白失败啊)<br>但是可以确定是nextTick走的是v8的mircotasks机制，且在当前js calk stack 结束后event loop 继续进行之前调用，也就是说要是写一个递归nextTick调用会把整个node阻塞掉</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">setImmediate(() =&gt; &#123;</span><br><span class="line">  console.log(&apos;immediate&apos;);</span><br><span class="line">&#125;);</span><br><span class="line">function a() &#123;</span><br><span class="line">  process.nextTick(() =&gt; &#123;</span><br><span class="line">    console.log(&apos;set nextTick&apos;);</span><br><span class="line">    a();</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line">a();</span><br></pre></td></tr></table></figure>
+<p>可以试一下上面的代码, 你会发现这就是无限调用了。还有我们所熟知的promise也走的是v8 microtask机制(并且Promise使用时v8实现的promise)。那么同理，promise的then的回调和nextTick中的回调也是由v8 microtask机制来确定执行的，也是与event loop 无关的。当然这在promiseA+规范里面也是有相应描述的。为了测试我们可以执行以下代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">const promise = Promise.resolve(234)</span><br><span class="line"></span><br><span class="line">setImmediate(() =&gt; &#123;</span><br><span class="line">  console.log(&apos;immediate&apos;);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">testPromise();</span><br><span class="line"></span><br><span class="line">function testPromise() &#123;</span><br><span class="line">  promise = promise.then(() =&gt; &#123;</span><br><span class="line">    console.log(&apos;promise&apos;);</span><br><span class="line">    testPromise();</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>是的结果和执行pross.nextTick是一样的event loop被阻塞了。</p>
+<p>在源代码里我们也可以看到见下<br>主要代码在/lib/internal/procss/next_tick.js(这里有太多的逻辑没搞明白只是知道了一个大概)</p>
+<img src="/2018/01/10/node定时器相关详解/tickQueue.png" title="tick queue">
+<p>我们所创建的nextTick都是由这个全局的NextTickQueue来管理的，当我们执行nextTick,就push进去一个TickObject</p>
+<img src="/2018/01/10/node定时器相关详解/tickObject.png" title="tick object">
+<p>执行nextTick的逻辑如下</p>
+<img src="/2018/01/10/node定时器相关详解/nextTick.png" title="nextTick">
+<p>接下来就是触发nextTickQueue里面的tickObject的执行了</p>
+<img src="/2018/01/10/node定时器相关详解/tickCb.png" title="tick queue handle">
+<p>在接下来就是设置_tickCallback（_tickDomainCallback是使用了Domain的版本）这个回调的执行时机了</p>
+<img src="/2018/01/10/node定时器相关详解/setUpNextTick.png" title="setUpNextTick">
+<p>失败的地方就来了，我跟到C++代码里面后就完全没找到_tickCallback的具体执行时机的设置了，而且这里面也有太多的逻辑了，完全不知道是在干啥，还有待慢慢揭秘求高手。</p>
+</li>
+<li><p>setImmediate是基于libuv的event loop的。</p>
+<p>到了这里我可以知道了nextTick一定是先执行的（同时设置）</p>
+</li>
+</ol>
+<h3 id="总结一下"><a href="#总结一下" class="headerlink" title="总结一下"></a>总结一下</h3><ol>
+<li>当同时设置nextTick, setImmediate, setTimeout时一定是nextTick先执行，nextTick不属于event loop属于v8的micro tasks</li>
+<li>setImmediate, setTimeout是属于event loop的，但是执行的阶段不同。</li>
+<li>nextTick的promise的回调执行是在event loop继续执行之前的，也就是说他们的调用是会阻塞event loop的。也就是说在使用nextTick和promise编写递归调用或者大循环时要小心阻塞event loop</li>
+<li>在setImmediate, setTimeout设置再次设置自己时，一定不会再本次loop中执行的</li>
+<li>在浏览器中我猜测setTimeout和promise, MicroTasks也是这样的</li>
+</ol>
+<h3 id="最后再来点儿，对于setTimeout和setImmediate的代码分析，来具体解释为什么4成立"><a href="#最后再来点儿，对于setTimeout和setImmediate的代码分析，来具体解释为什么4成立" class="headerlink" title="最后再来点儿，对于setTimeout和setImmediate的代码分析，来具体解释为什么4成立"></a>最后再来点儿，对于setTimeout和setImmediate的代码分析，来具体解释为什么4成立</h3><ul>
+<li><p>setTimeout<br>当我们执行setTimeout时，node会创建一个Timeout对象来存储</p>
+<img src="/2018/01/10/node定时器相关详解/timeout.png" title="setTimeout">
+<p>Timeout具体属性见下</p>
+<img src="/2018/01/10/node定时器相关详解/timeoutobj.png" title="Timeout">
+<p>其中_idleStart很重要，是指这个定时器的起始时间，比如在10秒的时候设置了一个40秒的定时器，那么到期的时候就检查这个now - _idleStart 是否大于定时的40秒，而这个时间应当是程序启动后经过的毫秒数。（纯属个人猜测）<br>生成了定时器对象后，怎么组织管理就是个问题了，定时器在node中是以对象加链表来组织的，相同时间的定时器会被放到同一个链表中，如都是定时的40毫秒，但设置的时间不同，那么他们就会被放到同一个list中,见下图</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">// ╔════ &gt; Object Map</span><br><span class="line">// ║</span><br><span class="line">// ╠══</span><br><span class="line">// ║ refedLists: &#123; &apos;40&apos;: &#123; &#125;, &apos;320&apos;: &#123; etc &#125; &#125; (keys of millisecond duration)</span><br><span class="line">// ╚══          ┌─────────┘</span><br><span class="line">//              │</span><br><span class="line">// ╔══          │</span><br><span class="line">// ║ TimersList &#123; _idleNext: &#123; &#125;, _idlePrev: (self), _timer: (TimerWrap) &#125;</span><br><span class="line">// ║         ┌────────────────┘</span><br><span class="line">// ║    ╔══  │                              ^</span><br><span class="line">// ║    ║    &#123; _idleNext: &#123; &#125;,  _idlePrev: &#123; &#125;, _onTimeout: (callback) &#125;</span><br><span class="line">// ║    ║      ┌───────────┘</span><br><span class="line">// ║    ║      │                                  ^</span><br><span class="line">// ║    ║      &#123; _idleNext: &#123; etc &#125;,  _idlePrev: &#123; &#125;, _onTimeout: (callback) &#125;</span><br><span class="line">// ╠══  ╠══</span><br><span class="line">// ║    ║</span><br><span class="line">// ║    ╚════ &gt;  Actual JavaScript timeouts</span><br><span class="line">// ║</span><br><span class="line">// ╚════ &gt; Linked List</span><br></pre></td></tr></table></figure>
+<p>插入的流程如下</p>
+<img src="/2018/01/10/node定时器相关详解/insert.png" title="insert">
+<p>初始化TimerList的如下</p>
+<img src="/2018/01/10/node定时器相关详解/timerlist.png" title="timer list">
+<p>在初始化一个TimersList时就会以他所属的过期的时间设置一个libuv的定时器，到期后处理自己这个list中node定时器，若是，还有未到期的，那么就继续设置libuv的定时器<br>接下来就是定时器到期后怎么处理了</p>
+<img src="/2018/01/10/node定时器相关详解/timeouecb.png" title="timer outdate">
+<p>上面我的截图里说的语句不通了激动了，从上面可以看到，我们新设置的相同的定时器尤其是针对setTimeout(0)(虽然我们不可能有零这种情况),其实我想说的是，假设我们设置了两个1msecs的定时器，见代码吧</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">setTimeout(() =&gt; &#123; // 1</span><br><span class="line">  console.log(1);</span><br><span class="line">  setTimeout(() =&gt; &#123; // 2</span><br><span class="line">    console.log(2);</span><br><span class="line">  &#125;);</span><br><span class="line">  setImmediate(() =&gt; &#123; // 3</span><br><span class="line">    console.log(3);</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>上述代码1，2的过期时间都是1，所以他们在同一个timerList中，还有我们看到前面的描述，当我们是while去处理timerlist的，根据前面的讲述我们知道3一定比2先输出，但是我们是while处理timerlist的，为什么没有判断2过期呢，我就发现了，因为判断过期取的是now - timer._idleStart, 而这个now是在定时器cb执之前取的，而timer._idleStart是在setTimeout时设置的，那就意味着，2的_idleStart 一定比1的到期是去的now 大，那就很明显了，无论如何都是是无法判断2过期(在本次loop期间判断2过期)了，即使是下面的代码也不行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"> setTimeout(() =&gt; &#123; // 1</span><br><span class="line">  console.log(1);</span><br><span class="line">  setTimeout(() =&gt; &#123; // 2</span><br><span class="line">    console.log(2);</span><br><span class="line">  &#125;);</span><br><span class="line">  for(let i = 0; i &lt; 100e100; i ++) &#123; // 1msec的时间绝对有了，那么是不是在本轮loop就可以判断timer过期呢，不会</span><br><span class="line">    let c = 0;</span><br><span class="line">  &#125;</span><br><span class="line">  setImmediate(() =&gt; &#123; // 3</span><br><span class="line">    console.log(3);</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>定时器的整体组织方式就是为了方便管理，减少底层真实定时器的使用。</p>
+</li>
+<li><p>setImmediate<br>那么setImmediate内设置setImmediate呢？<br>看代码吧，immediate是通过一个全局的list来管理的</p>
+<img src="/2018/01/10/node定时器相关详解/immediatelist.png" title="immediate list">
+<p>调用setImmediate</p>
+<img src="/2018/01/10/node定时器相关详解/newimme.png" title="Immediate">
+<p>Immediate构造函数的处理</p>
+<img src="/2018/01/10/node定时器相关详解/appendimme.png" title="append Immediate">
+<p>加下来就是处理 check阶段处理immediate了</p>
+<img src="/2018/01/10/node定时器相关详解/processimme.png" title="才处理immediate list">
+<p>上图解释的很清楚了，这就告诉了我们另一个问题，在同一时期设置的setImmeidate会放到同一个队列，并且在一次loop check阶段就把所有的immediate回调给执行了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">setTimeout(() =&gt; &#123; // 1</span><br><span class="line">  console.log(1);</span><br><span class="line">  setTimeout(() =&gt; &#123; // 2</span><br><span class="line">    console.log(2);</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  for(let i = 0; i &lt; 10e10; i++) &#123;</span><br><span class="line">    let c = 0;</span><br><span class="line">  &#125; // 上面的那个肯定过期了</span><br><span class="line">  for(let i = 0; i &lt; 100; i++&gt;) &#123;</span><br><span class="line">    setImmediate(() =&gt; &#123; // 3</span><br><span class="line">      console.log(3);</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>上面的代码我们的2在1的回调执行之后一定是过期的，那么若是同一时间设置的setImmediate不会在同一个loop的check阶段那么，我们的2输出之后就一定会有3，可以执行一下是没有的，也就证明了我们上面的源码分析是正确的。</p>
+<h3 id="最终总结"><a href="#最终总结" class="headerlink" title="最终总结"></a>最终总结</h3><p>打完收工，源码阅读很考验啊，应当先知道代码的最终功能是什么？你想要知道的问题是什么？然后再去跟代码，一定要先找到函数入口，在就是一步一步调试是很有用的，等着看看怎么调试v8以及node的c++代码势要把microtasks也高明白了。</p>
+</li>
+</ul>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ol>
+<li><a href="https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/" target="_blank" rel="noopener">task, micro tasks</a></li>
+<li><a href="https://github.com/nodejs/node" target="_blank" rel="noopener">node source code</a></li>
+<li><a href="https://github.com/creeperyang/blog/issues/26" target="_blank" rel="noopener">event loop</a></li>
+</ol>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/node/">node</a><a href="/tags/setTimeout/">setTimeout</a><a href="/tags/setInterval/">setInterval</a><a href="/tags/setImmediate/">setImmediate</a><a href="/tags/process-nextTick/">process.nextTick</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/01/10/libuv概览/"><span>libuv设计概览</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/01/10/libuv概览/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-01-10T02:29:28.000Z">
+          2018-01-10
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>先上图</p>
+<p><img src="http://7xnyi3.dl1.z0.glb.clouddn.com/2017-07-10-libuv-libuv.png" alt=""></p>
+<h3 id="设计概览"><a href="#设计概览" class="headerlink" title="设计概览"></a>设计概览</h3><p>libuv是一个跨平台的异步事件库。<br>libuv对于不同的I/O轮询机制提供了很多的抽象。例如：handle和stream是对socket和其他实体的高等抽象。还提供了跨平台的文件I / O和线程功能。以及一些其他的功能。<br>此处图一张：<br><img src="http://docs.libuv.org/en/v1.x/_images/architecture.png" alt=""></p>
+<h3 id="handles-和requests"><a href="#handles-和requests" class="headerlink" title="handles 和requests"></a>handles 和requests</h3><p>libuv给用户提供了两个抽象用于和事件循环进行交互： handle和request。<br>handle表示长期存在的对象，当它激活时，它是用来处理特定的操作。例如：</p>
+<ul>
+<li>当激活时，prepare handle 会在每次循环时调用一次他的回调。</li>
+<li>当每次有新的连接到来时tcp handle就会调用他的连接回调。</li>
+</ul>
+<p>request是用来表示短期存在的操作。这些操作可以通过一个handle来执行：写request通常是用来在一个handle上写数据；或者是独立于handle的： getaddrinfo rquest就不需要一个handle可以直接在事件循环上执行。</p>
+<h3 id="I-O-循环"><a href="#I-O-循环" class="headerlink" title="I/O 循环"></a>I/O 循环</h3><p>I/O(或者)循环是libuv的核心。它用来建立所有的I/O操作的内容，并且这意味着I/O 循环是一个单线程的。当然当我们在多个线程上运行的时候就可以跑多个事件循环了。libuv事件循环（或涉及循环或handle的任何其他API）就不是线程安全的，除非另有说明。事件循环遵循常见的单线程异步I/O方法：所有（网络）I/O在非阻塞套接字上执行，使用给定平台上可用的最佳机制：epoll on linux, kqueue on OSX其他等等。作为循环迭代的一部分，循环将阻塞等待已经添加到轮询器的套接字上的I/O活动，并且将触发回调来指示套接字条件（可读，可写的挂断），因此句柄可以读，写或执行期望的I/O操作。<br>见图<br><img src="http://docs.libuv.org/en/v1.x/_images/loop_iteration.png" alt=""></p>
+<ol>
+<li>loop的now会被更新，在循环开始前，循环会缓存当前的时间以减少和和时间相关的系统调用。</li>
+<li>如果循环处于活动状态，则开始迭代，否则循环将立即退出。 那么，什么时候循环被认为是活着的呢？ 如果一个循环有处于激活状态或者被ref的handle，或者活动的请求或者正在被关闭的句柄，它就被认为是活着的。</li>
+<li><p>运行(due)到期的定时器。所有活跃的的定时器如果他们的时间在now之前就会运行他们的cb。</p>
+</li>
+<li><p>处于等待的回调被调用。虽然所有的I/O回调都会在循环之后立即调用，但是还有这样的一些例子，比如一个回调被延迟到下一此循环了。因此如果上次循环有延时的I/O回调会在这个时间点调用。</p>
+</li>
+<li>Idle handle callbacks are called. Despite the unfortunate name, idle handles are run on every loop iteration, if they are active.</li>
+<li>prepare handle 回调被调用。在循环被I/O阻塞之前（right before the loop will block for I/O）prepare回调就会立即被调用。</li>
+<li>轮询超时时间计算。在循环被阻塞之前计算他会被阻塞多久。这里有一些计算的规则：<ul>
+<li>如果UV_RUN_NOWAIT标志为true则timeout是0。</li>
+<li>若果循环将要停止(uv_stop())，timeout是0。</li>
+<li>若果没有处于活跃的handle或者request，timeout是0。</li>
+<li>若果有idle handles处于活跃状态，timeout是0。</li>
+<li>若果有等待被关闭的handle,timeout是0。</li>
+<li>若果上述条件没一个满足的，就挑选一个最近的定时器的时间。如果连timer都没有那么timeout 是无限的(infinity)。</li>
+</ul>
+</li>
+<li>循环被I/O阻塞。在这一步，循环会被阻塞一段时间而这个时间就是上一步计算来的。所有的相关handles都会在给定的文件描述符上等待读或写事件若是有就调用他们的回调。</li>
+<li>Check handle的回调被调用。当事件循环被I/O阻塞结束之后立刻调用check handle的回调。本质上他是和prepare handle 相反的。</li>
+<li>关闭回调被调用。如果一个handle呗uv_close()关掉了，此时就会在这个点调用关闭的回调。</li>
+<li>在UV_RUN_ONCE的情况下的特殊情况，他意味着进一步的处理。比如在循环被I/O阻塞时没有回调被触发，但是已经过去一段时间了，有可能会有定时器到期，那么在进行一次定时器的回调就可以被调用了。</li>
+<li>循环结束。当循环是在UV_RUN_NOWAIT或者UV_RUN_ONCE模式下运行的，那么循环将结束。uv_run会返回。如果实在UV_RUN_DEFAULT模式下运行的，若是他还处于alive状态那么循环会继续，否则也会结束。<blockquote>
+<p>重要提示：libuv使用线程池来使异步文件I/O操作成为可能，但是网络I/O总是在单个线程（每个循环的线程）中执行。</p>
+</blockquote>
+</li>
+</ol>
+<h3 id="文件I-O"><a href="#文件I-O" class="headerlink" title="文件I/O"></a>文件I/O</h3><p>与网络I/O不同，没有libuv可以依赖的特定于平台的文件I/O原语，因此当前的方法是在线程池中运行阻塞文件I/O操作。</p>
+<p>libuv目前使用一个全局的线程池，所有的循环都可以和其交互。有如下3种操作使用的是线程池:</p>
+<ol>
+<li>文件系统的操作</li>
+<li>DNS的功能（getaddrinfo and getnameinfo）</li>
+<li>用户通过uv_queue_work指定的代码<blockquote>
+<p>线程池的大小是相当受限制的。</p>
+</blockquote>
+</li>
+</ol>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ol>
+<li><a href="http://blog.libtorrent.org/2012/10/asynchronous-disk-io/" target="_blank" rel="noopener">为什么使用thread pool来处理文件I/O</a></li>
+<li><a href="http://luohaha.github.io/Chinese-uvbook/source/introduction.html" target="_blank" rel="noopener">关于怎么使用libuv</a></li>
+</ol>
+<h3 id="libuv-的队列操作"><a href="#libuv-的队列操作" class="headerlink" title="libuv 的队列操作"></a>libuv 的队列操作</h3><p><strong> 2. 定义基本操作 </strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#define QUEUE_NEXT(q)       (*(QUEUE **) &amp;((*(q))[0]))</span><br><span class="line">#define QUEUE_PREV(q)       (*(QUEUE **) &amp;((*(q))[1]))</span><br></pre></td></tr></table></figure></p>
+<p>数组的第0个表示下一个，1表示上一个。<br>这里使用(<em>(QUEUE **) &amp;((</em>(q))[0]))这么复杂的表达是有两个原因。一个是转成左值（这里指的左值是指从数组元素的赋值的角度去看，就是指能不能给数组元素赋值），另一个是保存类型信息。</p>
+<p>这样会丢失类型信息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define QUEUE_NEXT(q)          ((*(q))[0])  // 这个是数组的0号元素</span><br></pre></td></tr></table></figure></p>
+<p>这样不是左值<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define QUEUE_PREV(q)       ((QUEUE *) ((*(q))[1])) // QUEUE* 是个数组指针非左值</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">q是 QUEUE * 这个是数组指针非左值</span><br><span class="line">*(q) 是QUEUE</span><br><span class="line">(*(q))[0]是数组第一个元素的值</span><br><span class="line">&amp;((*(q))[0])第一个元素的地址 （非左值）</span><br><span class="line">(QUEUE **) &amp;((*(q))[0]) 还是数组第一个元素之的地址但是这次保存了类型</span><br><span class="line">* (QUEUE **) &amp;((*(q))[0]) 是第一个元素的值得地址即保存了类型又是左值</span><br></pre></td></tr></table></figure>
+<p><strong> 3. 取值 </strong><br>这个队列的实现和数据无关，所以宏里面看不到data的定义，是不是很神奇，像在c++这种面向对象的语言中，我们一般通过迭代器来实现操作和数据的分离，而c语言可以用很巧妙的方式去高效的实现哦。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#define QUEUE_DATA(ptr, type, field)                                          \</span><br><span class="line">  ((type *) ((char *) (ptr) - ((char *) &amp;((type *) 0)-&gt;field)))</span><br></pre></td></tr></table></figure>
+<p>((char <em>) &amp;((type </em>) 0)-&gt;field))是拿到偏移量。为什么这样就可以拿到偏移量？其实很好理解，把0当做其实地址，取field的地址，就是偏移量啦。</p>
+<p><a href="https://www.jianshu.com/p/6373de1e117d" target="_blank" rel="noopener">解释出处</a><br><a href="http://masutangu.com/2016/10/libuv-source-code/" target="_blank" rel="noopener">另一篇解释</a><br><a href="http://gngshn.github.io/2017/09/01/libuv-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-1-event-loop%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96/" target="_blank" rel="noopener">还有一篇参考</a></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/node/">node</a><a href="/tags/libuv/">libuv</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+
+<nav class="pagination">
+  
+  <a href="/page/3/" class="pagination-prev">Prev</a>
+  
+  
+  <a href="/page/5/" class="pagination-next">Next</a>
+  
+</nav>
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 hello2dj (dj_amazing@sina.com)
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

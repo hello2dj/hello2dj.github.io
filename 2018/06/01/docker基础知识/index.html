@@ -1,0 +1,158 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>docker相关的一些使用总结 | hello2dj | if you can&#39;t explain it simply, you don&#39;t understand it well enough</title>
+
+  
+  <meta name="author" content="hello2dj (dj_amazing@sina.com)">
+  
+
+  
+  <meta name="description" content="每个人都是带着棱角来到世上，只有磨平棱角才能走的更远">
+  
+
+  
+  
+  <meta name="keywords" content="">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="docker相关的一些使用总结"/>
+
+  <meta property="og:site_name" content="hello2dj"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="hello2dj" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">hello2dj</a>
+    </h1>
+    <p class="site-description">if you can&#39;t explain it simply, you don&#39;t understand it well enough</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/categories">Categories</a></li>
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>docker相关的一些使用总结</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/06/01/docker基础知识/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-05-31T16:00:00.000Z">
+          2018-06-01
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <blockquote>
+<p>随时更新</p>
+</blockquote>
+<h2 id="解决docker-sudo问题"><a href="#解决docker-sudo问题" class="headerlink" title="解决docker sudo问题"></a>解决docker sudo问题</h2><h3 id="检查是否已有-docker-用户组"><a href="#检查是否已有-docker-用户组" class="headerlink" title="检查是否已有 docker 用户组"></a>检查是否已有 docker 用户组</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/group | grep docker</span><br></pre></td></tr></table></figure>
+<h3 id="将现有用户加入-docker-组"><a href="#将现有用户加入-docker-组" class="headerlink" title="将现有用户加入 docker 组"></a>将现有用户加入 docker 组</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo gpasswd -a $&#123;USER&#125; docker</span><br></pre></td></tr></table></figure>
+<h3 id="重启-docker-服务"><a href="#重启-docker-服务" class="headerlink" title="重启 docker 服务"></a>重启 docker 服务</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo service docker restart</span><br></pre></td></tr></table></figure>
+<h3 id="退出当前用户，重新登录"><a href="#退出当前用户，重新登录" class="headerlink" title="退出当前用户，重新登录"></a>退出当前用户，重新登录</h3><h2 id="docker-的远程镜像名字得和本地一致且以-url-为前缀"><a href="#docker-的远程镜像名字得和本地一致且以-url-为前缀" class="headerlink" title="docker 的远程镜像名字得和本地一致且以 url 为前缀"></a>docker 的远程镜像名字得和本地一致且以 url 为前缀</h2><p>比如 docker push docker.sensoro.com/library/ai-server，那么推送的地址是 docker.sensoro.com/library/ 我们的镜像想要叫 ai-server。 但是本地在 build 时，要用 docker build ./ -t docker.sensoro.com/library/ai-server tag 必须是这个。</p>
+<h2 id="docker-compose"><a href="#docker-compose" class="headerlink" title="docker compose"></a>docker compose</h2><ul>
+<li>networks 负责创建一个网络 <a href="https://docs.docker.com/compose/compose-file/" target="_blank" rel="noopener">见</a></li>
+<li><p>sysctls 负责内核参数 <a href="https://docs.docker.com/compose/compose-file/" target="_blank" rel="noopener">见</a></p>
+</li>
+<li><p>ulimits</p>
+</li>
+</ul>
+<h2 id="swarm"><a href="#swarm" class="headerlink" title="swarm"></a>swarm</h2><ol>
+<li>docker swarm init</li>
+<li>根据上条命令输出执行即可</li>
+</ol>
+<h2 id="docker-daemon-api-链接"><a href="#docker-daemon-api-链接" class="headerlink" title="docker daemon api 链接"></a><a href="https://www.jianshu.com/p/7ba1a93e6de4" target="_blank" rel="noopener">docker daemon api 链接</a></h2><h2 id="docker-在配置为-host-网络模式时，是不需要映射端口的，因为-docker-容器的网络（ip）就是-host（宿主）的网络-IP，并没有进行隔离"><a href="#docker-在配置为-host-网络模式时，是不需要映射端口的，因为-docker-容器的网络（ip）就是-host（宿主）的网络-IP，并没有进行隔离" class="headerlink" title="docker 在配置为 host 网络模式时，是不需要映射端口的，因为 docker 容器的网络（ip）就是 host（宿主）的网络 IP，并没有进行隔离"></a>docker 在配置为 host 网络模式时，是不需要映射端口的，因为 docker 容器的网络（ip）就是 host（宿主）的网络 IP，并没有进行隔离</h2><h2 id="网络模式"><a href="#网络模式" class="headerlink" title="网络模式"></a>网络模式</h2><ol>
+<li><p>host 模式</p>
+<p>众所周知，Docker 使用了 Linux 的 Namespaces 技术来进行资源隔离，如 PID Namespace 隔离进程，Mount Namespace 隔离文件系统，Network Namespace 隔离网络等。一个 Network Namespace 提供了一份独立的网络环境，包括网卡、路由、Iptable 规则等都与其他的 Network Namespace 隔离。一个 Docker 容器一般会分配一个独立的 Network Namespace。但如果启动容器的时候使用 host 模式，那么这个容器将不会获得一个独立的 Network Namespace，而是和宿主机共用一个 Network Namespace。容器将不会虚拟出自己的网卡，配置自己的 IP 等，而是使用宿主机的 IP 和端口。例如，我们在 10.10.101.105/24 的机器上用 host 模式启动一个含有 web 应用的 Docker 容器，监听 tcp80 端口。当我们在容器中执行任何类似 ifconfig 命令查看网络环境时，看到的都是宿主机上的信息。而外界访问容器中的应用，则直接使用 10.10.101.105:80 即可，不用任何 NAT 转换，就如直接跑在宿主机中一样。但是，容器的其他方面，如文件系统、进程列表等还是和宿主机隔离的。</p>
+</li>
+<li><p>container 模式</p>
+<p>在理解了 host 模式后，这个模式也就好理解了。这个模式指定新创建的容器和已经存在的一个容器共享一个 Network Namespace，而不是和宿主机共享。新创建的容器不会创建自己的网卡，配置自己的 IP，而是和一个指定的容器共享 IP、端口范围等。同样，两个容器除了网络方面，其他的如文件系统、进程列表等还是隔离的。两个容器的进程可以通过 lo 网卡设备通信。</p>
+</li>
+<li><p>none 模式</p>
+<p>这个模式和前两个不同。在这种模式下，Docker 容器拥有自己的 Network Namespace，但是，并不为 Docker 容器进行任何网络配置。也就是说，这个 Docker 容器没有网卡、IP、路由等信息。需要我们自己为 Docker 容器添加网卡、配置 IP 等。</p>
+</li>
+<li><p>bridge 模式</p>
+<p>bridge 模式是 Docker 默认的网络设置，此模式会为每一个容器分配 Network Namespace、设置 IP 等，并将一个主机上的 Docker 容器连接到一个虚拟网桥上。下面着重介绍一下此模式。</p>
+</li>
+</ol>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 hello2dj (dj_amazing@sina.com)
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

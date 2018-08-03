@@ -1,0 +1,198 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>chrome-dev-you-may-dont-know | hello2dj | if you can&#39;t explain it simply, you don&#39;t understand it well enough</title>
+
+  
+  <meta name="author" content="hello2dj (dj_amazing@sina.com)">
+  
+
+  
+  <meta name="description" content="每个人都是带着棱角来到世上，只有磨平棱角才能走的更远">
+  
+
+  
+  
+  <meta name="keywords" content="js,chrome devtools">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="chrome-dev-you-may-dont-know"/>
+
+  <meta property="og:site_name" content="hello2dj"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="hello2dj" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">hello2dj</a>
+    </h1>
+    <p class="site-description">if you can&#39;t explain it simply, you don&#39;t understand it well enough</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/categories">Categories</a></li>
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>chrome-dev-you-may-dont-know</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/07/14/chrome-dev-you-may-dont-know/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-07-14T13:00:30.000Z">
+          2018-07-14
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h2 id="chrome-devtools-中的一些实用技巧"><a href="#chrome-devtools-中的一些实用技巧" class="headerlink" title="chrome devtools 中的一些实用技巧"></a>chrome devtools 中的一些实用技巧</h2><h3 id="在元素面板中拖拽元素"><a href="#在元素面板中拖拽元素" class="headerlink" title="在元素面板中拖拽元素"></a><a href="#在元素面板中拖拽元素-1">在元素面板中拖拽元素</a></h3><h3 id="在控制台中引用元素面板中选中的元素"><a href="#在控制台中引用元素面板中选中的元素" class="headerlink" title="在控制台中引用元素面板中选中的元素"></a><a href="#控制台中引用元素面板中选中的元素">在控制台中引用元素面板中选中的元素</a></h3><h3 id="在控制台中使用上次操作的结果"><a href="#在控制台中使用上次操作的结果" class="headerlink" title="在控制台中使用上次操作的结果"></a><a href="#在控制台中使用上次操作的结果-1">在控制台中使用上次操作的结果</a></h3><h3 id="修改元素的状态以及添加-css"><a href="#修改元素的状态以及添加-css" class="headerlink" title="修改元素的状态以及添加 css"></a><a href="#修改元素的状态以及添加-css-1">修改元素的状态以及添加 css</a></h3><h3 id="查找-css-属性定义的位置"><a href="#查找-css-属性定义的位置" class="headerlink" title="查找 css 属性定义的位置"></a><a href="#查找-css-属性定义的位置-1">查找 css 属性定义的位置</a></h3><h3 id="将修改的-css-样式保存到文件"><a href="#将修改的-css-样式保存到文件" class="headerlink" title="将修改的 css 样式保存到文件"></a><a href="#将修改的-css-样式保存到文件-1">将修改的 css 样式保存到文件</a></h3><h3 id="对单个元素的截图"><a href="#对单个元素的截图" class="headerlink" title="对单个元素的截图"></a><a href="#对单个元素的截图-1">对单个元素的截图</a></h3><h3 id="在控制台中使用-shift-enter-连续多行输入执行"><a href="#在控制台中使用-shift-enter-连续多行输入执行" class="headerlink" title="在控制台中使用 shift-enter(连续多行输入执行)"></a><a href="#在控制台中使用-shift-enter-连续多行输入执行-1">在控制台中使用 shift-enter(连续多行输入执行)</a></h3><h3 id="清理控制台"><a href="#清理控制台" class="headerlink" title="清理控制台"></a><a href="#清理控制台-1">清理控制台</a></h3><h3 id="跳转…"><a href="#跳转…" class="headerlink" title="跳转…"></a><a href="#跳转...-1">跳转…</a></h3><h3 id="监听表达式"><a href="#监听表达式" class="headerlink" title="监听表达式"></a><a href="#监听表达式-1">监听表达式</a></h3><h3 id="XHR-FETCH-调试"><a href="#XHR-FETCH-调试" class="headerlink" title="XHR/FETCH 调试"></a><a href="#XHR-FETCH-调试-1">XHR/FETCH 调试</a></h3><h3 id="DOM-修改的调试"><a href="#DOM-修改的调试" class="headerlink" title="DOM 修改的调试"></a><a href="#DOM-修改的调试-1">DOM 修改的调试</a></h3><p>———————————————–(华丽的分割线)</p>
+<h4 id="在元素面板中拖拽元素-1"><a href="#在元素面板中拖拽元素-1" class="headerlink" title="在元素面板中拖拽元素"></a>在元素面板中拖拽元素</h4><p>在元素面板中我们是可以拖拽任意元素到页面中其他位置的(这个大家应该都知道。。。)</p>
+<p><img src="https://d33wubrfki0l68.cloudfront.net/1f404b89ca124b8a7c11d2552f893189aa6ef9a8/ee86f/chrome-devtools-tips/drag-and-drop.gif" alt=""></p>
+<h4 id="控制台中引用元素面板中选中的元素"><a href="#控制台中引用元素面板中选中的元素" class="headerlink" title="控制台中引用元素面板中选中的元素"></a>控制台中引用元素面板中选中的元素</h4><p>在元素面板中选中元素，然后就可以在控制台中使用 $0 引用它，神奇了</p>
+<p><img src="https://d33wubrfki0l68.cloudfront.net/6aad4fd3fcf776853af0f751467abb4ca3e36036/cfa4b/chrome-devtools-tips/reference-elements.gif" alt=""></p>
+<blockquote>
+<p>大吃一惊还有这等操作(管用)</p>
+</blockquote>
+<h4 id="在控制台中使用上次操作的结果-1"><a href="#在控制台中使用上次操作的结果-1" class="headerlink" title="在控制台中使用上次操作的结果"></a>在控制台中使用上次操作的结果</h4><p>在控制台中输入 $_ 引用上次操作结果</p>
+<p><img src="https://d33wubrfki0l68.cloudfront.net/3145f6a4bfc316b1217a2559dceeef253f09f76a/ad0d6/chrome-devtools-tips/use-last-result.gif" alt=""></p>
+<blockquote>
+<p>他要$?就更神奇了（管用）</p>
+</blockquote>
+<h4 id="修改元素的状态以及添加-css-1"><a href="#修改元素的状态以及添加-css-1" class="headerlink" title="修改元素的状态以及添加 css"></a>修改元素的状态以及添加 css</h4><p>这个大家都知道，直接截图就好了</p>
+<p><img src="https://d33wubrfki0l68.cloudfront.net/e373ea01bf1ef9a452670843aea2bfa47a1ab56d/1e648/chrome-devtools-tips/add-css.gif" alt=""></p>
+<p>在看下一个</p>
+<p><img src="https://d33wubrfki0l68.cloudfront.net/fe7535cfa76aa552810a1c3f51b922702040615f/12d68/chrome-devtools-tips/element-state.png" alt=""></p>
+<h4 id="查找-css-属性定义的位置-1"><a href="#查找-css-属性定义的位置-1" class="headerlink" title="查找 css 属性定义的位置"></a>查找 css 属性定义的位置</h4><p>使用 cmd-click(ctrl-click on windows) 组合点击一个元素面板中的 css 属性就会跳转到 Source panel 中(连续两连点击才可以哦)<br><img src="https://d33wubrfki0l68.cloudfront.net/2e004309ab05ae39cf1f22fbb2bf52b50a323d3a/7479c/chrome-devtools-tips/find-where-css-defined.gif" alt=""></p>
+<blockquote>
+<p>不错不错（管用）</p>
+</blockquote>
+<h4 id="将修改的-css-样式保存到文件-1"><a href="#将修改的-css-样式保存到文件-1" class="headerlink" title="将修改的 css 样式保存到文件"></a>将修改的 css 样式保存到文件</h4><p>在元素面板右侧修改样式，然后使用上面方法跳 source panel 中，就会看到 css 源文件，右击文件名字，save as 保存到本地</p>
+<p><img src="https://d33wubrfki0l68.cloudfront.net/755e747fc0664ea8ad18147f12a76111f0cf37fd/b5a38/chrome-devtools-tips/save-modified-css.gif" alt=""></p>
+<h4 id="对单个元素的截图-1"><a href="#对单个元素的截图-1" class="headerlink" title="对单个元素的截图"></a>对单个元素的截图</h4><p>选中一个元素然后按组合键 cmd-shift-p(or crtl-shift-p on windows)打开命令菜单(command menu), 接着输入 screenshot 选择 Capture node screenshot</p>
+<p><img src="https://d33wubrfki0l68.cloudfront.net/58cfa50406939395e2959604c235ccb7ccab88ed/cef7d/chrome-devtools-tips/screenshot-node.gif" alt=""></p>
+<blockquote>
+<p>有意思的功能, 可惜我试验失败了。。。（66.0.3359.139chrome 版本，大家可以试试），其实里面的 screenshot 还有另外两个 capture full siz screenshot(全截，我也失败了)， capture screenshot 接的是当文档展示的区域我成功了</p>
+</blockquote>
+<h4 id="在控制台中使用-shift-enter-连续多行输入执行-1"><a href="#在控制台中使用-shift-enter-连续多行输入执行-1" class="headerlink" title="在控制台中使用 shift-enter 连续多行输入执行"></a>在控制台中使用 shift-enter 连续多行输入执行</h4><p>多行输入执行，啥也不说了，有用（管用）</p>
+<p><img src="https://d33wubrfki0l68.cloudfront.net/c312ca53496081f552859fac2f18e1558bb90228/b5e1a/chrome-devtools-tips/multiple-lines-commands.gif" alt=""></p>
+<blockquote>
+<p>每次换行使用 shit+enter 哦</p>
+</blockquote>
+<h4 id="清理控制台-1"><a href="#清理控制台-1" class="headerlink" title="清理控制台"></a>清理控制台</h4><p>清理使用 ctrl-l or cmd-k(管用)</p>
+<h4 id="跳转…-1"><a href="#跳转…-1" class="headerlink" title="跳转…"></a>跳转…</h4><p>在 source panel 中</p>
+<ul>
+<li>cmd-o(ctrl-o on windows) 展示当前页面加载的所有文件</li>
+<li><p>cmd-shift-o(ctrl-shift-o in windows) 展示当前文件的符号表（属性，函数以及类）</p>
+</li>
+<li><p>ctrl-g 调到当前文件的指定行</p>
+</li>
+</ul>
+<p><img src="https://d33wubrfki0l68.cloudfront.net/055919bd29f5e9ff0c5f551d01e36d1e06db0f14/e666b/chrome-devtools-tips/files-list.png" alt=""></p>
+<blockquote>
+<p>亲测管用</p>
+</blockquote>
+<h4 id="监听表达式-1"><a href="#监听表达式-1" class="headerlink" title="监听表达式"></a>监听表达式</h4><p>添加一个表达式到 debug session 中，不用手动计算了</p>
+<p><img src="https://d33wubrfki0l68.cloudfront.net/d08eb9dda2e3841be48d5ff2169bd745c65909b9/db264/chrome-devtools-tips/watch-expressions.gif" alt=""></p>
+<blockquote>
+<p>管用， 在 source panel 中，若是没有 consle 面板，右键-&gt; evaluate in console 即可</p>
+</blockquote>
+<h4 id="XHR-FETCH-调试-1"><a href="#XHR-FETCH-调试-1" class="headerlink" title="XHR/FETCH 调试"></a>XHR/FETCH 调试</h4><p>可以在 source panel 中的右侧看到 XHR/FETCH breakpoints 中添加断点，不知道请 ajax 啥时候发的，没问题，他可以帮你。。。</p>
+<p><img src="https://d33wubrfki0l68.cloudfront.net/3a70cac4f7fef4d7caa5ee0335573bbad49a1151/e6aae/chrome-devtools-tips/xhr-fetch-breakpoints.png" alt=""></p>
+<blockquote>
+<p>并且我还在下面发现了 Event Listener Breakpoint,而它可以带来的断点位置是在是太多了，比如： 动画（animation）, Canvas, Clipboard, DOM Mutaion, keyboard, 哎呀太多了，大家可以亲自试一试</p>
+</blockquote>
+<h4 id="DOM-修改的调试-1"><a href="#DOM-修改的调试-1" class="headerlink" title="DOM 修改的调试"></a>DOM 修改的调试</h4><p>右键选中的元素，选择 break on 展开后会有 subtree modifications, 就是说如果有脚本修改了子元素，断点就会触发，还有 atrribute modification, 以及 node removal</p>
+<p><img src="https://d33wubrfki0l68.cloudfront.net/79a8a06d060fdf6dd28a3bc496f556449e758e99/a6ce1/chrome-devtools-tips/break-subtree-modifications.png" alt=""></p>
+<h4 id="相当于-document-querySelectorAll"><a href="#相当于-document-querySelectorAll" class="headerlink" title="$$ 相当于 document.querySelectorAll()"></a>$$ 相当于 document.querySelectorAll()</h4><h3 id="文章尾部福利赠送"><a href="#文章尾部福利赠送" class="headerlink" title="文章尾部福利赠送"></a>文章尾部福利赠送</h3><p>cmd-shfit-p 打开的命令行里面的有用命令(还有更多的等待大家一起探索)</p>
+<ol>
+<li>show layers 查看当前页面的渲染情况，合成层(<a href="http://taobaofed.org/blog/2016/04/25/performance-composite/" target="_blank" rel="noopener">关于合成层看淘宝</a>)的状况，绘制的具体范围，等等检查性能一绝</li>
+<li>show perfomance monitor 顾名思义</li>
+<li>show frame per second(FPS) meter 顾名思义</li>
+<li>show paint flashing rectangles 展示当前页面重绘的区域</li>
+</ol>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/js/">js</a><a href="/tags/chrome-devtools/">chrome devtools</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 hello2dj (dj_amazing@sina.com)
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

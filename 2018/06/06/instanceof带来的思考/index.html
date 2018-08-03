@@ -1,0 +1,371 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>instanceof带来的思考与es规范的研究 | hello2dj | if you can&#39;t explain it simply, you don&#39;t understand it well enough</title>
+
+  
+  <meta name="author" content="hello2dj (dj_amazing@sina.com)">
+  
+
+  
+  <meta name="description" content="每个人都是带着棱角来到世上，只有磨平棱角才能走的更远">
+  
+
+  
+  
+  <meta name="keywords" content="">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="instanceof带来的思考与es规范的研究"/>
+
+  <meta property="og:site_name" content="hello2dj"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="hello2dj" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">hello2dj</a>
+    </h1>
+    <p class="site-description">if you can&#39;t explain it simply, you don&#39;t understand it well enough</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/categories">Categories</a></li>
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>instanceof带来的思考与es规范的研究</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/06/06/instanceof带来的思考/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-06-05T16:00:00.000Z">
+          2018-06-06
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <blockquote>
+<p>源码面前了无秘密，规范面前也一样啊！</p>
+</blockquote>
+<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><p>今天在jjc的群里正美大大抛出了一个问题</p>
+<img src="/2018/06/06/instanceof带来的思考/question.jpeg" title="问题">
+<p>答案全是false</p>
+<h3 id="郁闷点"><a href="#郁闷点" class="headerlink" title="郁闷点"></a>郁闷点</h3><p>我很郁闷了，我觉得按照instanceof的执行过程应该是true啊！<br>为啥呢？因为一下两点</p>
+<ul>
+<li>我记忆中instanceof的流程是，比如： “k instanceof v”就是验证v.prototype 在 k的原型链中</li>
+</ul>
+<p>证明如下<br><img src="/2018/06/06/instanceof带来的思考/instanceof验证问题.jpg" title="验证"></p>
+<ul>
+<li>而在REPL中查看 如下<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(2).\__proto\__ === Number.prototype</span><br><span class="line">// true</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>那么为啥 2 instanceof Number 是false呢</p>
+<h3 id="接下来我要开始装逼了"><a href="#接下来我要开始装逼了" class="headerlink" title="接下来我要开始装逼了"></a>接下来我要开始装逼了</h3><blockquote>
+<p>下面的es规范是基于<a href="https://www.ecma-international.org/ecma-262/5.1/" target="_blank" rel="noopener">ecma-262/5.1</a>的，es6的规范有了一些变化，有了更多的新东西，更加严谨，但原理是一致的。</p>
+</blockquote>
+<ul>
+<li>先来讲讲js里的原始类型</li>
+</ul>
+<p>我们知道js中的原始类型(primitive) 只有如下几种<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Undefined, Null, Boolean, String, Number</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p> es6中多了一个原始类型 Symbol</p>
+</blockquote>
+<p>要注意，Number是指原始类型而不是内置的Number对象, 其他类似</p>
+<p>因此 3, ‘123’, true, false, null, undefined等是原始类型，不是对象(Object)哦。</p>
+<p>也就是说3 和 new Number(3)或者Number(3)不是一个类型哦，后两者是对象<br>参见下图</p>
+<img src="/2018/06/06/instanceof带来的思考/number.png" title="验证">
+<blockquote>
+<p>各位看官有没有看到里面的另一句话啊: Number object 可以通过是用Number函数方式的调用在转换为Number value。 Number(new Number(3)) instanceof Number === false</p>
+</blockquote>
+<p>剩下的就是对象了Object，各种对象，就不缺对象</p>
+<h3 id="接下来上-instanceof-的规范-一步一步揭开秘密"><a href="#接下来上-instanceof-的规范-一步一步揭开秘密" class="headerlink" title="接下来上 instanceof 的规范, 一步一步揭开秘密"></a>接下来上 instanceof 的规范, 一步一步揭开秘密</h3><p>例子<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">3 instanceof Number</span><br></pre></td></tr></table></figure></p>
+<p>我们一步一步讲来</p>
+<h4 id="1-The-instanceof-operator"><a href="#1-The-instanceof-operator" class="headerlink" title="1. The instanceof operator"></a>1. The instanceof operator</h4><blockquote>
+<p>The production RelationalExpression : RelationalExpression instanceof ShiftExpression is evaluated as follows:</p>
+</blockquote>
+<ol>
+<li>Let lref be the result of evaluating RelationalExpression.<blockquote>
+<p>计算左侧 为3</p>
+</blockquote>
+</li>
+<li>Let lval be GetValue(lref).<blockquote>
+<p>GetValue 调用返回值赋值给lval(此处我们只要知道GetValue(3) === 3就好了，后面会细讲)</p>
+</blockquote>
+</li>
+<li>Let rref be the result of evaluating ShiftExpression.<blockquote>
+<p>计算Number ，那就是Number</p>
+</blockquote>
+</li>
+<li>Let rval be GetValue(rref).<blockquote>
+<p>同2 这里rval = Number</p>
+</blockquote>
+</li>
+<li>If Type(rval) is not Object, throw a TypeError exception.<blockquote>
+<p>Type 调用会返回rval的类型，此处是对象Object[1]。</p>
+</blockquote>
+</li>
+<li>If rval does not have a [[HasInstance]] internal method, throw a TypeError exception.<blockquote>
+<p>判断rval 是否有HasInstance 方法</p>
+</blockquote>
+</li>
+<li>Return the result of calling the [[HasInstance]] internal method of rval with argument lval.<br>使用lval作为参数调用rval的[[HasInstance方法]] 就是 Number[[HasInstance]] (3)</li>
+</ol>
+<p>接下来就该[[HasInstance]]了</p>
+<h4 id="2-HasInstance-V"><a href="#2-HasInstance-V" class="headerlink" title="2. [[HasInstance]] (V)"></a>2. [[HasInstance]] (V)</h4><p>Assume F is a Function object.</p>
+<blockquote>
+<p>假设F是一个函数对象</p>
+</blockquote>
+<p>When the [[HasInstance]] internal method of F is called with value V, the following steps are taken:</p>
+<blockquote>
+<p>当我们调用F的[[HasInstance]]方法时走如下步骤</p>
+</blockquote>
+<ol>
+<li>If V is not an object, return false.<blockquote>
+<p>如果v不是对象，返回false<br>很明显我们上面的调用就结束了。。。因为3不是个对象，而是个Number value</p>
+</blockquote>
+</li>
+<li>Let O be the result of calling the [[Get]] internal method of F with property name “prototype”.<blockquote>
+<p>获取 F的prototype 给 O</p>
+</blockquote>
+</li>
+<li>If Type(O) is not Object, throw a TypeError exception.</li>
+<li>Repeat<ul>
+<li>Let V be the value of the [[Prototype]] internal property of V.</li>
+<li>If V is null, return false.</li>
+<li>If O and V refer to the same object, return true.<blockquote>
+<p>找到V的原型链，然后依次向上查找，直到结束，若O与其中一个原型是同一个对象返回true, 否则false</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p>NOTE Function objects created using Function.prototype.bind have a different implementation of [[HasInstance]] defined in 15.3.4.5.3.</p>
+</blockquote>
+<h5 id="到此我们已经搞定为了为啥-3-instanceof-Number-是false了，打完，不收工。"><a href="#到此我们已经搞定为了为啥-3-instanceof-Number-是false了，打完，不收工。" class="headerlink" title="到此我们已经搞定为了为啥 3 instanceof Number 是false了，打完，不收工。"></a>到此我们已经搞定为了为啥 3 instanceof Number 是false了，打完，不收工。</h5><p>还有一个Symbol啊，在此有个很魔性的地方，我上面引入的ecma262/5.1是没有Symbol的，我们去看ecma262/6.0，里面是有Symbol的，可是在那里我们可以看到Symbol也进级为了原始类型，因此Symbol(‘a’) instanceof Symbol自然也是 false了，你说魔性不魔性。</p>
+<h3 id="结束了？no-不结束！GetValue我们还没讲呢"><a href="#结束了？no-不结束！GetValue我们还没讲呢" class="headerlink" title="结束了？no 不结束！GetValue我们还没讲呢"></a>结束了？no 不结束！GetValue我们还没讲呢</h3><h4 id="在此我们先来看看-Reference是啥"><a href="#在此我们先来看看-Reference是啥" class="headerlink" title="在此我们先来看看 Reference是啥"></a>在此我们先来看看 Reference是啥</h4><p>官方解释如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">The Reference type is used to explain the behaviour of such operators</span><br><span class="line">as delete, typeof, the assignment operators, the super keyword and</span><br><span class="line">other language features. For example, the left-hand operand of an</span><br><span class="line">assignment is expected to produce a reference.</span><br></pre></td></tr></table></figure></p>
+<p>我只看明白是为了解释某些操作而存在的，例如delete, typeof, super, left-hand operand等等,还有super keyword等等</p>
+<p>Reference 含有3个component</p>
+<ol>
+<li>base value: any 甚至是Environment Record</li>
+<li>referenced name: string or symbol</li>
+<li>strict reference flag: true or false</li>
+</ol>
+<h4 id="那什么时候会创建一个Reference呢-规范并没有说怎么设置，我在stackoverflow-上看到了以下三个会创建并返回Reference的情况"><a href="#那什么时候会创建一个Reference呢-规范并没有说怎么设置，我在stackoverflow-上看到了以下三个会创建并返回Reference的情况" class="headerlink" title="那什么时候会创建一个Reference呢 规范并没有说怎么设置，我在stackoverflow 上看到了以下三个会创建并返回Reference的情况"></a>那什么时候会创建一个Reference呢 规范并没有说怎么设置，我在stackoverflow 上看到了以下三个会创建并返回Reference的情况</h4><ol>
+<li><p><a href="https://www.ecma-international.org/ecma-262/5.1/#sec-11.1.2" target="_blank" rel="noopener">identifier reference</a> expressions, that <a href="https://www.ecma-international.org/ecma-262/5.1/#sec-10.3.1" target="_blank" rel="noopener">resolve the identifier</a> in the current lexical environment (or one of its parents)<br>标识符，解析标识符时会创建一个reference, base value is envRec, referenced name is identifier</p>
+</li>
+<li><p><a href="http://es5.github.io/#x11.2.1" target="_blank" rel="noopener">property accessor expressions</a>, i.e. the .… and […] operators<br>属性获取时会创建一个reference(这个就是我们后面要用到的哦)</p>
+</li>
+<li><p><a href="http://www.ecma-international.org/ecma-262/5.1/#sec-15.3.4.4" target="_blank" rel="noopener">function calls</a> to host functions are permitted to return them, <a href="https://stackoverflow.com/q/13124417/1048572" target="_blank" rel="noopener">but such don’t exist</a>.<br>这个在es5规范里有说，是可以返回，但没有规定一定返回</p>
+</li>
+</ol>
+<h4 id="接下来说说我的另一个问题了，就是下面的类型转换是怎么发生的？Number-value-gt-Number-object"><a href="#接下来说说我的另一个问题了，就是下面的类型转换是怎么发生的？Number-value-gt-Number-object" class="headerlink" title="接下来说说我的另一个问题了，就是下面的类型转换是怎么发生的？Number value =&gt; Number object"></a>接下来说说我的另一个问题了，就是下面的类型转换是怎么发生的？Number value =&gt; Number object</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(2).\__proto\__</span><br><span class="line">// [Number: 0]</span><br></pre></td></tr></table></figure>
+<p>上面的转换很显然是获取属性发生的转换，我们一步一步解析，请看下面</p>
+<h6 id="1-“-2-proto-”-是啥-从表达式走起"><a href="#1-“-2-proto-”-是啥-从表达式走起" class="headerlink" title="1. “(2).__proto__” 是啥, 从表达式走起"></a>1. “(2).__proto__” 是啥, 从表达式走起</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">11 Expressions</span><br><span class="line"></span><br><span class="line">11.1 Primary Expressions</span><br><span class="line">Syntax</span><br><span class="line">    PrimaryExpression :</span><br><span class="line">        this</span><br><span class="line">        Identifier</span><br><span class="line">        Literal</span><br><span class="line">        ArrayLiteral</span><br><span class="line">        ObjectLiteral</span><br><span class="line">        ( Expression )</span><br></pre></td></tr></table></figure>
+<p>参见上面，我们”(2)”是PrimaryExpression, 再来看看 (Expression)是啥</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">11.1.6 The Grouping Operator</span><br><span class="line">    The production PrimaryExpression : ( Expression ) is evaluated as follows:</span><br><span class="line"></span><br><span class="line">        1. Return the result of evaluating Expression. This may be of type Reference.</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>NOTE This algorithm does not apply GetValue to the result of evaluating Expression. The principal motivation for this is so that operators such as delete and typeof may be applied to parenthesised expressions.<br>很显然我们”(2)”是group expression,按照规范的描述，group expression返回的有可能是Reference</p>
+</blockquote>
+<h6 id="2-“2”-咋计算"><a href="#2-“2”-咋计算" class="headerlink" title="2. “2” 咋计算"></a>2. “2” 咋计算</h6><p>看了上面我们知道了”(2)”是啥，那按照规范所说的，”(2)”属于Express, 也可以看出来”2” 属于PrimaryExpression 中的Literal, 于是就有了下面的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">11.1.3 Literal Reference</span><br><span class="line">    A Literal is evaluated as described in 7.8.</span><br></pre></td></tr></table></figure></p>
+<p>看到了Literal 参见<a href="http://www.ecma-international.org/ecma-262/5.1/#sec-7.8" target="_blank" rel="noopener">7.8</a> 具体就是规定了Number literal的语法</p>
+<h6 id="3-2-我们解决了，那么就该”-2-proto-”了，-这是一个属性获取，于是有了下面的规范-规范先描述了属性获取的语法”-”和”-”-然后是算法描述"><a href="#3-2-我们解决了，那么就该”-2-proto-”了，-这是一个属性获取，于是有了下面的规范-规范先描述了属性获取的语法”-”和”-”-然后是算法描述" class="headerlink" title="3. (2)我们解决了，那么就该”(2).__proto__”了， 这是一个属性获取，于是有了下面的规范, 规范先描述了属性获取的语法”.”和”[]”,然后是算法描述"></a>3. (2)我们解决了，那么就该”(2).__proto__”了， 这是一个<a href="http://www.ecma-international.org/ecma-262/5.1/#sec-11.2.1" target="_blank" rel="noopener">属性获取</a>，于是有了下面的规范, 规范先描述了属性获取的语法”.”和”[]”,然后是算法描述</h6><p>The production MemberExpression : MemberExpression [ Expression ] is evaluated as follows:</p>
+<ol>
+<li>Let baseReference be the result of evaluating MemberExpression.<blockquote>
+<p>左侧计算 得到 2 赋值给baseReference</p>
+</blockquote>
+</li>
+<li>Let baseValue be GetValue(baseReference).<blockquote>
+<p>调用GetValue, 对2 ，依然返回2</p>
+</blockquote>
+</li>
+<li>Let propertyNameReference be the result of evaluating Expression.<blockquote>
+<p>计算属性Expression 赋值给 propertyNameReference， 对于’.’调用会变为’[<identifer-name-string>]’ 于是 就是”__proto__”字符串</identifer-name-string></p>
+</blockquote>
+</li>
+<li>Let propertyNameValue be GetValue(propertyNameReference).<blockquote>
+<p>调用GetValue, 对于propertyNameReference ，依然返回”__proto__”字符串</p>
+</blockquote>
+</li>
+<li>Call CheckObjectCoercible(baseValue).<blockquote>
+<p>判断baseValue不是Null或者Undefined</p>
+</blockquote>
+</li>
+<li>Let propertyNameString be ToString(propertyNameValue).<blockquote>
+<p>转为String</p>
+</blockquote>
+</li>
+<li><p>If the syntactic production that is being evaluated is contained in strict mode code, let strict be true, else let strict be false.</p>
+</li>
+<li><p>Return a value of type Reference whose base value is baseValue and whose referenced name is propertyNameString, and whose strict mode flag is strict.</p>
+<blockquote>
+<p>返回 Reference, base value是baseValue，对于我们的baseValue就是2，referenced name 是 propertyNameString，对于我们就是”__proto__”</p>
+</blockquote>
+</li>
+</ol>
+<p>The production CallExpression : CallExpression [ Expression ] is evaluated in exactly the same manner, except that the contained CallExpression is evaluated in step 1.</p>
+<blockquote>
+<p>这句话的意思就是 CallExpress和属性获取类似。</p>
+</blockquote>
+<p>到这里我们就完成了 “(2).__proto__”的完整解析，这个完整解析返回了一个Reference, 可是类型转换呢？</p>
+<h6 id="4-对属性获取返回的Reference的使用"><a href="#4-对属性获取返回的Reference的使用" class="headerlink" title="4. 对属性获取返回的Reference的使用"></a>4. 对属性获取返回的Reference的使用</h6><p>上面的步骤我们是完成了整个表达式的解析，但还没有使用表达式返回的结果，那我们来使用一下，比如 “(2).__proto__ === 2”<br>11.9.4 The Strict Equals Operator ( === )<br>    The production EqualityExpression : EqualityExpression === RelationalExpression is evaluated as follows:</p>
+<ol>
+<li>Let lref be the result of evaluating EqualityExpression.<blockquote>
+<p>解析 EqualityExpression ,我们从前面可以得知，”(2).__proto__”， 解析之后是一个Reference, 类似于 {baseValue: 2, referencedName: “__proto__”, strict:…}</p>
+</blockquote>
+</li>
+<li><p>Let lval be GetValue(lref).</p>
+<blockquote>
+<p>重头戏来了 把我们上一步得到的Reference 作为参数调用 GetValue会返回什么呢？ 见下</p>
+</blockquote>
+</li>
+<li><p>Let rref be the result of evaluating RelationalExpression.</p>
+</li>
+<li>Let rval be GetValue(rref).</li>
+<li>Return the result of performing the strict equality comparison rval === lval. (See 11.9.6)</li>
+</ol>
+<h6 id="5-GetValue调用"><a href="#5-GetValue调用" class="headerlink" title="5. GetValue调用"></a>5. GetValue调用</h6><p>上面的严格等于我们就不分析了，不是重点，来看看GetValue吧。很长很高能</p>
+<p>8.7.1 GetValue (V)</p>
+<ol>
+<li>If Type(V) is not Reference, return V.<blockquote>
+<p>判断V是不是一个Reference,不是直接返回V， 现在明白了GetValue(2)为啥返回2了吧。</p>
+</blockquote>
+</li>
+<li>Let base be the result of calling GetBase(V).<blockquote>
+<p>获取base value, 对我们的Ref 就是2</p>
+</blockquote>
+</li>
+<li>If IsUnresolvableReference(V), throw a ReferenceError exception.<blockquote>
+<p>这是用来判断base value为非null和undefined的</p>
+</blockquote>
+</li>
+<li><p>If IsPropertyReference(V), then</p>
+<ol>
+<li>If HasPrimitiveBase(V) is false, then let get be the [[Get]] internal method of base, otherwise let get be the special [[Get]] internal method defined below.<blockquote>
+<p>base value 不是原始类型，则让get为base的内部[[Get]]方法，若是原始类型则参见下面的internal [[GET]]方法的逻辑，嗯，我们的base value是2，于是就得走下面的internal [[GET]]方法了</p>
+</blockquote>
+</li>
+<li>Return the result of calling the get internal method using base as its this value, and passing GetReferencedName(V) for the argument. <blockquote>
+<p>调用get，使用referenceName作为参数, base value作为this<br>判断V的base value是不是object, number, string, Boolean</p>
+</blockquote>
+</li>
+</ol>
+</li>
+<li><p>Else, base must be an environment record.</p>
+<blockquote>
+<p>不是 上面列举的几类，那就一定是environment record</p>
+<ol>
+<li>Return the result of calling the GetBindingValue (see 10.2.1) concrete method of base passing GetReferencedName(V) and IsStrictReference(V) as arguments.</li>
+</ol>
+</blockquote>
+</li>
+</ol>
+<p>The following [[Get]] internal method is used by GetValue when V is a property reference with a primitive base value. It is called using base as its this value and with property P as its argument. The following steps are taken:</p>
+<blockquote>
+<p>internal [[GET]]method</p>
+</blockquote>
+<ol>
+<li><p>Let O be ToObject(base).</p>
+<blockquote>
+<p>我的神啊，神啊，神啊，神啊，神啊，神啊，神啊，神啊，神啊，神啊，神啊，神啊，神啊，神啊，神啊， 终于看到了类型转换啊！！！ ToObject(base), 这个很简单了，把原始类型转换为对应Object类型，比如2(Number Value), 转换为Number Object, 其他类似 <a href="http://www.ecma-international.org/ecma-262/5.1/#sec-9.9" target="_blank" rel="noopener">参见</a></p>
+</blockquote>
+</li>
+<li><p>Let desc be the result of calling the [[GetProperty]] internal method of O with property name P.</p>
+<blockquote>
+<p>…不解释了，往下就很容易理解了</p>
+</blockquote>
+</li>
+<li>If desc is undefined, return undefined.</li>
+<li>If IsDataDescriptor(desc) is true, return desc.[[Value]].</li>
+<li>Otherwise, IsAccessorDescriptor(desc) must be true so, let getter be desc.[[Get]] (see 8.10).</li>
+<li>If getter is undefined, return undefined.</li>
+<li>Return the result calling the [[Call]] internal method of getter providing base as the this value and providing no arguments.</li>
+</ol>
+<blockquote>
+<p>NOTE The object that may be created in step 1 is not accessible outside of the above method. An implementation might choose to avoid the actual creation of the object. The only situation where such an actual property access that uses this internal method can have visible effect is when it invokes an accessor function. 这些说的就是step 1创建的object，不应当被外部访问到。</p>
+</blockquote>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>源码面前了无秘密，规范面前也一样啊！其实但我们理解了Reference 类型，那么this绑定的问题也就迎刃而解了，大家可以再去看看<a href="https://www.ecma-international.org/ecma-262/5.1/#sec-11.2.3" target="_blank" rel="noopener">this的绑定问题</a>也是基于Reference的</p>
+<p>注<br>[1]<a href="http://www.ecma-international.org/ecma-262/6.0/#sec-ecmascript-data-types-and-values" target="_blank" rel="noopener">Type(v)解释</a></p>
+<blockquote>
+<p>根据具体的内容返回相应的类型，如字面3,返回Number Type，new Number(3) 返回Object 类型</p>
+</blockquote>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 hello2dj (dj_amazing@sina.com)
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

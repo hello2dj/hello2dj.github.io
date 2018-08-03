@@ -1,0 +1,193 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>libuv设计概览 | hello2dj | if you can&#39;t explain it simply, you don&#39;t understand it well enough</title>
+
+  
+  <meta name="author" content="hello2dj (dj_amazing@sina.com)">
+  
+
+  
+  <meta name="description" content="每个人都是带着棱角来到世上，只有磨平棱角才能走的更远">
+  
+
+  
+  
+  <meta name="keywords" content="node,libuv">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="libuv设计概览"/>
+
+  <meta property="og:site_name" content="hello2dj"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="hello2dj" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">hello2dj</a>
+    </h1>
+    <p class="site-description">if you can&#39;t explain it simply, you don&#39;t understand it well enough</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/categories">Categories</a></li>
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>libuv设计概览</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/01/10/libuv概览/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-01-10T02:29:28.000Z">
+          2018-01-10
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>先上图</p>
+<p><img src="http://7xnyi3.dl1.z0.glb.clouddn.com/2017-07-10-libuv-libuv.png" alt=""></p>
+<h3 id="设计概览"><a href="#设计概览" class="headerlink" title="设计概览"></a>设计概览</h3><p>libuv是一个跨平台的异步事件库。<br>libuv对于不同的I/O轮询机制提供了很多的抽象。例如：handle和stream是对socket和其他实体的高等抽象。还提供了跨平台的文件I / O和线程功能。以及一些其他的功能。<br>此处图一张：<br><img src="http://docs.libuv.org/en/v1.x/_images/architecture.png" alt=""></p>
+<h3 id="handles-和requests"><a href="#handles-和requests" class="headerlink" title="handles 和requests"></a>handles 和requests</h3><p>libuv给用户提供了两个抽象用于和事件循环进行交互： handle和request。<br>handle表示长期存在的对象，当它激活时，它是用来处理特定的操作。例如：</p>
+<ul>
+<li>当激活时，prepare handle 会在每次循环时调用一次他的回调。</li>
+<li>当每次有新的连接到来时tcp handle就会调用他的连接回调。</li>
+</ul>
+<p>request是用来表示短期存在的操作。这些操作可以通过一个handle来执行：写request通常是用来在一个handle上写数据；或者是独立于handle的： getaddrinfo rquest就不需要一个handle可以直接在事件循环上执行。</p>
+<h3 id="I-O-循环"><a href="#I-O-循环" class="headerlink" title="I/O 循环"></a>I/O 循环</h3><p>I/O(或者)循环是libuv的核心。它用来建立所有的I/O操作的内容，并且这意味着I/O 循环是一个单线程的。当然当我们在多个线程上运行的时候就可以跑多个事件循环了。libuv事件循环（或涉及循环或handle的任何其他API）就不是线程安全的，除非另有说明。事件循环遵循常见的单线程异步I/O方法：所有（网络）I/O在非阻塞套接字上执行，使用给定平台上可用的最佳机制：epoll on linux, kqueue on OSX其他等等。作为循环迭代的一部分，循环将阻塞等待已经添加到轮询器的套接字上的I/O活动，并且将触发回调来指示套接字条件（可读，可写的挂断），因此句柄可以读，写或执行期望的I/O操作。<br>见图<br><img src="http://docs.libuv.org/en/v1.x/_images/loop_iteration.png" alt=""></p>
+<ol>
+<li>loop的now会被更新，在循环开始前，循环会缓存当前的时间以减少和和时间相关的系统调用。</li>
+<li>如果循环处于活动状态，则开始迭代，否则循环将立即退出。 那么，什么时候循环被认为是活着的呢？ 如果一个循环有处于激活状态或者被ref的handle，或者活动的请求或者正在被关闭的句柄，它就被认为是活着的。</li>
+<li><p>运行(due)到期的定时器。所有活跃的的定时器如果他们的时间在now之前就会运行他们的cb。</p>
+</li>
+<li><p>处于等待的回调被调用。虽然所有的I/O回调都会在循环之后立即调用，但是还有这样的一些例子，比如一个回调被延迟到下一此循环了。因此如果上次循环有延时的I/O回调会在这个时间点调用。</p>
+</li>
+<li>Idle handle callbacks are called. Despite the unfortunate name, idle handles are run on every loop iteration, if they are active.</li>
+<li>prepare handle 回调被调用。在循环被I/O阻塞之前（right before the loop will block for I/O）prepare回调就会立即被调用。</li>
+<li>轮询超时时间计算。在循环被阻塞之前计算他会被阻塞多久。这里有一些计算的规则：<ul>
+<li>如果UV_RUN_NOWAIT标志为true则timeout是0。</li>
+<li>若果循环将要停止(uv_stop())，timeout是0。</li>
+<li>若果没有处于活跃的handle或者request，timeout是0。</li>
+<li>若果有idle handles处于活跃状态，timeout是0。</li>
+<li>若果有等待被关闭的handle,timeout是0。</li>
+<li>若果上述条件没一个满足的，就挑选一个最近的定时器的时间。如果连timer都没有那么timeout 是无限的(infinity)。</li>
+</ul>
+</li>
+<li>循环被I/O阻塞。在这一步，循环会被阻塞一段时间而这个时间就是上一步计算来的。所有的相关handles都会在给定的文件描述符上等待读或写事件若是有就调用他们的回调。</li>
+<li>Check handle的回调被调用。当事件循环被I/O阻塞结束之后立刻调用check handle的回调。本质上他是和prepare handle 相反的。</li>
+<li>关闭回调被调用。如果一个handle呗uv_close()关掉了，此时就会在这个点调用关闭的回调。</li>
+<li>在UV_RUN_ONCE的情况下的特殊情况，他意味着进一步的处理。比如在循环被I/O阻塞时没有回调被触发，但是已经过去一段时间了，有可能会有定时器到期，那么在进行一次定时器的回调就可以被调用了。</li>
+<li>循环结束。当循环是在UV_RUN_NOWAIT或者UV_RUN_ONCE模式下运行的，那么循环将结束。uv_run会返回。如果实在UV_RUN_DEFAULT模式下运行的，若是他还处于alive状态那么循环会继续，否则也会结束。<blockquote>
+<p>重要提示：libuv使用线程池来使异步文件I/O操作成为可能，但是网络I/O总是在单个线程（每个循环的线程）中执行。</p>
+</blockquote>
+</li>
+</ol>
+<h3 id="文件I-O"><a href="#文件I-O" class="headerlink" title="文件I/O"></a>文件I/O</h3><p>与网络I/O不同，没有libuv可以依赖的特定于平台的文件I/O原语，因此当前的方法是在线程池中运行阻塞文件I/O操作。</p>
+<p>libuv目前使用一个全局的线程池，所有的循环都可以和其交互。有如下3种操作使用的是线程池:</p>
+<ol>
+<li>文件系统的操作</li>
+<li>DNS的功能（getaddrinfo and getnameinfo）</li>
+<li>用户通过uv_queue_work指定的代码<blockquote>
+<p>线程池的大小是相当受限制的。</p>
+</blockquote>
+</li>
+</ol>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ol>
+<li><a href="http://blog.libtorrent.org/2012/10/asynchronous-disk-io/" target="_blank" rel="noopener">为什么使用thread pool来处理文件I/O</a></li>
+<li><a href="http://luohaha.github.io/Chinese-uvbook/source/introduction.html" target="_blank" rel="noopener">关于怎么使用libuv</a></li>
+</ol>
+<h3 id="libuv-的队列操作"><a href="#libuv-的队列操作" class="headerlink" title="libuv 的队列操作"></a>libuv 的队列操作</h3><p><strong> 2. 定义基本操作 </strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#define QUEUE_NEXT(q)       (*(QUEUE **) &amp;((*(q))[0]))</span><br><span class="line">#define QUEUE_PREV(q)       (*(QUEUE **) &amp;((*(q))[1]))</span><br></pre></td></tr></table></figure></p>
+<p>数组的第0个表示下一个，1表示上一个。<br>这里使用(<em>(QUEUE **) &amp;((</em>(q))[0]))这么复杂的表达是有两个原因。一个是转成左值（这里指的左值是指从数组元素的赋值的角度去看，就是指能不能给数组元素赋值），另一个是保存类型信息。</p>
+<p>这样会丢失类型信息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define QUEUE_NEXT(q)          ((*(q))[0])  // 这个是数组的0号元素</span><br></pre></td></tr></table></figure></p>
+<p>这样不是左值<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define QUEUE_PREV(q)       ((QUEUE *) ((*(q))[1])) // QUEUE* 是个数组指针非左值</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">q是 QUEUE * 这个是数组指针非左值</span><br><span class="line">*(q) 是QUEUE</span><br><span class="line">(*(q))[0]是数组第一个元素的值</span><br><span class="line">&amp;((*(q))[0])第一个元素的地址 （非左值）</span><br><span class="line">(QUEUE **) &amp;((*(q))[0]) 还是数组第一个元素之的地址但是这次保存了类型</span><br><span class="line">* (QUEUE **) &amp;((*(q))[0]) 是第一个元素的值得地址即保存了类型又是左值</span><br></pre></td></tr></table></figure>
+<p><strong> 3. 取值 </strong><br>这个队列的实现和数据无关，所以宏里面看不到data的定义，是不是很神奇，像在c++这种面向对象的语言中，我们一般通过迭代器来实现操作和数据的分离，而c语言可以用很巧妙的方式去高效的实现哦。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#define QUEUE_DATA(ptr, type, field)                                          \</span><br><span class="line">  ((type *) ((char *) (ptr) - ((char *) &amp;((type *) 0)-&gt;field)))</span><br></pre></td></tr></table></figure>
+<p>((char <em>) &amp;((type </em>) 0)-&gt;field))是拿到偏移量。为什么这样就可以拿到偏移量？其实很好理解，把0当做其实地址，取field的地址，就是偏移量啦。</p>
+<p><a href="https://www.jianshu.com/p/6373de1e117d" target="_blank" rel="noopener">解释出处</a><br><a href="http://masutangu.com/2016/10/libuv-source-code/" target="_blank" rel="noopener">另一篇解释</a><br><a href="http://gngshn.github.io/2017/09/01/libuv-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-1-event-loop%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96/" target="_blank" rel="noopener">还有一篇参考</a></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/node/">node</a><a href="/tags/libuv/">libuv</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 hello2dj (dj_amazing@sina.com)
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

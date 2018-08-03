@@ -1,0 +1,152 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>mirror-git | hello2dj | if you can&#39;t explain it simply, you don&#39;t understand it well enough</title>
+
+  
+  <meta name="author" content="hello2dj (dj_amazing@sina.com)">
+  
+
+  
+  <meta name="description" content="每个人都是带着棱角来到世上，只有磨平棱角才能走的更远">
+  
+
+  
+  
+  <meta name="keywords" content="git mirror">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="mirror-git"/>
+
+  <meta property="og:site_name" content="hello2dj"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="hello2dj" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">hello2dj</a>
+    </h1>
+    <p class="site-description">if you can&#39;t explain it simply, you don&#39;t understand it well enough</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/categories">Categories</a></li>
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>mirror-git</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/03/05/mirror-git/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-03-05T14:00:59.000Z">
+          2018-03-05
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h4 id="镜像代码库的方法"><a href="#镜像代码库的方法" class="headerlink" title="镜像代码库的方法"></a>镜像代码库的方法</h4><p>我希望这篇文章能够清晰的描述一下如何镜像 git 仓库—即我有一个 github 仓库 example.git, 还有一个 sourceforge 仓库 example.git, 我希望这两个仓库的代码可以镜像同步，就是我无论更新哪一个都会同步到另一个仓库上去。</p>
+<h5 id="建立一个本地的仓库，并且设置-upstream-就是添加-remote-。重点：这得是个-bare-仓库"><a href="#建立一个本地的仓库，并且设置-upstream-就是添加-remote-。重点：这得是个-bare-仓库" class="headerlink" title="建立一个本地的仓库，并且设置 upstream(就是添加 remote)。重点：这得是个 bare 仓库"></a>建立一个本地的仓库，并且设置 upstream(就是添加 remote)。重点：这得是个 bare 仓库</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd /srv/gitsync</span><br><span class="line">git clone --bare git@github.com:[account]/[repository].git</span><br><span class="line">mv [repository].git [repository]</span><br></pre></td></tr></table></figure>
+<p>接下来，我们删除 origin ‘remote’，并且配置两个远程仓库为 upstream 就是添加 remote,看代码更详细：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cd [repository]</span><br><span class="line">git remote remove origin</span><br><span class="line">git remote add github  git@github.com:[account]/[repository].git</span><br><span class="line">git remote add sourceforge  ssh://[account]@git.code.sf.net/p/[repository]/code</span><br></pre></td></tr></table></figure>
+<p>镜像意味着无论哪个仓库有更新都会同步到另外一个仓库上去。因此我们应当有个 webhook 来触发我们镜像脚本。每个代码管理都会提供这样的 hook 的。</p>
+<h5 id="镜像脚本我们使用如下的代码来实现真正的同步逻辑。"><a href="#镜像脚本我们使用如下的代码来实现真正的同步逻辑。" class="headerlink" title="镜像脚本我们使用如下的代码来实现真正的同步逻辑。"></a>镜像脚本我们使用如下的代码来实现真正的同步逻辑。</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line"></span><br><span class="line">function sync_repo &#123;</span><br><span class="line">    cd /srv/gitsync</span><br><span class="line">    cd $1</span><br><span class="line">    echo $1</span><br><span class="line">    # fetch all known remotes 获取所有remote的代码更新</span><br><span class="line">    git fetch --all -p</span><br><span class="line">    # 我们可以看同步就在下面进行</span><br><span class="line">    # push branches from sourceforge to github and via versa. 先同步sourceforge 到github. 注意 push的目的remote是github, 源remote是在refs/remote中指定的sourcefore</span><br><span class="line">    git push github &quot;refs/remotes/sourceforge/*:refs/heads/*&quot;</span><br><span class="line">    # 同理推送 github上的代码更新到sourceforge</span><br><span class="line">    git push sourceforge &quot;refs/remotes/github/*:refs/heads/*&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># 处理参数，进入指定的bare仓库进行推送</span><br><span class="line">cd /srv/gitsync</span><br><span class="line">if [ &quot;$1&quot; == &quot;&quot; ]; then</span><br><span class="line">    # no command line parameters, print help message</span><br><span class="line">    echo &quot;gitsync [report]|--all&quot;</span><br><span class="line">elif [ &quot;$1&quot; == &quot;--all&quot; ]; then</span><br><span class="line">    # &quot;--all&quot;: for all known repositories</span><br><span class="line">    for D in *; do</span><br><span class="line">    if [ -d &quot;$&#123;D&#125;&quot; ]; then</span><br><span class="line">            sync_repo $D</span><br><span class="line">            cd /srv/gitsync</span><br><span class="line">    fi</span><br><span class="line">    done</span><br><span class="line">elif [ -d &quot;$1&quot; ]; then</span><br><span class="line">    # sync only the specified repository</span><br><span class="line">    sync_repo $1</span><br><span class="line">else echo &quot;gitsync [report]|--all&quot;</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+<p>我们可以看到在 sync_repo 函数中我们把 github 和 sourceforge 进行了互相推送。当然你还可以进行更多的映射。</p>
+<p>就像我们上面讨论的，我门使用 webhooks 来触发我们的 mirror 行为。可以使用如下的 php 脚本</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">if ($_SERVER[&apos;REQUEST_METHOD&apos;] !== &apos;POST&apos;) &#123;</span><br><span class="line">    die(&apos;POST required&apos;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">if (!isset($_REQUEST[&apos;repository&apos;])) &#123;</span><br><span class="line">    die(&apos;repository not specified&apos;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// validate repository name to prevent injection and traversing attacks</span><br><span class="line">$repo = $_REQUEST[&apos;repository&apos;];</span><br><span class="line">if (!preg_match(&apos;/^[a-zA-Z0-9]+$/&apos;, $repo)) &#123;</span><br><span class="line">    die(&apos;invalid repository name&apos;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">header(&apos;HTTP/1.0 204 Found&apos;);</span><br><span class="line">system(&apos;sudo -Hu gitsync /usr/local/bin/gitsync &apos;.$repo);</span><br></pre></td></tr></table></figure>
+<h5 id="安全"><a href="#安全" class="headerlink" title="安全"></a>安全</h5><ul>
+<li><p>我们必须的校验仓库名称，以防止 shell 命令注入，git 命令注入，以及目录遍历等非法行为。</p>
+</li>
+<li><p>上面的代码使用了 sudo 的权限，显然 webserver 不应该拥有可访问仓库的权限。</p>
+</li>
+<li><p>大部分代码管理都支持 webhook 验证，但是我么上面的例子没有使用验证，那意味着任何人都可以触发我们的同步行为。</p>
+</li>
+</ul>
+<h5 id="删除分支这里还没有好的方法可以让我们同步删除分支的行为。但是我们还是通过我们脚本以-push-的方法来进行删除。且看下面的方法"><a href="#删除分支这里还没有好的方法可以让我们同步删除分支的行为。但是我们还是通过我们脚本以-push-的方法来进行删除。且看下面的方法" class="headerlink" title="删除分支这里还没有好的方法可以让我们同步删除分支的行为。但是我们还是通过我们脚本以 push 的方法来进行删除。且看下面的方法"></a>删除分支这里还没有好的方法可以让我们同步删除分支的行为。但是我们还是通过我们脚本以 push 的方法来进行删除。且看下面的方法</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git branch -d [branchName]</span><br><span class="line">git push github --delete [branchName]</span><br><span class="line">git push sourceforge --delete [branchName]</span><br></pre></td></tr></table></figure>
+<p>虽然麻烦但是我们还是实现了：)。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/git-mirror/">git mirror</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 hello2dj (dj_amazing@sina.com)
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

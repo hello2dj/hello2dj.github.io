@@ -1,0 +1,141 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>quicksort | hello2dj | if you can&#39;t explain it simply, you don&#39;t understand it well enough</title>
+
+  
+  <meta name="author" content="hello2dj (dj_amazing@sina.com)">
+  
+
+  
+  <meta name="description" content="每个人都是带着棱角来到世上，只有磨平棱角才能走的更远">
+  
+
+  
+  
+  <meta name="keywords" content="golang">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="quicksort"/>
+
+  <meta property="og:site_name" content="hello2dj"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="hello2dj" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">hello2dj</a>
+    </h1>
+    <p class="site-description">if you can&#39;t explain it simply, you don&#39;t understand it well enough</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/categories">Categories</a></li>
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>quicksort</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/04/30/quicksort/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-04-29T16:00:00.000Z">
+          2018-04-30
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h3 id="快速排序时为什么一定要把pivot放到头或尾最后在放回去呢？"><a href="#快速排序时为什么一定要把pivot放到头或尾最后在放回去呢？" class="headerlink" title="快速排序时为什么一定要把pivot放到头或尾最后在放回去呢？"></a>快速排序时为什么一定要把pivot放到头或尾最后在放回去呢？</h3><p>因为我们在把头尾index往里缩时我们判断的是小于和不小于(大于同理)，比如我们把pivot 5 放在中间，当我们的头index判断不小于时，若是到了pivot条件也是成立的就跳到了pivot右侧，此时若是尾index也在右边发现了小于pivot的值在交换时就会出现，小于pivot的值出现在pivot的右侧，当然我们也可以做额外操作，判断若是头index到了pivot的位置时则不再继续<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">1. </span><br><span class="line">   |     | </span><br><span class="line">   V     V</span><br><span class="line">4, 5, 8, 2</span><br><span class="line">  头      尾</span><br><span class="line"></span><br><span class="line">2. </span><br><span class="line">      |  | </span><br><span class="line">      V  V</span><br><span class="line">4, 5, 2, 8</span><br><span class="line">      头 尾</span><br><span class="line"></span><br><span class="line">3. 此时找到了大于以及小于的pivot的值交换</span><br><span class="line">4，5，2，8， 显然出问题了</span><br><span class="line">、、、、、、</span><br><span class="line">但是若是5在头部</span><br><span class="line">5，4，8，2， 交换就没事了，因为接下来会有把pivot和low或者high交换的过程</span><br></pre></td></tr></table></figure></p>
+<h3 id="我们每进行一次交换就会找到一个元素的正确位置，此时接下来再排序时就不要再把他算进去了"><a href="#我们每进行一次交换就会找到一个元素的正确位置，此时接下来再排序时就不要再把他算进去了" class="headerlink" title="我们每进行一次交换就会找到一个元素的正确位置，此时接下来再排序时就不要再把他算进去了"></a>我们每进行一次交换就会找到一个元素的正确位置，此时接下来再排序时就不要再把他算进去了</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2,1,2,1,3,4,5</span><br></pre></td></tr></table></figure>
+<p>上述3已经在正确位置了，再接下来的排序应当是4,5和2，1，2，1两组进行排序而不是3，4，5和2，1，2，1或者4，5和2，1，2，1, 3进行排序, 因为3已经是在正确位置了，没必要再排一次。</p>
+<h3 id="我们可看看golang源码的排序"><a href="#我们可看看golang源码的排序" class="headerlink" title="我们可看看golang源码的排序"></a>我们可看看golang源码的排序</h3><ol>
+<li>若是小于12个元素时它采用shell希尔排序</li>
+<li>他会计算一个深度2 * lg(n+1), 然后采用快速排序，没进行一次就深度减一，当为0时就用堆排序,至于这个数字咋算出来的可以查查</li>
+</ol>
+<p>解析：元素较少时，大家都差不多，反而是希尔排序这样的好一些，好在哪啊？<br>我们都知道快排在元素基本有序时是最慢的最坏能达到o(n^2),所以当序列基本有序时我们可以采用堆排序</p>
+<h3 id="一个简单的快排版本"><a href="#一个简单的快排版本" class="headerlink" title="一个简单的快排版本"></a>一个简单的快排版本</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">package main</span><br><span class="line">import (</span><br><span class="line">	&quot;fmt&quot;</span><br><span class="line">)</span><br><span class="line"> </span><br><span class="line">// threads 线程标识创建线程的个数</span><br><span class="line">func quicksort(nums []int, length int) &#123;</span><br><span class="line">	if length &lt;= 1 &#123;</span><br><span class="line">		return</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	left := 1</span><br><span class="line">	right := length - 1</span><br><span class="line">	</span><br><span class="line">	pivot := nums[0]</span><br><span class="line">	</span><br><span class="line">  for&#123;</span><br><span class="line">		for; left &lt; right &amp;&amp; nums[right] &gt; pivot; right--&#123; &#125;</span><br><span class="line">		for; left &lt; right &amp;&amp; nums[left] &lt;= pivot; left++ &#123; &#125;</span><br><span class="line">		if left &gt;= right &#123;</span><br><span class="line">			break</span><br><span class="line">		&#125;</span><br><span class="line">		nums[left], nums[right] = nums[right], nums[left]</span><br><span class="line">	&#125;</span><br><span class="line">	nums[0], nums[left] = nums[left], nums[0]</span><br><span class="line"></span><br><span class="line">	quicksort(nums[0:left], left) //分任务</span><br><span class="line">	temp := nums[left + 1: length]</span><br><span class="line">  quicksort(temp, len(temp))</span><br><span class="line">  return</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func main() &#123;</span><br><span class="line">	x := []int&#123;3, 41, 24, 76, 11, 45, 3, 3, 64, 21, 69, 19, 36&#125;</span><br><span class="line">	quicksort(x[:], len(x))</span><br><span class="line">	fmt.Println(x);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/golang/">golang</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 hello2dj (dj_amazing@sina.com)
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

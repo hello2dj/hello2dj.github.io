@@ -1,0 +1,174 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>简话协变和逆变 | hello2dj | if you can&#39;t explain it simply, you don&#39;t understand it well enough</title>
+
+  
+  <meta name="author" content="hello2dj (dj_amazing@sina.com)">
+  
+
+  
+  <meta name="description" content="每个人都是带着棱角来到世上，只有磨平棱角才能走的更远">
+  
+
+  
+  
+  <meta name="keywords" content="typescript,subtype">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="简话协变和逆变"/>
+
+  <meta property="og:site_name" content="hello2dj"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="hello2dj" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">hello2dj</a>
+    </h1>
+    <p class="site-description">if you can&#39;t explain it simply, you don&#39;t understand it well enough</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/categories">Categories</a></li>
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>简话协变和逆变</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/07/14/简话协变和逆变/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-07-14T13:00:30.102Z">
+          2018-07-14
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <blockquote>
+<p><a href="https://www.stephanboyer.com/post/132/what-are-covariance-and-contravariance" target="_blank" rel="noopener">原文地址</a></p>
+</blockquote>
+<p><img src="http://upload-images.jianshu.io/upload_images/4803763-49e1b847646a94db.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="一图胜千言"></p>
+<h1 id="什么是协变和逆变？"><a href="#什么是协变和逆变？" class="headerlink" title="什么是协变和逆变？"></a>什么是协变和逆变？</h1><p>子类型(subtyping)在编程语言理论中一直是个复杂的话题。对协变和逆变的误解是造成这个问题的一个主要原因。这篇文章就是来说明这两个术语的。</p>
+<p>接下来我们将会使用以下符号:</p>
+<ul>
+<li>A &lt;: B 意思是A是B的子类型</li>
+<li>A -&gt; B 代表一个函数参数是A,返回值是B</li>
+<li>e : T 意思是e的类型是T</li>
+</ul>
+<h1 id="一个有意思的问题"><a href="#一个有意思的问题" class="headerlink" title="一个有意思的问题"></a>一个有意思的问题</h1><p>假设我们有这么三个类型<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Greyhoud &lt;: Dog &lt;: Animal</span><br></pre></td></tr></table></figure></p>
+<p>可以看出Greyhound 是Dog的子类型，并且Dog 是Animal的子类型。通常来说，子类型是具有传递性的，因此Greyhound也是Animal的子类型。</p>
+<p><strong>问题</strong>: 下面那个类型是Dog -&gt; Dog的子类型</p>
+<ol>
+<li>Greyhound -&gt; Greyhound</li>
+<li>Greyhound -&gt; Animal</li>
+<li>Animal -&gt; Animal</li>
+<li>Animal -&gt; Greyhound</li>
+</ol>
+<p>我们如何回答这个问题呢？假设f是一个接收Dog -&gt; Dog 函数类型作为参数的函数。此时我们并不关心f的返回值类型，举个栗子吧，假设：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">f: (Dog -&gt; Dog) -&gt; String</span><br></pre></td></tr></table></figure></p>
+<p>现在我想用g作为参数来调用f,接下来我们一一看一下当g是上述类型时会是什么情况:</p>
+<ol>
+<li><p>假设g: Grehound -&gt; Grehound, 那个f(g)是否是类型安全的呢？<br>不是的，因为f有可能会用其他的Dog的子类型来调用g,比如：GemanShepherd</p>
+</li>
+<li><p>假设g: Geryhound -&gt; Animal, 那个f(g)是否是类型安全的呢？<br>不是的，原因同上</p>
+</li>
+<li><p>假设g: Animal -&gt; Animal, 那个f(g)是否是类型安全的呢？<br>不是的，因为f有可能调用了g,然后使用它的返回值让他吠，但并不是所有的动物都会吠。</p>
+</li>
+<li><p>假设g: Animal -&gt; Greyhound, 那个f(g)是否是类型安全的呢？<br>是的，这个是安全的，f可以使用任意类型的Dog调用g，因为所有的Dog都是Animal,并且，f可以假设g的返回值就是Dog，因为所有的Greyhound都是Dog。</p>
+</li>
+</ol>
+<h1 id="那么接下来该说啥呢？"><a href="#那么接下来该说啥呢？" class="headerlink" title="那么接下来该说啥呢？"></a>那么接下来该说啥呢？</h1><p>可以看出这个是类型安全的:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(Animal -&gt; Greyhound) &lt;: (Dog -&gt; Dog)</span><br></pre></td></tr></table></figure></p>
+<p>返回值的类型很直接可以看出: Greyhound 是Dog的子类型。但是参数的类型有点儿炸： Animal是Dog的祖(super)类型啊！</p>
+<p>为了用我们的行话(jargon)来解释这个奇怪的原因,我们规定参数的返回值类型是协变的，然而参数类型是逆变的。返回值是协变的意味着：A &lt;: B暗指(T -&gt; A) &lt;: (T -&gt; B)(A是B的子类就是说（T -&gt; A）是 （T -&gt; B）的子类型)。参数类型的逆变意味着: A &lt;: B 暗指（B -&gt; T）&lt;: （A -T)(A和B交换位置)</p>
+<p>有趣的事实是：在Typescript中，参数类型是双变的（即可以是逆变又可以是协变），很显然这是不合理(unsound)的表现（但是在2.6中可以使用–strictFunctionTypes来修正）</p>
+<h1 id="那么其他类型呢？"><a href="#那么其他类型呢？" class="headerlink" title="那么其他类型呢？"></a>那么其他类型呢？</h1><p><strong>问题</strong>: 那么List<dog>是List<animal>的子类型么？</animal></dog></p>
+<p>这问题的答案不是那么好说明的？如果list是不可变的，那么他就是类型安全的，但如果list是可变的，那么他就肯定不是安全的！</p>
+<p>为什么呢？假设我需要一个List<animal>然后你给我传了一个List<dog>,然而我认为你给我传的就是List<animal>,那么我就有可能往list中再插入一个Cat, 那么你的List<dog>里面就有了一个Cat!显然类型系统是不允许你这么做的。</dog></animal></dog></animal></p>
+<p>正式说明： 当我们的list是不可变(数据是否可变)的时候我们是允许类型是可协变的，但是若是可变(数据是否可变)得list那么list类型必须是不可变的(是指类型是否可变，无论是协变还是逆变都是不可以的)。</p>
+<p><strong>有趣的事实</strong>: 在Java里面，数组即是可变(是指数据是否可变)的又是类型可协变。显然这是不合理的(unsound)</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/typescript/">typescript</a><a href="/tags/subtype/">subtype</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 hello2dj (dj_amazing@sina.com)
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

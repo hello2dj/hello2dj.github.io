@@ -1,0 +1,201 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>go map实战 | hello2dj | if you can&#39;t explain it simply, you don&#39;t understand it well enough</title>
+
+  
+  <meta name="author" content="hello2dj (dj_amazing@sina.com)">
+  
+
+  
+  <meta name="description" content="每个人都是带着棱角来到世上，只有磨平棱角才能走的更远">
+  
+
+  
+  
+  <meta name="keywords" content="go map">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="go map实战"/>
+
+  <meta property="og:site_name" content="hello2dj"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="hello2dj" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">hello2dj</a>
+    </h1>
+    <p class="site-description">if you can&#39;t explain it simply, you don&#39;t understand it well enough</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/categories">Categories</a></li>
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>go map实战</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/05/10/gomap实战/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-05-09T16:00:00.000Z">
+          2018-05-10
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h3 id="go-maps-实践"><a href="#go-maps-实践" class="headerlink" title="go maps 实践"></a>go maps 实践</h3><ul>
+<li><p>简介<br>在cs中hash table是一种经常使用的数据结构。许多hash table的实现都拥有很多的属性。但总的来说，他们都会提供快速查询，添加以及删除等功能。go 提供了一个内置的实现了hash table的map 类型。</p>
+</li>
+<li><p>声明和初始化<br>go map类型的签名如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">map[KeyType]ValueType</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>KeyType要求是能够<a href="https://golang.org/ref/spec#Comparison_operators" target="_blank" rel="noopener">comparable</a>的类型, 而ValueType则可以是任意的类型，甚至是另一个map</p>
+<p>如下一个key为string,value是int的map<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">var m map[string]int</span><br></pre></td></tr></table></figure></p>
+<p>map类型也是引用类型，就像指针或者切片一样，因此上面的声明的m是nil;我们还没有实例化map。一个值是nil的map再读取的时候就像是个空map你啥都读不到<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">value, ok := m[&quot;c&quot;]</span><br><span class="line">// value is 0, ok is false</span><br></pre></td></tr></table></figure></p>
+<p>但是写入nil map是会报错的。千万记得不要这么做要记得初始化map，请使用内置的make function(make 专门用来分配内存，初始化map, slice, channel)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">m = make(map[string]int)</span><br></pre></td></tr></table></figure></p>
+<p>make会分配内存并且初始化然后返回一个map值，注意make不生成指针new才是返回指针但是new只分配内存，而不初始化。make的实现底层是基于的c的实现，本文只关注怎么使用，就不分析他的实现了。</p>
+<ul>
+<li>使用maps<br>go 提供了便捷的语法来操作map例如赋值<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">m[&quot;route&quot;] = 66</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>加下来取值<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">i := m[&quot;route&quot;]</span><br></pre></td></tr></table></figure></p>
+<p>若是我们取得值不存在那么我们取到的会是值相应类型的默认值（zero value）。在我们的例子中我们读到的就是0：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">j := m[&quot;root&quot;]</span><br><span class="line">// j == 0</span><br></pre></td></tr></table></figure></p>
+<p>内置的len函数可以得到map中的元素个数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">n := len(m)</span><br><span class="line">// n == 1</span><br></pre></td></tr></table></figure></p>
+<p>内置的delete函数是用来删除map中的元素<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">delete(m, &quot;route&quot;)</span><br></pre></td></tr></table></figure></p>
+<p>delete没有返回值，并且若是删除的key不存在则啥都不处理</p>
+<p>还有一种读取的语法如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">i, ok := m[&quot;route&quot;]</span><br></pre></td></tr></table></figure></p>
+<p>这个语法是：i取得是m中route对应的数据，若是不存在route对应的数据则i会是对应类型的零值，而ok代表的是route在m是否存在，false即是不存在也就是说没有读到i值。</p>
+<p>当我们只是为了验证是否存在相应的key时可以使用下划线来忽略key对应的数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">_, ok := m[&quot;route&quot;]</span><br></pre></td></tr></table></figure></p>
+<p>为了遍历map，我们可以使用range关键字<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">for key, value := range m &#123;</span><br><span class="line">    fmt.Println(&quot;Key:&quot;, key, &quot;Value:&quot;, value)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>若是不使用make,我们也可以使用map的字面量来初始化一个map<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">commits := map[string]int &#123;</span><br><span class="line">    &quot;rsc&quot;: 3711,</span><br><span class="line">    &quot;r&quot;, 2138,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>我们还可以初始化一个空map，和使用make是一样的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">var m = map[string]int&#123;&#125;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>对默认值的利用<br>当我们读取的key不存在时返回默认值有的是很方便的。</li>
+</ul>
+<p>比如，一个值为bool类型的map就可以看做是一个set类型的数据结构（要知道，布尔类型的默认值是false）。这个例子遍历一个linked list of nodes, 并且打印他们的值。他使用值类型是Node 指针的map来检测list是否有环。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">type Node struct &#123;</span><br><span class="line">    Next *Node</span><br><span class="line">    Value interface&#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line">var first *Node</span><br><span class="line"></span><br><span class="line">visited := make(map[*Node]bool)</span><br><span class="line">for n := first; n != nil; n = n.Next &#123;</span><br><span class="line">    if visited[n] &#123;</span><br><span class="line">        fmt.Println(&quot;cycle detected&quot;)</span><br><span class="line">        break</span><br><span class="line">    &#125;</span><br><span class="line">    visited[n] = true</span><br><span class="line">    fmt.Println(n.Value)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>若Node n已经被访问过了，则visited[n]的值是true, 若值是false则说明Node n没有被访问过。我们不需要再用其他数据来判断node在map中的存在性，map默认值已经帮我们处理了。</p>
+<p>另一个有用的例子是slices的map, 我们知道当我们想一个nil slice append数据的时候是会分配新的内存的。因此当我们向slice的map中append 数据的时候，是不需要检查key是否存在的。可以看看下面的例子<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">type Person struct &#123;</span><br><span class="line">    Name string</span><br><span class="line">    Likes []string</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var people []*Person</span><br><span class="line"></span><br><span class="line">likes := make(map[string][]*Person)</span><br><span class="line">for _, p := range people &#123;</span><br><span class="line">    for _, l := range p.Likes &#123;</span><br><span class="line">        likes[l] = append(likes[l], p)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>我们开一个打印出喜欢cheese的人：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">for _, p := range likes[&quot;cheese&quot;] &#123;</span><br><span class="line">    fmt.Println(p.Name, &quot;likes cheese.&quot;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>打印出有多少人喜欢bacon<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fmt.Println(len(likes[&quot;bacon&quot;]), &quot; people like bacon.&quot;)</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>range 和 len都把nil slice当做长度是0的slice, 因此我们最后两个数据是不会出错的。</p>
+</blockquote>
+<ul>
+<li>key的类型<br>前面提到过了，就是map的keys必须是可比较的。语言规范已经详细定义了<a href="http://golang.org/ref/spec#Comparison_operators" target="_blank" rel="noopener">可比较</a>。 总的来说可比较的类型就是boolean, numeric, string, pointer, channel 以及接口类型，还有只包含上述类型的结构体和数据。不在上述范围的类型有map, slice 和 functions; 这些类型是不能用==，也不能当做map的keys的。</li>
+</ul>
+<p>很明显strings， ints, 以及一些其他的类型可以做key,但是结构体就有点而出乎意料了。<br>让我们看这个<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hits := make(map[string]map[string]int)</span><br></pre></td></tr></table></figure></p>
+<p>这是一个页面访问的次数的map，key对应二级url<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">n := hits[&quot;/doc/&quot;][&quot;au&quot;]</span><br></pre></td></tr></table></figure></p>
+<p>但我们这么访问是错的，因为map是需要实例化的，我们可以这么读，但是当我们添加的时就会有问题，我们需要去初始化内部的map。如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">func add(m map[string]map[string]int, path, country string) &#123;</span><br><span class="line">    mm, ok := m[path]</span><br><span class="line">    if !ok &#123;</span><br><span class="line">        mm = make(map[string]int)</span><br><span class="line">        m[path] = mm</span><br><span class="line">    &#125;</span><br><span class="line">    mm[country]++</span><br><span class="line">&#125;</span><br><span class="line">add(hits, &quot;/doc/&quot;, &quot;au&quot;)</span><br></pre></td></tr></table></figure></p>
+<p>但是我们可以采用另一种设计如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">type Key struct &#123;</span><br><span class="line">    Path, Country string</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">hits := make(map[Key]int)</span><br></pre></td></tr></table></figure></p>
+<p>此时我们可以一步添加<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hits[Key&#123;&quot;/&quot;, &quot;vn&quot;&#125;]++</span><br></pre></td></tr></table></figure></p>
+<p>另外读取也是非常方便的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">n := hits[Key&#123;&quot;/ref/spec/&quot;, &quot;ch&quot;&#125;]</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>并发<br>Maps不是并发安全的：当我们同时读写时map的行为是未定义的。通常我们可以使用sync.RWMutex来保护map</li>
+</ul>
+<p>看个例子<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">var counter = struct &#123;</span><br><span class="line">    sync.RWMutex</span><br><span class="line">    m map[string]int</span><br><span class="line">&#125;&#123;m: make(map[string]int)&#125;</span><br></pre></td></tr></table></figure></p>
+<p>读取的时候就可以使用读锁<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">couter.RLock()</span><br><span class="line">n := counter.m[&quot;some_key&quot;]</span><br><span class="line">counter.RUnlock()</span><br><span class="line">fmt.Println(&quot;some_key:&quot;, n)</span><br></pre></td></tr></table></figure></p>
+<p>写时用写锁<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">couter.Lock()</span><br><span class="line">counter.m[&quot;some_key&quot;]++</span><br><span class="line">counter.Unlock()</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>sync.Mutex第一次被使用后，千万不可以复制，要传指针。因为sync.Mutex是结构体而非指针数据，接下来回来一篇文章分析一下的。</p>
+</blockquote>
+<ul>
+<li><p>迭代顺序<br>map的迭代顺序是不包证的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">import &quot;sort&quot;</span><br><span class="line"></span><br><span class="line">var m map[int]string</span><br><span class="line">var keys []int</span><br><span class="line">for k := range m &#123;</span><br><span class="line">    keys = append(keys, k)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">sort.Ints(keys)</span><br><span class="line">for _, k := range keys &#123;</span><br><span class="line">    fmt.Println(&quot;Key:&quot;, k, &quot;value:&quot;, m[k])</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>注意点<br>map element是不可以addressable的意味着, 其实是可以预料的，因为map会扩容，那么扩容后map元素是否还在原地址就不一定了，所以&amp;map[“x”]这个操作是不被允许的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">type data struct &#123;</span><br><span class="line">    name string</span><br><span class="line">&#125;</span><br><span class="line">var a = map[string]data &#123;&quot;x&quot;: &#123;&quot;one&quot;&#125;&#125;</span><br><span class="line">m[&quot;x&quot;].name = &quot;two&quot; // error</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>错误的，除非他的类型是指针<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">type data struct &#123;  </span><br><span class="line">    name string</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func main() &#123;  </span><br><span class="line">    m := map[string]*data &#123;&quot;x&quot;:&#123;&quot;one&quot;&#125;&#125;</span><br><span class="line">    m[&quot;x&quot;].name = &quot;two&quot; //ok</span><br><span class="line">    fmt.Println(m[&quot;x&quot;]) //prints: &amp;&#123;two&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>但是要注意不要写入空的了指针，是会panic的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">package main</span><br><span class="line"></span><br><span class="line">type data struct &#123;  </span><br><span class="line">    name string</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func main() &#123;  </span><br><span class="line">    m := map[string]*data &#123;&quot;x&quot;:&#123;&quot;one&quot;&#125;&#125;</span><br><span class="line">    m[&quot;z&quot;].name = &quot;what?&quot; //???</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>很显然，指针的默认值是nil,当然无法访问nil的name了。</p>
+<p>但是slice element就可以addressable<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">type data struct &#123;  </span><br><span class="line">    name string</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func main() &#123;  </span><br><span class="line">    s := []data &#123;&#123;&quot;one&quot;&#125;&#125;</span><br><span class="line">    s[0].name = &quot;two&quot; //ok</span><br><span class="line">    fmt.Println(s)    //prints: [&#123;two&#125;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/go-map/">go map</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 hello2dj (dj_amazing@sina.com)
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>node图像库 | hello2dj | if you can&#39;t explain it simply, you don&#39;t understand it well enough</title>
+
+  
+  <meta name="author" content="hello2dj (dj_amazing@sina.com)">
+  
+
+  
+  <meta name="description" content="每个人都是带着棱角来到世上，只有磨平棱角才能走的更远">
+  
+
+  
+  
+  <meta name="keywords" content="">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="node图像库"/>
+
+  <meta property="og:site_name" content="hello2dj"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="hello2dj" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">hello2dj</a>
+    </h1>
+    <p class="site-description">if you can&#39;t explain it simply, you don&#39;t understand it well enough</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/categories">Categories</a></li>
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>node图像库</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/05/24/node-img/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-05-23T16:00:00.000Z">
+          2018-05-24
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h1 id="image-demo"><a href="#image-demo" class="headerlink" title="image-demo"></a>image-demo</h1><ul>
+<li>需要一个能在图片上写汉字色图片处理库</li>
+</ul>
+<h2 id="图片库比较"><a href="#图片库比较" class="headerlink" title="图片库比较"></a>图片库比较</h2><h4 id="1-node-images"><a href="#1-node-images" class="headerlink" title="1.node-images"></a>1.node-images</h4><ul>
+<li>国产图片处理库node-images，已经停止维护，缺乏某些功能，比如图片上加文字，并且在nodejs 8.0版本下无法使用</li>
+</ul>
+<h4 id="2-Jimp"><a href="#2-Jimp" class="headerlink" title="2.Jimp"></a>2.Jimp</h4><ul>
+<li>Jimp无需第三方依赖，安装简单，基本无坑，Github star4200多，npm周下载量7万多次，算是比较优秀的第三方处理库。支持常见的图片处理操作，也可以加文字，但是如果要在图片上加中文文字的话，有点麻烦，需要自制.fnt位图字体文件，然后导入。但CJK字库文字太多，制作出来文件很大。我就是因为这个，放弃了使用jimp。</li>
+</ul>
+<h4 id="3-node-lwip"><a href="#3-node-lwip" class="headerlink" title="3.node-lwip"></a>3.node-lwip</h4><ul>
+<li>和jimp类似，无第三方依赖。没有提供图片上写文字的方法。</li>
+</ul>
+<h4 id="4-sharp"><a href="#4-sharp" class="headerlink" title="4.sharp"></a>4.sharp</h4><ul>
+<li>目前nodejs中最快的图片处理库，和其他图片处理库相比，遥遥领先。无需第三方依赖，性能超好，就是安装比较麻烦，但最后还是安装成功了！一次性处理200张图片，sharp图片处理库的速度明显最快。按照官方说明，至少是5到10倍于ImageMagick and GraphicsMagick 。<br>可惜，翻遍文档api也没有找到图片写文字的方法，就是说，没有提供图片直接写文字的方法。</li>
+<li>关于sharp在windows 10 64位的安装，直接npm install sharp，基本都不会成功的。</li>
+<li>Sharp的安装，需要三个前提条件：</li>
+<li>Node v4.5.0+</li>
+<li>C++11 compatible compiler such as gcc 4.8+, clang 3.0+ or MSVC 2013+</li>
+<li>node-gyp and its dependencies (includes Python)</li>
+<li>对于windows10 64位来说，可以运行以下两条命令，一劳永逸解决sharp的安装问题：</li>
+<li>先运行：</li>
+<li>npm install –global –production windows-build-tools</li>
+<li>然后：</li>
+<li>npm config set msvs_version 2015 –global</li>
+<li>就可以把所有的环境配置搞定。最后关掉所有cmd或者shell窗口，然后再用</li>
+<li>npm install sharp安装就OK了。</li>
+<li>速度超快，api好用，基本等于完美，可惜刚好我缺乏我需要的一个功能。</li>
+</ul>
+<h4 id="5-基于GraphicsMagick和ImageMagick的gm"><a href="#5-基于GraphicsMagick和ImageMagick的gm" class="headerlink" title="5.基于GraphicsMagick和ImageMagick的gm"></a>5.基于GraphicsMagick和ImageMagick的gm</h4><ul>
+<li>如果不需要在图片上加中文文字，只需要安装GraphicsMagick就可以了。如果需要在图片上加【中文文字】，要同时安装GraphicsMagick 和 ImageMagick。然后使用gm subclass子类话的方法来调用。</li>
+<li>注意：中文需要指定中文字体的.ttf文件，并且字体文件名不能是中文，如”msyh.ttf”，OK；“微软雅黑.ttf”，BAD!</li>
+<li>gm提供了超级强悍的api，基本上你需要对图片做的任何处理都能实现！并且它是基于命令行的，可以直接在命令行中调用。</li>
+<li>GraphicsMagick和ImageMagick在windows10 64位下的安装都比较傻瓜式，直接下载对应的exe文件，不分32位和64位，setup 一路next就行。</li>
+<li>总结，gm的速度仅仅比sharp慢，比其他的几个图片库都要快的多，并且提供的api很丰富，链式调用写法很爽，安装配置也相对简单的多，支持在图片上直接添加中文文字。其他的几个图片库，对于&rdquo;在图片上添加文字&ldquo;这个功能，有些不提供，有些提供了但很难用。</li>
+</ul>
+<h4 id="提供一段gm的示例代码（demo文件夹中）"><a href="#提供一段gm的示例代码（demo文件夹中）" class="headerlink" title="提供一段gm的示例代码（demo文件夹中）"></a>提供一段gm的示例代码（demo文件夹中）</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">var gm = require(&apos;gm&apos;);</span><br><span class="line">var fs = require(&apos;fs&apos;);</span><br><span class="line">var _name = &quot;China中文&quot;;</span><br><span class="line">gm(&apos;./0.jpg&apos;)</span><br><span class="line">    .font(&apos;./st_black.ttf&apos;,30)</span><br><span class="line">    .drawText(20, 30,&quot;你&quot;)</span><br><span class="line">    .drawText(50, 50, &quot;好&quot;)</span><br><span class="line">    .drawText(70, 70,&quot;色&quot;)</span><br><span class="line">    .drawText(110, 110, &quot;彩&quot;)</span><br><span class="line">    //.resize(240, 240)</span><br><span class="line">    .toBuffer(&quot;jpg&quot;,(err, buffer)=&gt; &#123;</span><br><span class="line">        fs.writeFileSync(&quot;./4.jpg&quot;, buffer);</span><br><span class="line">        if (!err)&#123;</span><br><span class="line">            console.log(&apos;done&apos;);</span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            console.log(err.message || &quot;出错了！&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure>
+<h1 id="red-hat-安装gm"><a href="#red-hat-安装gm" class="headerlink" title="red-hat 安装gm"></a>red-hat 安装gm</h1><h2 id="ImageMagick-安装"><a href="#ImageMagick-安装" class="headerlink" title="ImageMagick 安装"></a>ImageMagick 安装</h2><ul>
+<li>安装    yum install ImageMagick</li>
+<li>查看是否安装成功   rpm -qa | grep ImageMagick</li>
+</ul>
+<h2 id="gm-安装"><a href="#gm-安装" class="headerlink" title="gm 安装"></a>gm 安装</h2><ul>
+<li>npm install gm –save</li>
+</ul>
+<h2 id="测试代码"><a href="#测试代码" class="headerlink" title="测试代码"></a>测试代码</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var gm = require(&quot;gm&quot;);</span><br><span class="line">var imageMagick = gm.subClass(&#123; imageMagick : true &#125;);</span><br><span class="line">var fs = require(&apos;fs&apos;);</span><br><span class="line">imageMagick(300, 300, &quot;pink&quot;).toBuffer(&quot;jpg&quot;, (err, buffer)=&gt;&#123;</span><br><span class="line">    fs.writeFileSync(&quot;./fill.jpg&quot;, buffer);</span><br><span class="line">    console.log(&quot;image create success!&quot;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>会生成一个300*300，背景色为粉色的图片</li>
+</ul>
+<p>#环境配置</p>
+<ul>
+<li><h1 id="代码运行环境"><a href="#代码运行环境" class="headerlink" title="代码运行环境"></a>代码运行环境</h1><h3 id="1-node"><a href="#1-node" class="headerlink" title="1.node"></a>1.node</h3><ul>
+<li>开发时用的 8.9.0, node直接更新到最新的版本即可，没有太多限制</li>
+</ul>
+<h3 id="2-gm的依赖环境"><a href="#2-gm的依赖环境" class="headerlink" title="2.gm的依赖环境"></a>2.gm的依赖环境</h3><h4 id="mac下环境配置"><a href="#mac下环境配置" class="headerlink" title="mac下环境配置"></a>mac下环境配置</h4><ul>
+<li><ol>
+<li>安装Xcode软件 <strong>很重要</strong> 在mac的应用中心就可以安装</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>安装imagemagick        brew install imagemagick</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>安装graphicsmagick     brew install graphicsmagick</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>以上3步之后 npm install gm 基本就没什么问题了</li>
+</ol>
+</li>
+</ul>
+<h4 id="centos下环境配置"><a href="#centos下环境配置" class="headerlink" title="centos下环境配置"></a>centos下环境配置</h4><ul>
+<li><ol>
+<li>安装 imagemagick graphicsmagick的依赖</li>
+</ol>
+</li>
+<li>yum install -y gcc libpng libjpeg libpng-devel libjpeg-devel ghostscript libtiff libtiff-devel freetype freetype-devel</li>
+<li><ol start="2">
+<li>安装imagemagick</li>
+</ol>
+</li>
+<li>yum install ImageMagick</li>
+<li><ol start="3">
+<li>安装graphicsmagick</li>
+</ol>
+</li>
+<li>wget <a href="ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/1.3/GraphicsMagick-1.3.25.tar.gz" target="_blank" rel="noopener">ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/1.3/GraphicsMagick-1.3.25.tar.gz</a></li>
+<li>tar -zxvf GraphicsMagick-1.3.25.tar.gz</li>
+<li>cd GraphicsMagick-1.3.25</li>
+<li>./configure</li>
+<li>make</li>
+<li>make install</li>
+<li>4.以上步骤之后 gm基本就能使用</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 hello2dj (dj_amazing@sina.com)
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>pki 体系 | hello2dj | if you can&#39;t explain it simply, you don&#39;t understand it well enough</title>
+
+  
+  <meta name="author" content="hello2dj (dj_amazing@sina.com)">
+  
+
+  
+  <meta name="description" content="每个人都是带着棱角来到世上，只有磨平棱角才能走的更远">
+  
+
+  
+  
+  <meta name="keywords" content="">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="pki 体系"/>
+
+  <meta property="og:site_name" content="hello2dj"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="hello2dj" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">hello2dj</a>
+    </h1>
+    <p class="site-description">if you can&#39;t explain it simply, you don&#39;t understand it well enough</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/categories">Categories</a></li>
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>pki 体系</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/05/14/pki/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-05-13T16:00:00.000Z">
+          2018-05-14
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h2 id="PKI"><a href="#PKI" class="headerlink" title="PKI"></a>PKI</h2><h3 id="CA-自建-ca"><a href="#CA-自建-ca" class="headerlink" title="CA 自建 ca"></a>CA 自建 ca</h3><p><a href="https://www.jianshu.com/p/79c284e826fa" target="_blank" rel="noopener">https://www.jianshu.com/p/79c284e826fa</a><br><a href="https://www.barretlee.com/blog/2016/04/24/detail-about-ca-and-certs/" target="_blank" rel="noopener">https://www.barretlee.com/blog/2016/04/24/detail-about-ca-and-certs/</a></p>
+<ol>
+<li><p>生成秘钥(可选，因为后面的步骤也可以自动生成秘钥)<br>openssl genrsa</p>
+</li>
+<li><p>生成 CA 证书请求<br>openssl req [-key 使用已生成的秘钥][-keyout 未声明秘钥需自动生成]</p>
+</li>
+<li><p>自签发 ca 根证书<br>openssl ca -selfsign（需使用上述的请求证书）</p>
+</li>
+<li><p>2,3 两步可以合在一起<br>openssl req -new -x509(关键是-x509 生成 509 的根证书)</p>
+</li>
+</ol>
+<p>签发证书也是上述的步骤只是签发证书时不需要-selfsign 选项</p>
+<h3 id="证书发放"><a href="#证书发放" class="headerlink" title="证书发放"></a>证书发放</h3><p>向 CA 请求证书时需要先生成一个 CSR(certificate signing request), 证书签发的请求。包括一些申请者的信息，申请者的公钥，还有 Distinguished Name(专有名称类似于发放者的唯一标示)用来标识证书时发给谁的。</p>
+<h3 id="pem-代表-Privacy-enhanced-Electronic-Mail-一种文件格式-base64-编码显示"><a href="#pem-代表-Privacy-enhanced-Electronic-Mail-一种文件格式-base64-编码显示" class="headerlink" title="pem 代表 Privacy-enhanced Electronic Mail 一种文件格式 base64 编码显示"></a>pem 代表 Privacy-enhanced Electronic Mail 一种文件格式 base64 编码显示</h3><h3 id="CA-DN-distinguished-name"><a href="#CA-DN-distinguished-name" class="headerlink" title="CA DN distinguished name"></a>CA DN distinguished name</h3><ul>
+<li>.cer/.crt 是用于存放证书，它是 2 进制形式存放的，不含私钥。</li>
+<li>X.509 DER 编码(ASCII)的后缀是： .DER .CER .CRT</li>
+<li>X.509 PAM 编码(Base64)的后缀是： .PEM .CER .CRT</li>
+<li>.pem 跟 crt/cer 的区别是它以 Ascii 来表示</li>
+</ul>
+<h3 id="CSR-文件-包含了公钥和标识名称（Distinguished-Name）"><a href="#CSR-文件-包含了公钥和标识名称（Distinguished-Name）" class="headerlink" title="CSR 文件 包含了公钥和标识名称（Distinguished Name）"></a>CSR 文件 包含了公钥和标识名称（Distinguished Name）</h3><h3 id="intermediate-ca"><a href="#intermediate-ca" class="headerlink" title="intermediate ca"></a><a href="What is an intermediate certificate?">intermediate ca</a></h3><h3 id="证书链"><a href="#证书链" class="headerlink" title="证书链"></a><a href="what-is-ssl-certificate-chain">证书链</a></h3><p>root ca -&gt; intermediate ca -&gt; end user</p>
+<h3 id="数字证书"><a href="#数字证书" class="headerlink" title="数字证书"></a><a href="http://www.ruanyifeng.com/blog/2011/08/what_is_a_digital_signature.html" target="_blank" rel="noopener">数字证书</a></h3><h3 id="tsl-认证"><a href="#tsl-认证" class="headerlink" title="tsl 认证"></a>tsl 认证</h3><ul>
+<li>单向认证时，客户端需要有 server 的根证书来验证 server 的证书是否 ok</li>
+<li>双向时，服务端也得有客户端的根证书来验证 client 的证书是否 ok</li>
+</ul>
+<h3 id="私钥使用来解密公钥加密的数据，证书用来验证身份的，而证书又包含公钥，因此证书和私钥永远是一对儿。"><a href="#私钥使用来解密公钥加密的数据，证书用来验证身份的，而证书又包含公钥，因此证书和私钥永远是一对儿。" class="headerlink" title="私钥使用来解密公钥加密的数据，证书用来验证身份的，而证书又包含公钥，因此证书和私钥永远是一对儿。"></a>私钥使用来解密公钥加密的数据，证书用来验证身份的，而证书又包含公钥，因此证书和私钥永远是一对儿。</h3><p>流程就是把证书发给对方，对方验证证书是否 ok，然后取出证书中的公钥，用公钥加密数据然后发回来，此时再用私钥解密即可获得数据。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 hello2dj (dj_amazing@sina.com)
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

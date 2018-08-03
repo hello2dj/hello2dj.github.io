@@ -1,0 +1,1515 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Page 2 | hello2dj | if you can&#39;t explain it simply, you don&#39;t understand it well enough</title>
+
+  
+  <meta name="author" content="hello2dj (dj_amazing@sina.com)">
+  
+
+  
+  <meta name="description" content="每个人都是带着棱角来到世上，只有磨平棱角才能走的更远">
+  
+
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  
+
+  <meta property="og:site_name" content="hello2dj"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="hello2dj" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">hello2dj</a>
+    </h1>
+    <p class="site-description">if you can&#39;t explain it simply, you don&#39;t understand it well enough</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/categories">Categories</a></li>
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/07/14/nestjs/"><span>用来angular的体系来写node之nestjs简介</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/07/14/nestjs/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-07-14T13:00:30.044Z">
+          2018-07-14
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>先上图<br><img src="https://camo.githubusercontent.com/18fe3feea5e3593c593e12e552494a3995eceacf/687474703a2f2f6b616d696c6d79736c69776965632e636f6d2f7075626c69632f6e6573742d6c6f676f2e706e672331" alt=""></p>
+<p>这几年前端发展的很快，出现了很多优秀的框架。例如Angular2, React, Vue等他们大大提升了开发者的生产效率，以及快速创建可测试化，可扩展的前端应用。但是在server端nodejs到没有出现如此的框架都是一些基础的框架，工具等等，虽然目前有eggjs,thinkjs，私以为他们架构成熟性还有待进步，他依然也只是提供了一些工具和方法等，不过egg还是要胜think一筹的（都是我瞎掰的），当然他们也都在不同程度上的解决了一些初步的架构问题。</p>
+<p>这里我看到了一个新近的框架nestjs(基于express)，他提供了一个开箱即用的架构体系，是啥样的架构体系呢？angular2的架构体系，可以说几乎是一样的架构体系，照着搬过来了，不过可以想一想用angular2的前端架构来写后端代码，也是一种酸爽！（typescript）在我看看来就是一个nodejs中ROR,flask或者是django。</p>
+<h3 id="概念普及"><a href="#概念普及" class="headerlink" title="概念普及"></a>概念普及</h3><ul>
+<li>typescript js的超集，提供强类型校验，以及es6,7等js特性</li>
+<li>express 一个node， httpserver,提供了最基础的框架如路由等。</li>
+<li><p>依赖注入，angular里面有个重要的概念就是依赖注入，nestjs中也是大量使用，有一个<a href="http://www.cnblogs.com/DebugLZQ/archive/2013/06/05/3107957.html" target="_blank" rel="noopener">IOC容器</a>。这里nest的注入和angular2的是一样的，注入可以是一个class, 也可以是一个值，可以是一个function等等不过不是一个class的就得用如下的方式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  provide: &apos;PhotoRepositoryToken&apos;,</span><br><span class="line">  useFactory: (connection: Connection) =&gt; connection.getRepository(Photo),</span><br><span class="line">  inject: [&apos;DbConnectionToken&apos;],</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中inject是这个注入值要使用的依赖注入，provide是提供给其他人要使用的注入标识符，useFactory代表要执行的方法，也可以是useValue,此时是一个普通对象即可。还有循环依赖，此时就要使用forwardRef了，就不细讲了，大家可以具体<a href="https://docs.nestjs.com/fundamentals/dependency-injection" target="_blank" rel="noopener">参见</a></p>
+</li>
+<li><p>装饰器，要是写过angular2，或者flask等就会知道，都是一堆@name堆起来的了的</p>
+</li>
+<li><p>@Controller<br>处理req的handler的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@Controller(&apos;cats&apos;)</span><br><span class="line">export class CatsController &#123;</span><br><span class="line">  @Get()</span><br><span class="line">  findAll(@Req() user) &#123;</span><br><span class="line">    return [];</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>@Component<br>就是service</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">@Component()</span><br><span class="line">export class CatsService &#123;</span><br><span class="line">  private readonly cats: Cat[] = [];</span><br><span class="line">  create(cat: Cat) &#123;</span><br><span class="line">    this.cats.push(cat);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">// 使用</span><br><span class="line">export class CatsController &#123;</span><br><span class="line">  constructor(private readonly catsService: CatsService) &#123;&#125; // 注入</span><br><span class="line"></span><br><span class="line">  @Post()</span><br><span class="line">  async create(@Body() createCatDto: CreateCatDto) &#123;</span><br><span class="line">    this.catsService.create(createCatDto);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>@Module<br>在angualr中代码是以module为粗粒度单元进行组织的，就是rootModule包含其他module比如orderModule, reportModule, userModule,等等，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@Module(&#123;</span><br><span class="line">    imports: [CatsModule, OrderModule, ReportModule, UserModule],</span><br><span class="line">&#125;)</span><br><span class="line">export class ApplicationModule &#123;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>@Middleware<br>同理与express的middleware,只是写法有变化，需要包裹一下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">@Middleware()</span><br><span class="line">export class LoggerMiddleware implements NestMiddleware &#123;</span><br><span class="line">  resolve(...args: any[]): ExpressMiddleware &#123;</span><br><span class="line">    return (req, res, next) =&gt; &#123;</span><br><span class="line">      console.log(&apos;Request...&apos;);</span><br><span class="line">      next();</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>@Filter 和 HttpException<br>用来处理handler执行过程产生exception或者说错误（但是异常和错误应当是区分开来的）,Filter是区分全局和路由级的。 HttpException是nest提供的错误类型</p>
+<p><img src="https://docs.nestjs.com/assets/Filter_1.png" alt=""></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">@Post()</span><br><span class="line">async create(@Body() createCatDto: CreateCatDto) &#123;</span><br><span class="line">  throw new HttpException(&#123;</span><br><span class="line">    status: HttpStatus.FORBIDDEN,</span><br><span class="line">    error: &apos;This is a custom message&apos;,</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line">/**</span><br><span class="line">&#123;</span><br><span class="line">  &quot;status&quot;: 403,</span><br><span class="line">  &quot;error&quot;: &quot;This is a custom message&quot;</span><br><span class="line">&#125;</span><br><span class="line">*/</span><br></pre></td></tr></table></figure>
+<p>expecptions的体系是可以扩展的，当然nest还提供很多的类型，如BadRequestExceptio, UnauthorizedExceptio等等</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">export class ForbiddenException extends HttpException &#123;</span><br><span class="line">  constructor() &#123;</span><br><span class="line">    super(&apos;Forbidden&apos;, HttpStatus.FORBIDDEN);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>@Filter的正式称呼应当是Exception Filters。这次望文生义是正确的。是的就是处理Exception的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">@Catch(HttpException)</span><br><span class="line">export class HttpExceptionFilter implements ExceptionFilter &#123;</span><br><span class="line">  catch(exception: HttpException, response) &#123;</span><br><span class="line">    const status = exception.getStatus();</span><br><span class="line"></span><br><span class="line">    response</span><br><span class="line">      .status(status)</span><br><span class="line">      .json(&#123;</span><br><span class="line">        statusCode: status,</span><br><span class="line">        message: `It&apos;s a message from the exception filter`,</span><br><span class="line">      &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">// 使用</span><br><span class="line">@Post()</span><br><span class="line">@UseFilters(new HttpExceptionFilter())</span><br><span class="line">async create(@Body() createCatDto: CreateCatDto) &#123;</span><br><span class="line">  throw new ForbiddenException();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 全局的</span><br><span class="line">async function bootstrap() &#123;</span><br><span class="line">  const app = await NestFactory.create(ApplicationModule);</span><br><span class="line">  app.useGlobalFilters(new HttpExceptionFilter());</span><br><span class="line">  await app.listen(3000);</span><br><span class="line">&#125;</span><br><span class="line">bootstrap();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>@Guards<br>用来决定请求是否要被handler处理，典型就是权限判断</p>
+<p><img src="https://docs.nestjs.com/assets/Guards_1.png" alt=""></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">@Guard()</span><br><span class="line">export class RolesGuard implements CanActivate &#123;</span><br><span class="line">  canActivate(dataOrRequest, context: ExecutionContext): boolean | Promise&lt;boolean&gt; | Observable&lt;boolean&gt; &#123;</span><br><span class="line">    return true;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">// 使用</span><br><span class="line">@Controller(&apos;cats&apos;)</span><br><span class="line">@UseGuards(RolesGuard)</span><br><span class="line">export class CatsController &#123;&#125;</span><br></pre></td></tr></table></figure>
+<p>我们可以自定义一些装饰器，给controller添加必要属性以供guard来使用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">// roles Deacator</span><br><span class="line">export const Roles = (...roles: string[]) =&gt; ReflectMetadata(&apos;roles&apos;, roles);</span><br><span class="line">// 使用</span><br><span class="line">@Post()</span><br><span class="line">@Roles(&apos;admin&apos;)</span><br><span class="line">async create(@Body() createCatDto: CreateCatDto) &#123;</span><br><span class="line">  this.catsService.create(createCatDto);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Roles guards 改写</span><br><span class="line">@Guard()</span><br><span class="line">export class RolesGuard implements CanActivate &#123;</span><br><span class="line">  constructor(private readonly reflector: Reflector) &#123;&#125;</span><br><span class="line"></span><br><span class="line">  canActivate(req, context: ExecutionContext): boolean &#123;</span><br><span class="line">    const &#123; parent, handler &#125; = context;</span><br><span class="line">    const roles = this.reflector.get&lt;string[]&gt;(&apos;roles&apos;, handler);</span><br><span class="line">    if (!roles) &#123;</span><br><span class="line">      return true;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    const user = req.user;</span><br><span class="line">    const hasRole = () =&gt; !!user.roles.find((role) =&gt; !!roles.find((item) =&gt; item === role));</span><br><span class="line">    return user &amp;&amp; user.roles &amp;&amp; hasRole();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">// 使用同上</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>@Pipe<br>使用来处理参数校验以及参数类型转换的,当然nest也提供了很多的内置pipe,<br>参数解释一下，可能不太好看，value,是传进来的值，ArgumentMetadata的属性包含： type: 参数通过什么方式传进来的（body, query, param等等），metatype: 传进来的参数是啥类型，string, number .etc, data: 这个没搞太明白文档上说的是‘The string passed to the decorator, for example  @Body(‘string’)’还没参悟处来。。。</p>
+<p><img src="https://docs.nestjs.com/assets/Pipe_1.png" alt=""></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">@Pipe()</span><br><span class="line">export class ValidationPipe implements PipeTransform&lt;any&gt; &#123;</span><br><span class="line">  transform(value: any, metadata: ArgumentMetadata) &#123;</span><br><span class="line">    return value;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">// 使用</span><br><span class="line">@Post()</span><br><span class="line">// @UsePipes(new ValidationPipe())</span><br><span class="line">async create(@Body(new ValidationPipe()) createCatDto: CreateCatDto) &#123;</span><br><span class="line">  this.catsService.create(createCatDto);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>@Interceptor<br>按照文档的说法就是受到AOP（面向切面编程）编程方式的启发。</p>
+</li>
+</ul>
+<ol>
+<li>在方法执行前后增加额外的逻辑(类似于koa中中间件的执行方式)</li>
+<li>有了1，所以我们可以转换执行结果</li>
+<li>转换执行时的异常</li>
+<li>重写执行逻辑（比如根据缓存返回结果）<br>这个例子太多了，就不贴代码了可以具体<a href="https://docs.nestjs.com/interceptors" target="_blank" rel="noopener">参见</a></li>
+</ol>
+<ul>
+<li><p>可以自定义装饰器，在guard里面我们已经见到过了。</p>
+</li>
+<li><p>nest还集成了<a href="https://docs.nestjs.com/graphql/quick-start" target="_blank" rel="noopener">graphql</a>, <a href="https://docs.nestjs.com/websockets/gateways" target="_blank" rel="noopener">websockets</a>, <a href="https://docs.nestjs.com/microservices/basics" target="_blank" rel="noopener">microservice</a>, 微服务这部分他提供两种通信方式，redis(pub/sub), tcp等等</p>
+<h3 id="目录结构"><a href="#目录结构" class="headerlink" title="目录结构"></a>目录结构</h3></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">app</span><br><span class="line">  -- modules</span><br><span class="line">    -- reports</span><br><span class="line">      -- report.controller.ts</span><br><span class="line">      -- report.service.ts</span><br><span class="line">      -- report.entity.ts</span><br><span class="line">      -- report.interface.ts</span><br><span class="line">      -- dto(data transfer object)</span><br><span class="line">        -- report.dto.ts(推荐class)</span><br><span class="line">    -- orders</span><br><span class="line">      ...</span><br><span class="line">  -- common</span><br><span class="line">    -- db.provice.ts</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+<h3 id="实践一把"><a href="#实践一把" class="headerlink" title="实践一把"></a>实践一把</h3><ol>
+<li>git clone <a href="https://github.com/nestjs/typescript-starter" target="_blank" rel="noopener">https://github.com/nestjs/typescript-starter</a></li>
+<li>npm install </li>
+<li>npm run start</li>
+<li>看看实例代码就ok了。</li>
+</ol>
+<h3 id="最后-项目地址"><a href="#最后-项目地址" class="headerlink" title="最后 项目地址"></a>最后 <a href="https://github.com/nestjs/nest" target="_blank" rel="noopener">项目地址</a></h3><p>nest项目也提供了很多的example, 总体来看写起来也还是很舒服的。集成了很多东西，点赞，希望下一个项目可以使用。</p>
+<h3 id="感悟"><a href="#感悟" class="headerlink" title="感悟"></a>感悟</h3><p>总会觉得自己不知道该怎么去更进一步的学习，一开始使用就觉得纯用express有很多问题，可是没有去思考怎么才能更好，总觉得见见世面，看看优秀的人都是怎么写的，可是，看完就完了，却没有想本项目做一样把看到的总结起来。不想动手写业余项目，因为就是觉得自己懂的太少了，还是得多看看，可是只看又有什么用呢？ps: 看的结果就是写出了屎一样的代码，还得努力啊！（有看的欢迎多多交流<a href="mailto:dj_amazing@sina.com" target="_blank" rel="noopener">dj_amazing@sina.com</a>）</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/nodejs/">nodejs</a><a href="/tags/typescript/">typescript</a><a href="/tags/angular2/">angular2</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/07/14/hot&cold/"><span>Oberservable之“hot”和“cold”的区别</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/07/14/hot&cold/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-07-14T13:00:30.039Z">
+          2018-07-14
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>我又要先上图了：<br><img src="https://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/02/1455228348streams.png" alt=""></p>
+<p><a href="https://medium.com/@benlesh/hot-vs-cold-observables-f8094ed53339" target="_blank" rel="noopener">原文地址(english, 需翻墙)</a></p>
+<h1 id="TL-DR-当你不想一次又一次的创建你的producer时，你需要一个HOT-observable"><a href="#TL-DR-当你不想一次又一次的创建你的producer时，你需要一个HOT-observable" class="headerlink" title="TL;DR: 当你不想一次又一次的创建你的producer时，你需要一个HOT observable"></a>TL;DR: 当你不想一次又一次的创建你的producer时，你需要一个HOT observable</h1><h3 id="COLD-就是你的Observable创建了生产者（就是当你创建observable时创建producer）"><a href="#COLD-就是你的Observable创建了生产者（就是当你创建observable时创建producer）" class="headerlink" title="COLD 就是你的Observable创建了生产者（就是当你创建observable时创建producer）"></a>COLD 就是你的Observable创建了生产者（就是当你创建observable时创建producer）</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// COLD</span><br><span class="line">const cold = new Observable((observer) =&gt; &#123;</span><br><span class="line">  const producer = new Producer();</span><br><span class="line">  // have observer listen to producer here</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="HOT-就是你的observable-关闭你的生产者"><a href="#HOT-就是你的observable-关闭你的生产者" class="headerlink" title="HOT 就是你的observable 关闭你的生产者"></a>HOT 就是你的observable 关闭你的生产者</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// HOT</span><br><span class="line">const producer = new Producer();</span><br><span class="line">cosnt hot = new Observable((observer) =&gt; &#123;</span><br><span class="line">  // have observer listen to producer here</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="继续深入"><a href="#继续深入" class="headerlink" title="继续深入"></a>继续深入</h3><p>我的上篇<a href="https://medium.com/@benlesh/learning-observable-by-building-observable-d5da57405d87" target="_blank" rel="noopener">文章</a>介绍了observables就是函数。那篇文章的目的是解开observerable的神秘，但是没有深入那个困扰大家的问题：HOT VS COLD</p>
+<h3 id="Observables-are-just-functions"><a href="#Observables-are-just-functions" class="headerlink" title="Observables are just functions!"></a>Observables are just functions!</h3><p>Observables 就是一个绑定observer和producer的函数。是的，那就是全部。他其实不需要创建producer,他们仅仅是建立observer对producer的监听，并且返回一个函数可以用来移除监听器。对obserable的调用就好像是在调用一个函数，并且传递一个observer</p>
+<h3 id="那么什么是producer？"><a href="#那么什么是producer？" class="headerlink" title="那么什么是producer？"></a>那么什么是producer？</h3><p>生产者就是你的observable的数据来源。他可能是一个web socket, 或者是一个DOM event, 又或者是一个迭代器，甚至有可能是对一个数组的循环。总之，他可以是任何东西，可以用来获取数据并且传递给<code>observer.next(value)</code>。</p>
+<h3 id="Cold-observables-生产者在内部创建"><a href="#Cold-observables-生产者在内部创建" class="headerlink" title="Cold observables: 生产者在内部创建"></a>Cold observables: 生产者在<strong>内部</strong>创建</h3><p>如果一个observable的producer是在subscribe时创建并且激活的那么他就是 ‘cold’。这意味着，如果observables是函数，那么生产者就是在调用这个函数是创建和激活的。</p>
+<ol>
+<li>creates the producer</li>
+<li>activates the producer</li>
+<li>start listening to the producer</li>
+<li>unicast</li>
+</ol>
+<p>下面这个栗子就是‘cold’, 因为他对websocket的监听是在你subscribe observable时建立的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">const source = new Observable((observer) =&gt; &#123;</span><br><span class="line">  const socket = new WebSocket(&apos;ws://someurl&apos;);</span><br><span class="line">  socket.addEventListener(&apos;message&apos;, (e) =&gt; observer.next(e));</span><br><span class="line">  return () =&gt; socket.close();</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>因此任何subscribe source的对象，都会有自己的WebSocket的实例，并且当他unsubscribe的时候，他将会关闭那个socket。这意味着我们source仅仅只是unicast,因为这个生产者仅仅只能给一个监听者发送数据。<a href="http://jsbin.com/wabuguy/1/edit?js,output" target="_blank" rel="noopener">这里有一个简单的栗子jsbin</a></p>
+<h3 id="HOT-observables-生产者是在外部创建的"><a href="#HOT-observables-生产者是在外部创建的" class="headerlink" title="HOT observables: 生产者是在外部创建的"></a>HOT observables: 生产者是在<strong>外部</strong>创建的</h3><p>如果一个observable的生产者是在<strong>订阅之外</strong>(就是不是在订阅时产生的行为)创建或者是激活的那么他就是’hot’。</p>
+<ol>
+<li>共享对生产者的引用</li>
+<li>开始监听生产者</li>
+<li>多播(通常是)<br>如果我们把上面的栗子中对于WebSocket的创建挪到obserable的外面，那么他就是hot了<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">const socket = new WebSocket(&apos;ws://someurl&apos;);</span><br><span class="line">const source = new Observable((observer) =&gt; &#123;</span><br><span class="line">  socket.addEventListener(&apos;message&apos;, (e) =&gt; observer.next(e));</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>现在任何订阅<code>source</code>的对象都共享一个相同的WebSocket实例。他将会高效的多播数据到所有的订阅者。但是这里还有个小问题：我们的obserable没有了对socket的取消逻辑。这意味着一旦发生了错误或者结束后，甚至是取消订阅，我们都无法关闭socket。所以我们真正想要的是让我们的’cold’ observable 变成hot。这里有个例子就没有取消的逻辑<a href="Here is a JSBin showing this basic concept.">jsbin</a></p>
+<h3 id="我们为什么需要-’hot‘-observable"><a href="#我们为什么需要-’hot‘-observable" class="headerlink" title="我们为什么需要 ’hot‘ observable?"></a>我们为什么需要 ’hot‘ observable?</h3><p>从第一个cold observable的列子我可以看到如果所有的observable都是cold是会有一些问题的。比如，你不止一次的订阅一个observable,但是他有可能每次都创建了一些稀缺资源，好比 web socket connection, 可事实是你并不想创建很多的web socket连接。事实上你可能很容易的对一个observable创建很多的订阅,并且是在你没意识的情况下。假设我们需要从web socket的订阅中过滤出奇数和偶数，于是最终我们可能写出如下的代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">source.filter(x =&gt; x % 2 === 0)</span><br><span class="line">  .subscribe(x =&gt; console.log(&apos;even&apos;, x));</span><br><span class="line">source.filter(x =&gt; x % 2 ==== 1)</span><br><span class="line">  .subscribe(x =&gt; console.log(&apos;odd&apos;, x));</span><br></pre></td></tr></table></figure></p>
+<h3 id="Rx-的subjects"><a href="#Rx-的subjects" class="headerlink" title="Rx 的subjects"></a>Rx 的subjects</h3><p>在我们把’cold’ observable 变得 ’hot‘之前，我们需要先介绍一个新的类型：Rx Subject。他有如下特性：</p>
+<ol>
+<li>他是一个obserable.他的结构类似一个observable, 并且用相同的操作符</li>
+<li>他是一个observer, 他是一个鸭子类型的observer。当他订阅一个observable是，他会像一个observer那样把数据传递给’next‘方法</li>
+<li>他是多播的。所有通过’subscribe‘犯法订阅的observers都会加入到一个内部的observers list</li>
+<li><p>当他结束的时候就是真的结束了（意味着结束后不可以在重用）。无论是发生了unsubscribe（这我试出来了见下代码）或者complete, 亦或者是发生了error之后，Subjects是不可以再重用的。（When it’s done, it’s done. Subjects cannot be reused after they’re unsubscribed, completed or errored.<br>）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// The death of a Subject</span><br><span class="line">const subject = new Subject();</span><br><span class="line">subject.subscribe(x =&gt; console.log(x));</span><br><span class="line">subject.next(1);    // 1</span><br><span class="line">subject.next(2);    // 2</span><br><span class="line">subject.complete();</span><br><span class="line">subject.next(3);    // silently ignored</span><br><span class="line">subject.unsubscribe();</span><br><span class="line">subject.next(4);    // Unhandled ObjectUnsubscribedError</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>当你通过他自身传递数据时，他会进行#2，就是obser那一套。又若是你通过next传递数据，他又会表现出他observable的一面。</p>
+</li>
+</ol>
+<p>之所以称之为’subject‘是因为上述第三点。 在四人帮的设计模式里，’Subjects‘是一个拥有’addObserver‘方法的类。在这个例子里面，’addObserver‘方法是’subscribe‘，这里有一个<a href="http://jsbin.com/muziva/1/edit?js,output" target="_blank" rel="noopener">jsbin</a>的例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">const &#123; Subject &#125; = Rx;</span><br><span class="line"></span><br><span class="line">const subject = new Subject();</span><br><span class="line"></span><br><span class="line">// you can subscribe to them like any other observable</span><br><span class="line"></span><br><span class="line">subject.subscribe(x =&gt; console.log(&apos;one&apos;, x), err =&gt; console.error(&apos;one&apos;, err));</span><br><span class="line">subject.subscribe(x =&gt; console.log(&apos;two&apos;, x), err =&gt; console.error(&apos;two&apos;, err));</span><br><span class="line">subject.subscribe(x =&gt; console.log(&apos;three&apos;, x), err =&gt; console.error(&apos;three&apos;, err));</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// and you can next values into subjects.</span><br><span class="line">// NOTICE: each value is sent to *all* subscribers. This is the multicast nature of subjects.</span><br><span class="line"></span><br><span class="line">subject.next(1);</span><br><span class="line">subject.next(2);</span><br><span class="line">subject.next(3);</span><br><span class="line"></span><br><span class="line">// An error will also be sent to all subscribers</span><br><span class="line">subject.error(new Error(&apos;bad&apos;));</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// NOTICE: once it&apos;s errored or completed, you can&apos;t send new values into it</span><br><span class="line">try &#123;</span><br><span class="line">  subject.next(4); //throws ObjectUnsubscribedError</span><br><span class="line">&#125; catch (err) &#123;</span><br><span class="line">  console.error(&apos;oops&apos;, err);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="使一个-’COLD‘-Observable-‘HOT’"><a href="#使一个-’COLD‘-Observable-‘HOT’" class="headerlink" title="使一个 ’COLD‘ Observable ‘HOT’"></a>使一个 ’COLD‘ Observable ‘HOT’</h3><p>当我们使用了Subject，我们可以使用一些函数式编程方法来使一个 ’cold‘ Observable ‘hot’:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">function makeHot(cold) &#123;</span><br><span class="line">  const subject = new Subject();</span><br><span class="line">  cold.subscribe(subject);</span><br><span class="line">  return new Observable((observer) =&gt; subject.subscribe(observer));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 整体流程就是：observer -&gt; subject -&gt; cold(依次订阅下一个observable)</span><br></pre></td></tr></table></figure></p>
+<p>我们的makeHot方法可以接收任何的cold observable并且可以通过创建一个共享的subject。这里有个例子<a href="http://jsbin.com/ketodu/1/edit?js,output" target="_blank" rel="noopener">jsbin</a></p>
+<p>但是我们仍然有一些小的问题，因为，我们仍然没有跟踪我们源observable的subscription(就是cancel函数)，因此当我们想要取消的时候，我们该怎么取消呢？我们可以通过添加引用计数来解决这个问题：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">function makeHotRefCounted(cold) &#123;</span><br><span class="line">  const subject = new Subject();</span><br><span class="line">  const mainSub = cold.subscribe(subject);</span><br><span class="line">  let refs = 0;</span><br><span class="line">  return new Observable((observer) =&gt; &#123;</span><br><span class="line">    refs++;</span><br><span class="line">    let sub = subject.subscribe(observer);</span><br><span class="line">    return () =&gt; &#123;</span><br><span class="line">      refs--;</span><br><span class="line">      if (refs === 0) mainSub.unsubscribe();</span><br><span class="line">      sub.unsubscribe();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这样我们就有了unsubscribe函数了。<a href="http://jsbin.com/lubata/1/edit?js,output" target="_blank" rel="noopener">jsbin</a></p>
+<h3 id="在Rxjs中，使用’publish-‘或者’share-‘"><a href="#在Rxjs中，使用’publish-‘或者’share-‘" class="headerlink" title="在Rxjs中，使用’publish()‘或者’share()‘"></a>在Rxjs中，使用’publish()‘或者’share()‘</h3><p>你应当使用publish或者share而不是上面造的makeHot。 有很多种方法可以是cold变为hot, 并且在Rx中有很多种高效简洁的方法来实现。</p>
+<p>在rxjs 5中，share操作符，可以是cold变成hot，以及使用引用计数的observable。并且这个observable还可以重试当他失败或者成功。因为当他错误，完成或者取消订阅以后，subjects就不可以重新使用了，于是<code>share()</code>操作符会重新回收死掉的subjects并且在生成一个新的subject,使得我们可以重新订阅。<br>这里有一个栗子<a href="http://jsbin.com/mexuma/1/edit?js,output" target="_blank" rel="noopener">jsbin</a><br>经过尝试错误，取消订阅是可以的重新订阅的。</p>
+<h1 id="The-“Warm”-Observable"><a href="#The-“Warm”-Observable" class="headerlink" title="The “Warm” Observable"></a>The “Warm” Observable</h1><p>Given everything stated above, one might be able to see how an Observable, being that it’s just a function, could actually be both “hot” and “cold”. Perhaps it observes two producers? One it creates and one it closes over? That’s probably bad juju, but there are rare cases where it might be necessary. A multiplexed web socket for example, must share a socket, but send its own subscription and filter out a data stream.</p>
+<h3 id="温暖的-observable自己看吧"><a href="#温暖的-observable自己看吧" class="headerlink" title="温暖的 observable自己看吧"></a>温暖的 observable自己看吧</h3><h3 id="’hot‘和’cold‘都是针对生产者来说的"><a href="#’hot‘和’cold‘都是针对生产者来说的" class="headerlink" title="’hot‘和’cold‘都是针对生产者来说的"></a>’hot‘和’cold‘都是针对生产者来说的</h3><p>当你是用shared 引用来关闭producer,那么他是hot。 如果你是在你的observable中创建生产者那么他是cold,若是两者都做，那么我猜他是’warm‘吧！</p>
+<blockquote>
+<p>hot Observable通常是多播的，但若是producer一次只提供一个监听器数据，此时再说他是多播的就会有些模糊了。</p>
+</blockquote>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/rxjs/">rxjs</a><a href="/tags/reactive-programming/">reactive programming</a><a href="/tags/Ben-Lesh-原文作者/">Ben Lesh(原文作者)</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/07/14/http2/"><span></span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/07/14/http2/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-07-14T13:00:30.039Z">
+          2018-07-14
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h2 id="http2"><a href="#http2" class="headerlink" title="http2"></a>http2</h2><ul>
+<li><h3 id="支持请求与响应的多路复用来减少延迟。"><a href="#支持请求与响应的多路复用来减少延迟。" class="headerlink" title="支持请求与响应的多路复用来减少延迟。"></a>支持请求与响应的多路复用来减少延迟。</h3></li>
+<li><h3 id="压缩-HTTP-首部字段将协议开销降至最低。"><a href="#压缩-HTTP-首部字段将协议开销降至最低。" class="headerlink" title="压缩 HTTP 首部字段将协议开销降至最低。"></a>压缩 HTTP 首部字段将协议开销降至最低。</h3></li>
+<li><h3 id="增加对请求优先级和服务器端推送的支持。"><a href="#增加对请求优先级和服务器端推送的支持。" class="headerlink" title="增加对请求优先级和服务器端推送的支持。"></a>增加对请求优先级和服务器端推送的支持。</h3><blockquote>
+<p>同时由于考虑到庞大的 HTTP1.1 协议用户，所以 HTTP 方法、状态码、URI 及首部字段，等核心概念保持不变，也就是当前正在运行的网站不用做任何改变即可在 HTTP2 协议上运行。</p>
+</blockquote>
+</li>
+<li><h3 id="二进制分帧层"><a href="#二进制分帧层" class="headerlink" title="二进制分帧层:"></a>二进制分帧层:</h3><p><img src="http://www.softwhy.com/data/attachment/portal/201710/16/020524pf7gmftffdtfzvfo.png" alt=""></p>
+</li>
+<li><h3 id="流、消息和帧"><a href="#流、消息和帧" class="headerlink" title="流、消息和帧:"></a>流、消息和帧:</h3><p>二进制分帧机制改变了客户端与服务器之间交互数据的方式，涉及到以下几个重要的概念:</p>
+</li>
+</ul>
+<ol>
+<li><p>流：已建立的 TCP 连接上的双向字节流，逻辑上可看做一个较为完整的交互处理单元，即表达一次完整的资源请求-响应数据交换流程；一个业务处理单元，在一个流内进行处理完毕，这个流生命周期完结。</p>
+</li>
+<li><p>消息：由一个或多个帧组合而成，例如请求和响应。</p>
+</li>
+<li><p>帧：HTTP2 通信的最小单位，每个帧包含帧首部，至少也会标识出当前帧所属的流。所有 HTTP2 通信都在一个连接上完成，此连接理论上可以承载任意数量的双向数据流。相应地，每个数据流以消息的形式发送，而消息由一或多个帧组成，这些帧可以乱序发送，然后再根据每个帧首部的流标识符重新组装。图示如下:<br><img src="http://www.softwhy.com/data/attachment/portal/201710/16/022009pmxtfks7s6ntsqty.png" alt=""></p>
+<blockquote>
+<p>HTTP2 的所有帧都采用二进制编码，所有首部数据都会被压缩。上图只是演示数据流、消息和帧之间的关系，而非实际传输时的编码结果。</p>
+</blockquote>
+</li>
+</ol>
+<ul>
+<li><h3 id="多向请求与响应"><a href="#多向请求与响应" class="headerlink" title="多向请求与响应:"></a>多向请求与响应:</h3>在 HTTP1.1 中，如果想使用多个并行 request 请求，必须多开 TCP 连接，但是一个域名对同一个浏览器客户端是有数量限制的（6 个左右），同时，每一个连接中的响应是按照顺序排队进行的，容易导致队头堵塞。</li>
+</ul>
+<p>二进制分帧层实现了多向请求和响应，客户端和服务器可以把 HTTP 消息分解为互不依赖的帧，然后乱序发送，最后再在另一端把它们重新组合起来。图示如下:<br><img src="http://www.softwhy.com/data/attachment/portal/201710/16/024057jh3371lvfjn1f1nf.png" alt=""><br>由上图可以看出，同一个 TCP 连接可以传输多个数据流，并且服务器到客户端方向有多个数据流，流是一个逻辑信道，所以属于它的帧可以乱序发送，最后再根据标记组合起来即可。把 HTTP 消息分解为独立的帧，交错发送，然后在另一端重新组装是 HTTP2 最重要的改进，带来了巨大的性能提升，主要因为如下几个原因:</p>
+<ol>
+<li>可以并行交错地发送请求，请求之间互不影响。</li>
+<li>可以并行交错地发送响应，响应之间互不干扰。</li>
+<li>只使用一个连接即可并行发送多个请求和响应。</li>
+<li>消除不必要的延迟，从而减少页面加载的时间。</li>
+</ol>
+<p>二进制分帧机制解决了 HTTP1.1 队头阻塞问题，也消除了并行处理和发送请求及响应时对多个 TCP 连接的依赖</p>
+<ul>
+<li><h3 id="请求优先级"><a href="#请求优先级" class="headerlink" title="请求优先级:"></a>请求优先级:</h3><p>每个流都包含一个优先级，用来告诉对端哪个流更重要，当资源有限的时候，服务器会根据优先级来选择应该先发送哪些流。HTTP2 中，每个请求都可以带一个 31bit 的优先值，0 表示最高优先级。数值越大优先级越低。有了这个优先值，客户端和服务器就可以在处理不同的流时采取不同的策略，以最优的方式发送流、消息和帧。</p>
+</li>
+<li><h3 id="服务器推送"><a href="#服务器推送" class="headerlink" title="服务器推送:"></a>服务器推送:</h3><p>当前 web 页面的功能越来越强大，排版越来越精美，所以需要引用的 js 文件、css 文件或者图片等内容也越来越多，对每一个资源的外部引用，都是一次 request 请求。在 HTTP1.1 中，由于不具有多向请求与响应，所以可能需要额外的 TCP 连接，甚至导致队头堵塞，HTTP1.1 对此问题的解决方案可以参阅 HTTP 请求延迟解决方案一章节。当客户端获取服务器发送来的文档之后，通过分析获知需要引入额外的资源，然后再向服务器发送请求获取这些资源，如此大费周章，倒不如服务器主动推送这些额外资源。推送资源的特点如下:</p>
+</li>
+<li><h3 id="客户端可以缓存推送过来的资源。"><a href="#客户端可以缓存推送过来的资源。" class="headerlink" title="客户端可以缓存推送过来的资源。"></a>客户端可以缓存推送过来的资源。</h3></li>
+<li><h3 id="客户端可以拒绝推送过来的资源。"><a href="#客户端可以拒绝推送过来的资源。" class="headerlink" title="客户端可以拒绝推送过来的资源。"></a>客户端可以拒绝推送过来的资源。</h3></li>
+<li><h3 id="推送资源可以由不同的页面共享。"><a href="#推送资源可以由不同的页面共享。" class="headerlink" title="推送资源可以由不同的页面共享。"></a>推送资源可以由不同的页面共享。</h3></li>
+<li><h3 id="服务器可以按照优先级推送资源。"><a href="#服务器可以按照优先级推送资源。" class="headerlink" title="服务器可以按照优先级推送资源。"></a>服务器可以按照优先级推送资源。</h3></li>
+<li><h3 id="首部压缩"><a href="#首部压缩" class="headerlink" title="首部压缩:"></a>首部压缩:</h3><p>在 HTTP1.1 中，每次请求或者响应都会发送一组首部信息，同时这些信息都是以文本形式发送，如果带有 cookie 信息的话，那么发送首部信息就是一份相当大的额外开销。为减少这些开销并提升性能，HTTP2 会压缩首部元数据，HTTP2 在客户端和服务器端使用“首部表”来跟踪和存储之前发送的键/值对，对于相同的数据，不再通过每次请求和响应发送，首部表在 HTTP2 的连接存续期内始终存在，由客户端和服务器共同渐进地更新。<br><img src="http://www.softwhy.com/data/attachment/portal/201710/16/033703znauwpwrlnohwkpn.png" alt=""></p>
+</li>
+</ul>
+<h3 id="http1-的一个问题"><a href="#http1-的一个问题" class="headerlink" title="http1 的一个问题"></a><a href="https://stackoverflow.com/questions/45583861/how-does-http2-solve-head-of-line-blocking-hol-issue" target="_blank" rel="noopener">http1 的一个问题</a></h3>
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/07/14/hello-world/"><span>Hello English</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/07/14/hello-world/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-07-14T13:00:30.038Z">
+          2018-07-14
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p><img src="http://i.epochtimes.com/assets/uploads/2016/03/160311101729836-600x400.jpg" alt=""></p>
+<h3 id="step-1-每天一句"><a href="#step-1-每天一句" class="headerlink" title="step 1 每天一句"></a>step 1 每天一句</h3><p>As long as you’re being a <code>copycat</code>, you will never be the best <code>copycat</code>.</p>
+<blockquote>
+<p>一味的模仿他人，是做不到最好的</p>
+</blockquote>
+<p>[1]: copycat<a href="http://fanyi.baidu.com/translate?aldtype=16047&amp;query=&amp;keyfrom=baidu&amp;smartresult=dict&amp;lang=auto2zh#en/zh/copycat" target="_blank" rel="noopener">百度翻译</a>，<a href="http://fanyi.youdao.com/" target="_blank" rel="noopener">有道翻译</a> 是指模仿者(特指盲目模仿)</p>
+<h3 id="step-2-音标学习"><a href="#step-2-音标学习" class="headerlink" title="step 2 音标学习"></a>step 2 音标学习</h3><p>标准的中式发音，谁听谁服气(这说的是我。。。)，下面给你列举一个学习资料（不知道是不是过时了，凑合先看），咱们先跟着第一个学习，每天学一丢丢。你也可以自己线下练习哦， 一天最少5-6个音标会读吧，然后再忘几个。。。就没了</p>
+<ol>
+<li><a href="http://en-yinbiao.xiao84.com/KK/" target="_blank" rel="noopener">美式音标(KK音标)在线发音课程</a></li>
+</ol>
+<h3 id="step-3-单词学习"><a href="#step-3-单词学习" class="headerlink" title="step 3 单词学习"></a>step 3 单词学习</h3><p>在上面一起了</p>
+<h3 id="step-4-语法学习"><a href="#step-4-语法学习" class="headerlink" title="step 4 语法学习"></a>step 4 语法学习</h3><p>这里给你一个英语语法学习的专门地址等你啥时候牛逼了，就可以去了, <a href="http://www.kmzzz.net/Article/prep/" target="_blank" rel="noopener">英语语法网站</a></p>
+<ul>
+<li>先学习词性吧</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1 名词 noun n. student 学生</td>
+<td>2 代词 pronoun pron. you 你</td>
+</tr>
+<tr>
+<td>3 形容词 adjective adj. happy 高兴的</td>
+<td>4 副词 adverb adv. quickly 迅速地</td>
+</tr>
+<tr>
+<td>5 动词 verb v. cut 砍、割</td>
+<td>6 数词 numeral num. three 三</td>
+</tr>
+<tr>
+<td>7 冠词 article art. a 一个</td>
+<td>8 介词 preposition prep. at 在…</td>
+</tr>
+<tr>
+<td>9 连词 conjunction conj. and 和</td>
+<td>10 感叹词 interjection interj. oh 哦</td>
+</tr>
+<tr>
+<td>前六类叫实词，后四类叫虚词</td>
+</tr>
+</tbody>
+</table>
+<h3 id="最后留点儿东西，省的以后还得再查"><a href="#最后留点儿东西，省的以后还得再查" class="headerlink" title="最后留点儿东西，省的以后还得再查"></a>最后留点儿东西，省的以后还得再查</h3><ol>
+<li><a href="http://www.ruanyifeng.com/blog/2007/08/what_is_preposition.html" target="_blank" rel="noopener">介词的理解</a></li>
+<li><a href="https://zh.wikipedia.org/wiki/%E4%BB%8B%E8%A9%9E" target="_blank" rel="noopener">wiki上的介词定义</a></li>
+<li><a href="https://zh.wikibooks.org/wiki/%E8%8B%B1%E8%AF%AD/%E7%9B%AE%E5%BD%95" target="_blank" rel="noopener">wiki上的英语书，很不错哦</a></li>
+<li><a href="https://zhuanlan.zhihu.com/adingdemao" target="_blank" rel="noopener">英语学习的知乎专栏</a></li>
+</ol>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/英语/">英语</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/07/14/heapdump解析/"><span>memory snapshot的世界</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/07/14/heapdump解析/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-07-14T13:00:30.005Z">
+          2018-07-14
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h3 id="snapshot-v8"><a href="#snapshot-v8" class="headerlink" title="snapshot(v8)"></a>snapshot(v8)</h3><ul>
+<li><p>既然要讲v8的snapshot那就得先看看snapshot的表示形式，整个snapshot里的对象是以graph的形式展示的，节点是对象(会以对象的构造函数的形式展示)，边是属性值, 例如</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">class A &#123;</span><br><span class="line">  a() &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line">那么展示就是 A - a(边) -&gt; Function</span><br></pre></td></tr></table></figure>
+<p>此图是snapshot的json格式图</p>
+<img src="/2018/07/14/heapdump解析/snapshot的json格式.png">
+<p>此图中的索引都是从零开始的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// 对应snapshot中的字段, 查找节点i的信息</span><br><span class="line">var i_type = nodes[i];</span><br><span class="line">var i_name = strings[nodes[i + 1]];</span><br><span class="line">var i_id = nodes[i + 2];</span><br><span class="line">var i_size = nodes[i + 3]</span><br><span class="line">var i_edge_count = nodes[i + 4];</span><br></pre></td></tr></table></figure>
+<p>再具体的解释如下:</p>
+<img src="/2018/07/14/heapdump解析/nodes属性.png">
+<img src="/2018/07/14/heapdump解析/edges属性.png">
+<img src="/2018/07/14/heapdump解析/遍历nodes的方式.png">
+</li>
+<li><p>那么接下来就要说一下snapshot里面是有哪些类型即节点的类型(当然这些类型都来自v8)<a href="https://github.com/v8/v8/blob/master/src/objects.h" target="_blank" rel="noopener">完整的数据类型</a>，而我们在这里要讲则是在snapshot里面定义的类型(来自v8), 这里我们要区分primitive(包扩三类number, string, symbol,js会替我们auto-boxing)和Object(不要问什么)</p>
+ <img src="/2018/07/14/heapdump解析/节点类型.png"> 
+<p>从上图我们可以清晰节点的类型一共有13种，hidden类型可能不展示</p>
+</li>
+<li>边的类型(即属性的表现形式)<img src="/2018/07/14/heapdump解析/边的类型.png">
+从上图可以看出共有7种<ul>
+<li>map, array, symbol, object, regexp, number, boolean, string, date，typedarray…这些常见的内建对象我就不解释了，大家都知道</li>
+<li>我们在sanpshot中还会经常看见两类string比较生疏的两个(这两类算在pimitive中)， sliced string和 concatenated string<ul>
+<li>那我们就来看看string，在v8里的形式  <img src="/2018/07/14/heapdump解析/字符串类型.png"> 
+在这里我们可以清晰的看出来，v8的字符串类型，里面有sliced的解释，是其他字符串的部分引用(因为字面量字符串是不可变的so可以这么办。。)，而cons的就是(a, b),或者嵌套似的((a,b),c)这样的pairs(同样是因为字面量的字符串是不可变的)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>节点类型就上面列出的那些，但是根据具体的对象，他们又有好多不同的名字(Gc roots, map / tag, system / …)</li>
+</ul>
+<h3 id="chrome-devtools-里的概念"><a href="#chrome-devtools-里的概念" class="headerlink" title="chrome devtools 里的概念"></a>chrome devtools 里的概念</h3><ul>
+<li><h4 id="shallow-size"><a href="#shallow-size" class="headerlink" title="shallow size:"></a>shallow size:</h4><p>是指对象自己本身占用的大小, 不包含引用对象内容的大小</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">const parent = &#123;</span><br><span class="line">  a: 23,</span><br><span class="line">  child: child,</span><br><span class="line">&#125;</span><br><span class="line">const child = &#123;</span><br><span class="line">  a: 23,</span><br><span class="line">  c: 12,</span><br><span class="line">&#125;;</span><br><span class="line">/**</span><br><span class="line">  child的大小就是8B(32为机器)，parent大小就有得讨论了，若不算引用的具体内容大小，parent的大小也是8，而此时就是shallow size。那么包含引用内容呢？</span><br><span class="line">*/</span><br></pre></td></tr></table></figure>
+<p>*</p>
+</li>
+<li><h4 id="retained-size"><a href="#retained-size" class="headerlink" title="retained size:"></a>retained size:</h4><p>是指不但包含对象自身，还包含该对象所能引用的或者间接引用（parent.child, parent.child.child）</p>
+</li>
+<li><h4 id="GC-roots"><a href="#GC-roots" class="headerlink" title="GC roots"></a>GC roots</h4><p>GC roots的概念来自与垃圾回收算法，js的垃圾回收算法是基于根不可达来回收不使用的内存的，就选取某个对象作为初始点，沿着这个对象的引用链往下走，凡是通过这个对象无法访问到(是指通过引用可以获取到对象)的对象就认为是可以被回收的。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/7901630-a04e0112cb083905.gif?imageMogr2/auto-orient/strip" alt=""></p>
+<p><img src="http://fengzii.com/images//2017-07-09-java-basic-five-gc-root-set.png" alt=""></p>
+<p>如上图5，6，7就无法被访问到，此时就可以认为5，6，7可以被回收了<br></p>
+<ol>
+<li>那么GC root 只有一个么？No.很明显不可能只有一个，因为有栈变量的存在</li>
+<li>那么有哪些对象可以作为GC root呢， 对于js， 有Global, Window, 栈变量，内建对象等(我们是可以自己扩展内建对象的)</li>
+<li>chrome devtools 里面的distance是指什么？ 是指通过多少次引用能访问对此对象，对于Window等就是1</li>
+</ol>
+</li>
+<li><p>从上面我们可以看出来，所有的对象是以树的形式展示的，devtools中如何显示对象树的？<br>对象的保留树<br>  就像我们前面所说的，堆就是由相互连接的对象构成的网络。在数学的世界中，这种结构称作图或者内存图。一个图是由节点和边构成的，而节点又是由边连接起来的，其中节点和边都有相应的标签。</p>
+<ul>
+<li><p>节点（或者对象）是用创建对象的<strong>构造函数</strong>标记的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">这里问题就来了那么js中的对象的构造函数都是啥呢</span><br><span class="line">const a = &apos;hello2dj&apos;;</span><br><span class="line">// a 的构造函数是 String, 但对于字面量来说还会有具体的展示类型,这与v8的内部实现相关</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>边是用<strong>属性名</strong>来标记的<br>对于不同的属性chrome 会标记不同的标识<br>对象的属性以及属性值属于不同类型并且有着相应的颜色。每个属性都会有四种类型之一(更详细的上述snapshot里面又讲)：</p>
+<ul>
+<li>a:property - 有名称的常规属性，通过 .（点）操作符或者 []（方括号）符号来访问，例如 [“foo bar”]；</li>
+<li>0:element - 有数字下标的常规属性，使用 []（方括号）来访问。</li>
+<li>a:context var - 函数上下文中的某个变量，在相应的函数闭包中使用其名字就可以访问。</li>
+<li>a:system prop - 由 JavaScript 虚拟机添加的属性，在 JavaScript 代码中无法访问。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Object count 挡在summary视图模式下查看时，会有这个，按照上述来说对象树的节点是constructor, 属性是边，那么object count 就是通过这个constructor 构造出来的对象实例数量</p>
+</li>
+<li><p>巧了还有一个我们可以在devtools里经常看到的就是有些对象是黄颜色标识的有些是红色标识的，见图, 图中很明显标识红色和黄色的原因</p>
+<img src="/2018/07/14/heapdump解析/fragment.jpg">
+<img src="/2018/07/14/heapdump解析/schema.jpg">
+<ul>
+<li>以黄色突出显示的节点具有 JavaScript 代码对它们的直接引用。 以红色突出显示的节点则没有直接引用。只有属于黄色节点的树时，它们才处于活动状态。 一般而言，您需要将注意力放在黄色节点上。 <strong>修复代码，使黄色节点处于活动状态的时间不长于需要的时间</strong>，您也需要消除属于黄色节点树的红色节点。点击黄色节点对其进行进一步调查。</li>
+<li>显然红色节点就是没有js代码直接引用的对象</li>
+</ul>
+</li>
+<li><p>在summary视图下第一栏是从constructor而这一栏是分两类的</p>
+<ul>
+<li>不带()括号的是构造器，下面包含的是用这个构造器生成的对象,这个很好实验的，自己写一个类，实例化一下就可以了</li>
+<li><p>另一类带括号的又有如下区分</p>
+<img src="/2018/07/14/heapdump解析/tag对象.png"> 
+<p>见上图，他管()的行为叫tag,那就很明显了，在括号()下面的对象就是全部的这种对象了。</p>
+<img src="/2018/07/14/heapdump解析/随心所欲.png">
+<p>我错了</p>
+<ul>
+<li>(string, regexp) 显示的是literal string 即 a=’234’中的’23’， regexp类似</li>
+<li>(num) 显示的是以number对象展示的对象</li>
+<li>(array) 那些通过数组引用的对象，说白了就是数组对象<ul>
+<li>(code deopt data)[]: v8去优化时的数据</li>
+<li>[]:就是纯数组</li>
+<li>(object properties)[]:通过对象属性引用的对象</li>
+<li>(map descriptors)[]: map类型相关，暂时搁置</li>
+<li>(object elements)[]: 暂时未知</li>
+<li>(function scope info)[]: 暂时未知</li>
+</ul>
+</li>
+<li>(system) 那就是原生代码了</li>
+<li>(compiled code) 编译过后的代码</li>
+<li>(closure) 通过闭包引用的对象，但感觉更像是闭包自己</li>
+<li>(sliced string): 搁置</li>
+<li>(undefined): 搁置</li>
+<li>(concatenated string): 搁置</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>还有一些其他<a href="https://developers.google.com/web/tools/chrome-devtools/memory-problems/memory-101" target="_blank" rel="noopener">概念</a>参见<a href="https://developers.google.com/web/tools/chrome-devtools/memory-problems/memory-101" target="_blank" rel="noopener">https://developers.google.com/web/tools/chrome-devtools/memory-problems/memory-101</a></li>
+</ul>
+<h3 id="看一次对其中两个对象的识别及分析"><a href="#看一次对其中两个对象的识别及分析" class="headerlink" title="看一次对其中两个对象的识别及分析"></a>看一次对其中两个对象的识别及分析</h3><p>代码如下，num2是一个Number对象，不知道为啥，我以字面量分配的num1，我没找到。。。(有待继续)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">num2 = new Number(234);</span><br></pre></td></tr></table></figure></p>
+<p>接下来的图示顺序分析的</p>
+<img src="/2018/07/14/heapdump解析/@28081的引用情况.png">
+<img src="/2018/07/14/heapdump解析/@28081的图.png">
+<img src="/2018/07/14/heapdump解析/@15319的引用链.png">
+<h3 id="常见的内存泄露种类"><a href="#常见的内存泄露种类" class="headerlink" title="常见的内存泄露种类"></a>常见的内存泄露种类</h3><ul>
+<li><h3 id="全局变量"><a href="#全局变量" class="headerlink" title="全局变量"></a>全局变量</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">function globalLeak() &#123;</span><br><span class="line">  bar = &apos;hello2dj&apos;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里bar没有生命就意味着他被global引用了，那么他就不会被回收</p>
+</li>
+<li><h3 id="被遗忘的计时器或回调函数"><a href="#被遗忘的计时器或回调函数" class="headerlink" title="被遗忘的计时器或回调函数"></a>被遗忘的计时器或回调函数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">var someResource = getData();</span><br><span class="line">setInterval(function() &#123;</span><br><span class="line">    var node = document.getElementById(&apos;Node&apos;);</span><br><span class="line">    if(node) &#123;</span><br><span class="line">        // 处理 node 和 someResource</span><br><span class="line">        node.innerHTML = JSON.stringify(someResource));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;, 1000);</span><br></pre></td></tr></table></figure>
+<p>此例说明：与节点或数据关联的计时器不再需要，node 对象可以删除，整个回调函数也不需要了。可是，计时器回调函数仍然没被回收（计时器停止才会被回收）。同时，someResource 如果存储了大量的数据，也是无法被回收的。</p>
+<p>还有时间监听：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">var element = document.getElementById(&apos;button&apos;);</span><br><span class="line">  function onClick(event) &#123;</span><br><span class="line">      element.innerHTML = &apos;text&apos;;</span><br><span class="line">  &#125;</span><br><span class="line">element.addEventListener(&apos;click&apos;, onClick);</span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="被引用的dom"><a href="#被引用的dom" class="headerlink" title="被引用的dom"></a>被引用的dom</h3><p>有时，保存 DOM 节点内部数据结构很有用。假如你想快速更新表格的几行内容，把每一行 DOM 存成字典（JSON 键值对）或者数组很有意义。此时，同样的 DOM 元素存在两个引用：一个在 DOM 树中，另一个在字典中。将来你决定删除这些行时，需要把两个引用都清除。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">  var elements = &#123;</span><br><span class="line">    button: document.getElementById(&apos;button&apos;),</span><br><span class="line">    image: document.getElementById(&apos;image&apos;),</span><br><span class="line">    text: document.getElementById(&apos;text&apos;)</span><br><span class="line">&#125;;</span><br><span class="line">function doStuff() &#123;</span><br><span class="line">    image.src = &apos;http://some.url/image&apos;;</span><br><span class="line">    button.click();</span><br><span class="line">    console.log(text.innerHTML);</span><br><span class="line">    // 更多逻辑</span><br><span class="line">&#125;</span><br><span class="line">function removeButton() &#123;</span><br><span class="line">    // 按钮是 body 的后代元素</span><br><span class="line">    document.body.removeChild(document.getElementById(&apos;button&apos;));</span><br><span class="line">    // 此时，仍旧存在一个全局的 #button 的引用</span><br><span class="line">    // elements 字典。button 元素仍旧在内存中，不能被 GC 回收。</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此外还要考虑 DOM 树内部或子节点的引用问题。假如你的 JavaScript 代码中保存了表格某一个 <td> 的引用。将来决定删除整个表格的时候，直觉认为 GC 会回收除了已保存的 </td><td> 以外的其它节点。实际情况并非如此：此 </td><td> 是表格的子节点，子元素与父元素是引用关系。由于代码保留了 </td><td> 的引用，导致整个表格仍待在内存中。保存 DOM 元素引用的时候，要小心谨慎。</td></p>
+</li>
+<li><h3 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h3><p>这段代码被引用了无数次了来自<a href="http://info.meteor.com/blog/an-interesting-kind-of-javascript-memory-leak" target="_blank" rel="noopener">meteor</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">var theThing = null;</span><br><span class="line">var replaceThing = function () &#123;</span><br><span class="line">  var originalThing = theThing;</span><br><span class="line">  var unused = function () &#123;</span><br><span class="line">    if (originalThing)</span><br><span class="line">      console.log(&quot;hi&quot;);</span><br><span class="line">  &#125;;</span><br><span class="line">  theThing = &#123;</span><br><span class="line">    longStr: new Array(1000000).join(&apos;*&apos;),</span><br><span class="line">    someMethod: function () &#123;</span><br><span class="line">      console.log(someMessage);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;;</span><br><span class="line">setInterval(replaceThing, 1000);</span><br></pre></td></tr></table></figure>
+<p>代码片段做了一件事情：每次调用 replaceThing ，theThing 得到一个包含一个大数组和一个新闭包（someMethod）的新对象。同时，变量 unused 是一个引用 originalThing 的闭包（先前的 replaceThing 又调用了 theThing ）。思绪混乱了吗？最重要的事情是，闭包的作用域一旦创建，它们有同样的父级作用域，作用域是共享的。someMethod 可以通过 theThing 使用，someMethod 与 unused 分享闭包作用域，尽管 unused 从未使用，它引用的 originalThing 迫使它保留在内存中（防止被回收）。当这段代码反复运行，就会看到内存占用不断上升，垃圾回收器（GC）并无法降低内存占用。本质上，闭包的链表已经创建，每一个闭包作用域携带一个指向大数组的间接的引用，造成严重的内存泄漏。</p>
+<p>Meteor 的博文 解释了如何修复此种问题。在 replaceThing 的最后添加 originalThing = null 。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3></li>
+</ul>
+<ol>
+<li><a href="https://www.zhihu.com/question/62732293" target="_blank" rel="noopener">v8类型(知乎上的一篇)</a></li>
+<li><a href="https://github.com/v8/v8/blob/master/src/objects.h" target="_blank" rel="noopener">v8类型源码注释</a></li>
+<li><a href="http://jayconrod.com/posts/52/a-tour-of-v8-object-representation" target="_blank" rel="noopener">v8-object-representation</a></li>
+<li><p><a href="http://60sky.com/post/javascript-ucs2-utf16.html" target="_blank" rel="noopener">js内部编码介绍</a></p>
+</li>
+<li><p><a href="http://bespin.cz/~ondras/html/classv8_1_1Value.html" target="_blank" rel="noopener">v8类型图</a></p>
+</li>
+<li><p><a href="https://cs.chromium.org/chromium/src/v8/include/v8-profiler.h?sq=package:chromium&amp;dr=C&amp;l=356" target="_blank" rel="noopener">snapshot的格式头文件</a></p>
+</li>
+<li><p><a href="https://cs.chromium.org/chromium/src/v8/src/profiler/heap-snapshot-generator.cc?q=heap-snapshot-generator&amp;sq=package:chromium&amp;dr=C&amp;l=17" target="_blank" rel="noopener">生成snapshot的cc文件</a></p>
+</li>
+<li><p><a href="https://developer.chrome.com/devtools/docs/heap-profiling" target="_blank" rel="noopener">heap profiling</a></p>
+</li>
+<li><p><a href="https://github.com/longtian/javascript_performance_measurement/tree/gh-pages/heap_snapshot" target="_blank" rel="noopener">snapshot格式</a></p>
+</li>
+<li><p><a href="https://addyosmani.com/blog/taming-the-unicorn-easing-javascript-memory-profiling-in-devtools/" target="_blank" rel="noopener">easy profiling</a></p>
+</li>
+<li><p><a href="https://jinlong.github.io/2016/05/01/4-Types-of-Memory-Leaks-in-JavaScript-and-How-to-Get-Rid-Of-Them/" target="_blank" rel="noopener">常见内存泄露copy于此处</a></p>
+</li>
+</ol>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/web/">web</a><a href="/tags/chrome/">chrome</a><a href="/tags/memory/">memory</a><a href="/tags/snapshot/">snapshot</a><a href="/tags/heapdump/">heapdump</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/07/14/error-in-go/"><span>Golang 高效的错误处理</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/07/14/error-in-go/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-07-14T13:00:30.002Z">
+          2018-07-14
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <blockquote>
+<p><a href="https://morsmachine.dk/error-handling" target="_blank" rel="noopener">原文地址</a></p>
+</blockquote>
+<p><img src="https://ideassea.com/content/images/2017/07/golang-error-handling-1-1.jpg" alt=""></p>
+<h4 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h4><p>golang 的错误处理方式一直是他遭受抨击的一个原因之一。探查每一个的错误然后处理确实是一个艰巨的任务，这里有几招可以让你减少错误的处理方式（处理错误的方法）。</p>
+<h3 id="错误处理靠前"><a href="#错误处理靠前" class="headerlink" title="错误处理靠前"></a>错误处理靠前</h3><p>当我们写golang的时候倾向于<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">f, err := os.Open(path)</span><br><span class="line">if err != nil &#123;</span><br><span class="line">  // handle error</span><br><span class="line">&#125;</span><br><span class="line">// do stuff</span><br></pre></td></tr></table></figure></p>
+<p>而不是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">f, err := os.Open(path)</span><br><span class="line">if err == nil &#123;</span><br><span class="line">  // do stuff</span><br><span class="line">&#125;</span><br><span class="line">// handle error</span><br></pre></td></tr></table></figure></p>
+<p>这种方式可以让我们的正常处理方式一路看到底，而不是if之后是错误</p>
+<h3 id="定义属于自己的错误"><a href="#定义属于自己的错误" class="headerlink" title="定义属于自己的错误"></a>定义属于自己的错误</h3><p>处理错误的第一步得是知道错误是啥，如果你的package发生了错误，那么你的用户一定对错误的原因很感兴趣。要做到让你的user知道错误是啥，你只需要实现error interface, 如下就可以了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">type Error string</span><br><span class="line">func (e Error) Error() string &#123; return string(e) &#125;</span><br></pre></td></tr></table></figure></p>
+<p>这样你的用户就可以通过类型断言来判断是否是你的错误<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">result, err := yourpackage.Foo()</span><br><span class="line">if err, ok := err.(yourpackage.Error); ok &#123;</span><br><span class="line">  // use tp to handle err</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>你也可以暴露一个结构体的error给你的用户<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">type OpenError struct &#123;</span><br><span class="line">  File *File</span><br><span class="line">  Error string</span><br><span class="line">&#125;</span><br><span class="line">func (oe *OpenError) Error() string &#123;</span><br><span class="line">  // format error string here</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func ParseFiles(files []*File) error &#123;</span><br><span class="line">  for _, f := range files &#123;</span><br><span class="line">    err := f.parse()</span><br><span class="line">    if err != nil &#123;</span><br><span class="line">      return &amp;OpenError&#123;</span><br><span class="line">        File: f,</span><br><span class="line">        Error: err.Error(),</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>通过这种方式，你的用户就可以分辨具体是哪个文件解析失败了<br>但是当你包裹错误的时候你也应当注意，因为包裹一个error，会丢失一些信息，就好比上面那个你已经丢失了err的类型而只剩下了err里的信息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">var c net.Conn</span><br><span class="line">f, err := DownloadFile(e, path)</span><br><span class="line">switch e := err.(type) &#123;</span><br><span class="line">  default:</span><br><span class="line">    // this will get executed if err == nil</span><br><span class="line">  case net.Error:</span><br><span class="line">    // close connection, not valid anymore</span><br><span class="line">    c.Close()</span><br><span class="line">    return e</span><br><span class="line">  case error:</span><br><span class="line">    // if err is non-nil</span><br><span class="line">    return err</span><br><span class="line">&#125;</span><br><span class="line">// do other things</span><br></pre></td></tr></table></figure></p>
+<p>见上如果此时你包裹了net.Error, 那么这段代码就不会看到net.Error这个错误了，而只能是一段错误信息，此时就无法具体区分错误了（见前一段的包裹方式丢失了具体的错误类型）<br>一个好的处理方式是尽量不要包裹你调用的其他包自己产生的错误，因为用户可能更关心他们产生的错误而不是你的。</p>
+<h3 id="把错误当做状态"><a href="#把错误当做状态" class="headerlink" title="把错误当做状态"></a>把错误当做状态</h3><p>有时候你可能想要持有一个错误而不是抛出，不管你是打算随后上报或者是你知道这个错误很快就会再次出现</p>
+<p>这种情况的一个栗子就是bufio这个包。当bufio.Reader遇到一个错误，他会持有这个错误一直到buffer空为止，只有此时他才会上报这个错误。<br>另一种栗子就是使用go/loader。当使用参数调用遇到错误时，他会持有这个错误，因为有很大的概率他会再次使用相同的参数又调用一遍</p>
+<h3 id="使用函数去避免重复"><a href="#使用函数去避免重复" class="headerlink" title="使用函数去避免重复"></a>使用函数去避免重复</h3><p>如果你有一段错误处理的代码是重复的，你可以把他提出来做一个函数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">func handleError(c net.Conn, err error)&#123;</span><br><span class="line">  // repeated error handling</span><br><span class="line">&#125;</span><br><span class="line">func DoStuff(c net.Conn) error&#123;</span><br><span class="line">  f, err := downloadFile(c, path)</span><br><span class="line">  if err != nil &#123;</span><br><span class="line">    handeError(c, err)</span><br><span class="line">    return err</span><br><span class="line">  &#125;</span><br><span class="line">  f, err := doOtherThing(c)</span><br><span class="line">  if err != nil &#123;</span><br><span class="line">    handleError(c, err)</span><br><span class="line">    return err</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>一个替换方案是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">func handeError(c net.Conn, err error) &#123;</span><br><span class="line">  if err == nil &#123;</span><br><span class="line">    return</span><br><span class="line">  &#125;</span><br><span class="line">  // repeat err handling</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func DoStuff(c net.Conn) error &#123;</span><br><span class="line">  // defer func()&#123; handleError(c, err) &#125;()</span><br><span class="line">  // 这是原文在的位置，但明显有错误啊，err未定义啊</span><br><span class="line">  f, err := downloadFile(c, path)</span><br><span class="line">  defer func()&#123; handleError(c, err) &#125;()// 所以我挪到这里了，但效果是否ok，暂未验证 </span><br><span class="line">  if err != nil &#123;</span><br><span class="line">    return err</span><br><span class="line">  &#125;</span><br><span class="line">  f, err := doOtherThing(c)</span><br><span class="line">  if err != nil</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>ps: 一个golang官网的一段翻译</p>
+<h3 id="Why-is-my-nil-error-value-not-equal-to-nil-为什么我的nil-error-不等于nil呢？"><a href="#Why-is-my-nil-error-value-not-equal-to-nil-为什么我的nil-error-不等于nil呢？" class="headerlink" title="Why is my nil error value not equal to nil? 为什么我的nil error 不等于nil呢？"></a><a href="https://golang.org/doc/faq#nil_error" target="_blank" rel="noopener">Why is my nil error value not equal to nil?</a> 为什么我的nil error 不等于nil呢？</h3><p>先上代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">func returnError() error&#123;</span><br><span class="line">  var p *MyError = nil</span><br><span class="line">  if bad() &#123;</span><br><span class="line">    p = ErrBad</span><br><span class="line">  &#125;</span><br><span class="line">  return p // Will always return a non-nil error</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如上这里的p明明是nil值为啥返回后就不是了呢？这里涉及到另外一个问题就是interface值，我们知道error是一个interface，而MyError是一个struct, 就是要把struct值赋值给interface,在golang里interface值是包括两个的一个type值，一个value值，只有当两者都是nil的时候interface值才是nil, 上述代码，很明显虽然value是nil,可是类型还在啊，就是说type不是你nil而是MyError, 改进如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">func returnsError() error &#123;</span><br><span class="line">  if bad() &#123;</span><br><span class="line">    return ErrBad</span><br><span class="line">  &#125;</span><br><span class="line">  return nil</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/golang/">golang</a><a href="/tags/error/">error</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/07/14/donotunsubscribe/"><span>Rxjs之不要到处都是取消订阅</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/07/14/donotunsubscribe/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-07-14T13:00:30.001Z">
+          2018-07-14
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>我又要先上图了：<br><img src="https://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/02/1455228348streams.png" alt=""></p>
+<p><a href="https://medium.com/@benlesh/rxjs-dont-unsubscribe-6753ed4fda87" target="_blank" rel="noopener">原文地址(english, 需翻墙)</a></p>
+<h3 id="Rxjs-不要-取消订阅！"><a href="#Rxjs-不要-取消订阅！" class="headerlink" title="Rxjs: 不要 取消订阅！"></a>Rxjs: 不要 取消订阅！</h3><p>好吧，我说的不要调用太多的取消的订阅</p>
+<p>在我们的使用过程中我们可能会有很多的Observables, 那么这多的Observables该如何管理呢，有的人就会管理所有的subscription,然后一个一个的取消订阅，这样是不优雅的。当你管理了太多的subscriptions时那可能意味着你是必须要管理他们，而不是在充分利用Rx的强大。</p>
+<h3 id="我们来看一个不太好的管理方式"><a href="#我们来看一个不太好的管理方式" class="headerlink" title="我们来看一个不太好的管理方式"></a>我们来看一个不太好的管理方式</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">class MyGenericComponent extends SomeFrameworkComponent &#123;</span><br><span class="line"> updateData(data) &#123;</span><br><span class="line">  // do something framework-specific to update your component here.</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> onMount() &#123;</span><br><span class="line">  this.dataSub = this.getData()</span><br><span class="line">   .subscribe(data =&gt; this.updateData(data));</span><br><span class="line"></span><br><span class="line">  const cancelBtn = this.element.querySelector(‘.cancel-button’);</span><br><span class="line">  const rangeSelector = this.element.querySelector(‘.rangeSelector’);</span><br><span class="line"></span><br><span class="line">  this.cancelSub = Observable.fromEvent(cancelBtn, ‘click’)</span><br><span class="line">   .subscribe(() =&gt; &#123;</span><br><span class="line">    this.dataSub.unsubscribe();</span><br><span class="line">   &#125;);</span><br><span class="line"></span><br><span class="line">  this.rangeSub = Observable.fromEvent(rangeSelector, ‘change’)</span><br><span class="line">   .map(e =&gt; e.target.value)</span><br><span class="line">   .subscribe((value) =&gt; &#123;</span><br><span class="line">    if (+value &gt; 500) &#123;</span><br><span class="line">      this.dataSub.unsubscribe();</span><br><span class="line">    &#125;</span><br><span class="line">   &#125;);</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> onUnmount() &#123;</span><br><span class="line">  this.dataSub.unsubscribe();</span><br><span class="line">  this.cancelSub.unsubscribe();</span><br><span class="line">  this.rangeSub.unsubscribe();</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们从dataSub订阅数据直到发生了button click或者是range范围变化为止。就意味着当这两想发生时我们就会停止数据的订阅。我们可以看到上面管理了3个subscripitions，很复杂。<br>但其实我们可以把这些subscripition组合到一个subscripition里面来管理。</p>
+<h3 id="使用takeUntil来管理你的subscripition"><a href="#使用takeUntil来管理你的subscripition" class="headerlink" title="使用takeUntil来管理你的subscripition"></a>使用takeUntil来管理你的subscripition</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">class MyGenericComponent extends SomeFrameworkComponent &#123;</span><br><span class="line"> updateData(data) &#123;</span><br><span class="line">  // do something framework-specific to update your component here.</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> onMount() &#123;</span><br><span class="line">   const data$ = this.getData();</span><br><span class="line">   const cancelBtn = this.element.querySelector(‘.cancel-button’);</span><br><span class="line">   const rangeSelector = this.element.querySelector(‘.rangeSelector’);</span><br><span class="line">   const cancel$ = Observable.fromEvent(cancelBtn, &apos;click&apos;);</span><br><span class="line">   const range$ = Observable.fromEvent(rangeSelector, &apos;change&apos;).map(e =&gt; e.target.value);</span><br><span class="line">   </span><br><span class="line">   const stop$ = Observable.merge(cancel$, range$.filter(x =&gt; x &gt; 500))</span><br><span class="line">   this.subscription = data$.takeUntil(stop$).subscribe(data =&gt; this.updateData(data));</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> onUnmount() &#123;</span><br><span class="line">  this.subscription.unsubscribe();</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到我们使用一个stop$就管理了所有的subscripitions。<br>优点：</p>
+<ol>
+<li>很明显我们减少了代码量</li>
+<li>这种方式给了我们一个可以complete observable的方法，当takeUntil条件满足后是会触发complete的，而单纯的调用unsubcribe只是不再订阅了，而source并不一定就结束了，这样就不会触发complete的</li>
+<li>最后一个就是你把所有的东西都聚合在了一起，因为上述代码我们可以看到只有一个subscribe和一个unsubscribe, 而Observable，只有在调用了subscribe后才开始执行，这意味你把中心点都给聚合了，代码逻辑的开始和结束被归一了，代码会很清晰。</li>
+</ol>
+<h3 id="其他的操作符"><a href="#其他的操作符" class="headerlink" title="其他的操作符"></a>其他的操作符</h3><ul>
+<li>take(n)</li>
+<li>takeWhile(predicate): 只有predicate返回true,才会触发数据，当是false时就结束了</li>
+<li>first()</li>
+<li>first(predicate): 过滤所有的数据只有第一个满足predicate的数据会被触发，然后就结束了。</li>
+</ul>
+<h3 id="总结：使用takeUntil和takeWhile或者其他的"><a href="#总结：使用takeUntil和takeWhile或者其他的" class="headerlink" title="总结：使用takeUntil和takeWhile或者其他的"></a>总结：使用takeUntil和takeWhile或者其他的</h3><p>当你看到多个subscripitions的时候就应当尝试使用takeUntil来管理它们。</p>
+<ul>
+<li>更多的可组合性</li>
+<li>当你结束一个stream的时候会触发complete</li>
+<li>更少的代码</li>
+<li>更少需要管理的东西</li>
+<li>更少的subscribe调用</li>
+</ul>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/rxjs/">rxjs</a><a href="/tags/reactive-programming/">reactive programming</a><a href="/tags/Ben-Lesh-原文作者/">Ben Lesh(原文作者)</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/07/14/chrome-dev-you-may-dont-know/"><span>chrome-dev-you-may-dont-know</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/07/14/chrome-dev-you-may-dont-know/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-07-14T13:00:30.000Z">
+          2018-07-14
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h2 id="chrome-devtools-中的一些实用技巧"><a href="#chrome-devtools-中的一些实用技巧" class="headerlink" title="chrome devtools 中的一些实用技巧"></a>chrome devtools 中的一些实用技巧</h2><h3 id="在元素面板中拖拽元素"><a href="#在元素面板中拖拽元素" class="headerlink" title="在元素面板中拖拽元素"></a><a href="#在元素面板中拖拽元素-1">在元素面板中拖拽元素</a></h3><h3 id="在控制台中引用元素面板中选中的元素"><a href="#在控制台中引用元素面板中选中的元素" class="headerlink" title="在控制台中引用元素面板中选中的元素"></a><a href="#控制台中引用元素面板中选中的元素">在控制台中引用元素面板中选中的元素</a></h3><h3 id="在控制台中使用上次操作的结果"><a href="#在控制台中使用上次操作的结果" class="headerlink" title="在控制台中使用上次操作的结果"></a><a href="#在控制台中使用上次操作的结果-1">在控制台中使用上次操作的结果</a></h3><h3 id="修改元素的状态以及添加-css"><a href="#修改元素的状态以及添加-css" class="headerlink" title="修改元素的状态以及添加 css"></a><a href="#修改元素的状态以及添加-css-1">修改元素的状态以及添加 css</a></h3><h3 id="查找-css-属性定义的位置"><a href="#查找-css-属性定义的位置" class="headerlink" title="查找 css 属性定义的位置"></a><a href="#查找-css-属性定义的位置-1">查找 css 属性定义的位置</a></h3><h3 id="将修改的-css-样式保存到文件"><a href="#将修改的-css-样式保存到文件" class="headerlink" title="将修改的 css 样式保存到文件"></a><a href="#将修改的-css-样式保存到文件-1">将修改的 css 样式保存到文件</a></h3><h3 id="对单个元素的截图"><a href="#对单个元素的截图" class="headerlink" title="对单个元素的截图"></a><a href="#对单个元素的截图-1">对单个元素的截图</a></h3><h3 id="在控制台中使用-shift-enter-连续多行输入执行"><a href="#在控制台中使用-shift-enter-连续多行输入执行" class="headerlink" title="在控制台中使用 shift-enter(连续多行输入执行)"></a><a href="#在控制台中使用-shift-enter-连续多行输入执行-1">在控制台中使用 shift-enter(连续多行输入执行)</a></h3><h3 id="清理控制台"><a href="#清理控制台" class="headerlink" title="清理控制台"></a><a href="#清理控制台-1">清理控制台</a></h3><h3 id="跳转…"><a href="#跳转…" class="headerlink" title="跳转…"></a><a href="#跳转...-1">跳转…</a></h3><h3 id="监听表达式"><a href="#监听表达式" class="headerlink" title="监听表达式"></a><a href="#监听表达式-1">监听表达式</a></h3><h3 id="XHR-FETCH-调试"><a href="#XHR-FETCH-调试" class="headerlink" title="XHR/FETCH 调试"></a><a href="#XHR-FETCH-调试-1">XHR/FETCH 调试</a></h3><h3 id="DOM-修改的调试"><a href="#DOM-修改的调试" class="headerlink" title="DOM 修改的调试"></a><a href="#DOM-修改的调试-1">DOM 修改的调试</a></h3><p>———————————————–(华丽的分割线)</p>
+<h4 id="在元素面板中拖拽元素-1"><a href="#在元素面板中拖拽元素-1" class="headerlink" title="在元素面板中拖拽元素"></a>在元素面板中拖拽元素</h4><p>在元素面板中我们是可以拖拽任意元素到页面中其他位置的(这个大家应该都知道。。。)</p>
+<p><img src="https://d33wubrfki0l68.cloudfront.net/1f404b89ca124b8a7c11d2552f893189aa6ef9a8/ee86f/chrome-devtools-tips/drag-and-drop.gif" alt=""></p>
+<h4 id="控制台中引用元素面板中选中的元素"><a href="#控制台中引用元素面板中选中的元素" class="headerlink" title="控制台中引用元素面板中选中的元素"></a>控制台中引用元素面板中选中的元素</h4><p>在元素面板中选中元素，然后就可以在控制台中使用 $0 引用它，神奇了</p>
+<p><img src="https://d33wubrfki0l68.cloudfront.net/6aad4fd3fcf776853af0f751467abb4ca3e36036/cfa4b/chrome-devtools-tips/reference-elements.gif" alt=""></p>
+<blockquote>
+<p>大吃一惊还有这等操作(管用)</p>
+</blockquote>
+<h4 id="在控制台中使用上次操作的结果-1"><a href="#在控制台中使用上次操作的结果-1" class="headerlink" title="在控制台中使用上次操作的结果"></a>在控制台中使用上次操作的结果</h4><p>在控制台中输入 $_ 引用上次操作结果</p>
+<p><img src="https://d33wubrfki0l68.cloudfront.net/3145f6a4bfc316b1217a2559dceeef253f09f76a/ad0d6/chrome-devtools-tips/use-last-result.gif" alt=""></p>
+<blockquote>
+<p>他要$?就更神奇了（管用）</p>
+</blockquote>
+<h4 id="修改元素的状态以及添加-css-1"><a href="#修改元素的状态以及添加-css-1" class="headerlink" title="修改元素的状态以及添加 css"></a>修改元素的状态以及添加 css</h4><p>这个大家都知道，直接截图就好了</p>
+<p><img src="https://d33wubrfki0l68.cloudfront.net/e373ea01bf1ef9a452670843aea2bfa47a1ab56d/1e648/chrome-devtools-tips/add-css.gif" alt=""></p>
+<p>在看下一个</p>
+<p><img src="https://d33wubrfki0l68.cloudfront.net/fe7535cfa76aa552810a1c3f51b922702040615f/12d68/chrome-devtools-tips/element-state.png" alt=""></p>
+<h4 id="查找-css-属性定义的位置-1"><a href="#查找-css-属性定义的位置-1" class="headerlink" title="查找 css 属性定义的位置"></a>查找 css 属性定义的位置</h4><p>使用 cmd-click(ctrl-click on windows) 组合点击一个元素面板中的 css 属性就会跳转到 Source panel 中(连续两连点击才可以哦)<br><img src="https://d33wubrfki0l68.cloudfront.net/2e004309ab05ae39cf1f22fbb2bf52b50a323d3a/7479c/chrome-devtools-tips/find-where-css-defined.gif" alt=""></p>
+<blockquote>
+<p>不错不错（管用）</p>
+</blockquote>
+<h4 id="将修改的-css-样式保存到文件-1"><a href="#将修改的-css-样式保存到文件-1" class="headerlink" title="将修改的 css 样式保存到文件"></a>将修改的 css 样式保存到文件</h4><p>在元素面板右侧修改样式，然后使用上面方法跳 source panel 中，就会看到 css 源文件，右击文件名字，save as 保存到本地</p>
+<p><img src="https://d33wubrfki0l68.cloudfront.net/755e747fc0664ea8ad18147f12a76111f0cf37fd/b5a38/chrome-devtools-tips/save-modified-css.gif" alt=""></p>
+<h4 id="对单个元素的截图-1"><a href="#对单个元素的截图-1" class="headerlink" title="对单个元素的截图"></a>对单个元素的截图</h4><p>选中一个元素然后按组合键 cmd-shift-p(or crtl-shift-p on windows)打开命令菜单(command menu), 接着输入 screenshot 选择 Capture node screenshot</p>
+<p><img src="https://d33wubrfki0l68.cloudfront.net/58cfa50406939395e2959604c235ccb7ccab88ed/cef7d/chrome-devtools-tips/screenshot-node.gif" alt=""></p>
+<blockquote>
+<p>有意思的功能, 可惜我试验失败了。。。（66.0.3359.139chrome 版本，大家可以试试），其实里面的 screenshot 还有另外两个 capture full siz screenshot(全截，我也失败了)， capture screenshot 接的是当文档展示的区域我成功了</p>
+</blockquote>
+<h4 id="在控制台中使用-shift-enter-连续多行输入执行-1"><a href="#在控制台中使用-shift-enter-连续多行输入执行-1" class="headerlink" title="在控制台中使用 shift-enter 连续多行输入执行"></a>在控制台中使用 shift-enter 连续多行输入执行</h4><p>多行输入执行，啥也不说了，有用（管用）</p>
+<p><img src="https://d33wubrfki0l68.cloudfront.net/c312ca53496081f552859fac2f18e1558bb90228/b5e1a/chrome-devtools-tips/multiple-lines-commands.gif" alt=""></p>
+<blockquote>
+<p>每次换行使用 shit+enter 哦</p>
+</blockquote>
+<h4 id="清理控制台-1"><a href="#清理控制台-1" class="headerlink" title="清理控制台"></a>清理控制台</h4><p>清理使用 ctrl-l or cmd-k(管用)</p>
+<h4 id="跳转…-1"><a href="#跳转…-1" class="headerlink" title="跳转…"></a>跳转…</h4><p>在 source panel 中</p>
+<ul>
+<li>cmd-o(ctrl-o on windows) 展示当前页面加载的所有文件</li>
+<li><p>cmd-shift-o(ctrl-shift-o in windows) 展示当前文件的符号表（属性，函数以及类）</p>
+</li>
+<li><p>ctrl-g 调到当前文件的指定行</p>
+</li>
+</ul>
+<p><img src="https://d33wubrfki0l68.cloudfront.net/055919bd29f5e9ff0c5f551d01e36d1e06db0f14/e666b/chrome-devtools-tips/files-list.png" alt=""></p>
+<blockquote>
+<p>亲测管用</p>
+</blockquote>
+<h4 id="监听表达式-1"><a href="#监听表达式-1" class="headerlink" title="监听表达式"></a>监听表达式</h4><p>添加一个表达式到 debug session 中，不用手动计算了</p>
+<p><img src="https://d33wubrfki0l68.cloudfront.net/d08eb9dda2e3841be48d5ff2169bd745c65909b9/db264/chrome-devtools-tips/watch-expressions.gif" alt=""></p>
+<blockquote>
+<p>管用， 在 source panel 中，若是没有 consle 面板，右键-&gt; evaluate in console 即可</p>
+</blockquote>
+<h4 id="XHR-FETCH-调试-1"><a href="#XHR-FETCH-调试-1" class="headerlink" title="XHR/FETCH 调试"></a>XHR/FETCH 调试</h4><p>可以在 source panel 中的右侧看到 XHR/FETCH breakpoints 中添加断点，不知道请 ajax 啥时候发的，没问题，他可以帮你。。。</p>
+<p><img src="https://d33wubrfki0l68.cloudfront.net/3a70cac4f7fef4d7caa5ee0335573bbad49a1151/e6aae/chrome-devtools-tips/xhr-fetch-breakpoints.png" alt=""></p>
+<blockquote>
+<p>并且我还在下面发现了 Event Listener Breakpoint,而它可以带来的断点位置是在是太多了，比如： 动画（animation）, Canvas, Clipboard, DOM Mutaion, keyboard, 哎呀太多了，大家可以亲自试一试</p>
+</blockquote>
+<h4 id="DOM-修改的调试-1"><a href="#DOM-修改的调试-1" class="headerlink" title="DOM 修改的调试"></a>DOM 修改的调试</h4><p>右键选中的元素，选择 break on 展开后会有 subtree modifications, 就是说如果有脚本修改了子元素，断点就会触发，还有 atrribute modification, 以及 node removal</p>
+<p><img src="https://d33wubrfki0l68.cloudfront.net/79a8a06d060fdf6dd28a3bc496f556449e758e99/a6ce1/chrome-devtools-tips/break-subtree-modifications.png" alt=""></p>
+<h4 id="相当于-document-querySelectorAll"><a href="#相当于-document-querySelectorAll" class="headerlink" title="$$ 相当于 document.querySelectorAll()"></a>$$ 相当于 document.querySelectorAll()</h4><h3 id="文章尾部福利赠送"><a href="#文章尾部福利赠送" class="headerlink" title="文章尾部福利赠送"></a>文章尾部福利赠送</h3><p>cmd-shfit-p 打开的命令行里面的有用命令(还有更多的等待大家一起探索)</p>
+<ol>
+<li>show layers 查看当前页面的渲染情况，合成层(<a href="http://taobaofed.org/blog/2016/04/25/performance-composite/" target="_blank" rel="noopener">关于合成层看淘宝</a>)的状况，绘制的具体范围，等等检查性能一绝</li>
+<li>show perfomance monitor 顾名思义</li>
+<li>show frame per second(FPS) meter 顾名思义</li>
+<li>show paint flashing rectangles 展示当前页面重绘的区域</li>
+</ol>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/js/">js</a><a href="/tags/chrome-devtools/">chrome devtools</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/06/06/golang基础/"><span>golang基础</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/06/06/golang基础/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-06-05T16:00:00.000Z">
+          2018-06-06
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <blockquote>
+<p>随时会更新</p>
+</blockquote>
+<h3 id="golang-的所有的都是-copy-赋值，-，传参，channel-发送等等都是。"><a href="#golang-的所有的都是-copy-赋值，-，传参，channel-发送等等都是。" class="headerlink" title="golang 的所有的都是 copy 赋值，=，传参，channel 发送等等都是。"></a>golang 的所有的都是 copy 赋值，=，传参，channel 发送等等都是。</h3><h3 id="这种声明方式若是已经定义了，则不会新建"><a href="#这种声明方式若是已经定义了，则不会新建" class="headerlink" title=":= 这种声明方式若是已经定义了，则不会新建"></a>:= 这种声明方式若是已经定义了，则不会新建</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">package main</span><br><span class="line"></span><br><span class="line">import (</span><br><span class="line">	&quot;fmt&quot;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">func main() &#123;</span><br><span class="line">	pase_student()</span><br><span class="line">&#125;</span><br><span class="line">type student struct &#123;</span><br><span class="line">	Name string</span><br><span class="line">	Age  int</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func pase_student() &#123;</span><br><span class="line">	m := make(map[string]*student)</span><br><span class="line">	stus := []student&#123;</span><br><span class="line">		&#123;Name: &quot;zhou&quot;, Age: 24&#125;,</span><br><span class="line">		&#123;Name: &quot;li&quot;, Age: 23&#125;,</span><br><span class="line">		&#123;Name: &quot;wang&quot;, Age: 22&#125;,</span><br><span class="line">	&#125;</span><br><span class="line">	for i, stu := range stus &#123;</span><br><span class="line">		m[stu.Name] = &amp;stu; // 应该改为m[stu.Name] = &amp;stus[i]</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	for _, va := range m &#123;</span><br><span class="line">		fmt.Printf(&quot;%p \n&quot;, va)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>stus 是个 map, stu 并不会每次新生成一个, 其实循环时每次都是相同的 stu, 而且 golang 每次都是 copy 语义，你再看一眼会发现，给 map 赋值的是指针，那就意味着无论你如何改变 map 都会是相同的值。:= 多次声明不会重新定义新的变量， 可见<a href="https://golang.org/ref/spec#Short_variable_declarations" target="_blank" rel="noopener">规范</a></p>
+<p>见下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">field1, offset := nextField(str, 0)</span><br><span class="line">field2, offset := nextField(str, offset)  // redeclares offset</span><br><span class="line">a, a := 1, 2                              // illegal: double declaration of a or no new variable if a was declared elsewhere</span><br></pre></td></tr></table></figure>
+<h3 id="golang-的字符串是不可变的，要想使用可变字符串可以使用-bytes，或者-rune-数组-string-类型不可变，他的-slice-也不可变"><a href="#golang-的字符串是不可变的，要想使用可变字符串可以使用-bytes，或者-rune-数组-string-类型不可变，他的-slice-也不可变" class="headerlink" title="golang 的字符串是不可变的，要想使用可变字符串可以使用 bytes，或者[]rune 数组, string 类型不可变，他的 slice 也不可变"></a>golang 的字符串是不可变的，要想使用可变字符串可以使用 bytes，或者[]rune 数组, string 类型不可变，他的 slice 也不可变</h3><h3 id="我们可以从关闭的-channel-中读取数据但是为空，就是说若是在-select-语句-case-中从关闭的-channel-是可以的。-参见"><a href="#我们可以从关闭的-channel-中读取数据但是为空，就是说若是在-select-语句-case-中从关闭的-channel-是可以的。-参见" class="headerlink" title="我们可以从关闭的 channel 中读取数据但是为空，就是说若是在 select 语句 case 中从关闭的 channel 是可以的。 参见"></a>我们可以从关闭的 channel 中读取数据但是为空，就是说若是在 select 语句 case 中从关闭的 channel 是可以的。 <a href="https://play.golang.org/p/zqR533gQiSJ" target="_blank" rel="noopener">参见</a></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">select &#123;</span><br><span class="line">case &lt;- stopCh:</span><br><span class="line">  fmt.Println(&quot;go&quot;)</span><br><span class="line">default:</span><br><span class="line">  fmt.Println(&quot;come&quot;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="在使用-Go-channel-的时候，一个适用的原则是不要从接收端关闭-channel，也不要关闭有多个并发发送者的-channel。-优雅关闭-go-channel-http-www-tapirgames-com-blog-golang-channel-closing"><a href="#在使用-Go-channel-的时候，一个适用的原则是不要从接收端关闭-channel，也不要关闭有多个并发发送者的-channel。-优雅关闭-go-channel-http-www-tapirgames-com-blog-golang-channel-closing" class="headerlink" title="在使用 Go channel 的时候，一个适用的原则是不要从接收端关闭 channel，也不要关闭有多个并发发送者的 channel。 优雅关闭 go channel(http://www.tapirgames.com/blog/golang-channel-closing)"></a>在使用 Go channel 的时候，一个适用的原则是不要从接收端关闭 channel，也不要关闭有多个并发发送者的 channel。 <a href="https://www.jianshu.com/p/d24dfbb33781" target="_blank" rel="noopener">优雅关闭 go channel</a>(<a href="http://www.tapirgames.com/blog/golang-channel-closing" target="_blank" rel="noopener">http://www.tapirgames.com/blog/golang-channel-closing</a>)</h3><p>channel 的使用，当 channel 是非缓冲的时候他就是阻塞读与写的， 所以使用 channel 的时候要小心同步阻塞，导致死锁 game over</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ch := make(chan string)</span><br><span class="line">ch &lt;- &quot;23&quot; // 此时就会阻塞</span><br><span class="line">// a &lt;- ch 单写他也是会阻塞的</span><br></pre></td></tr></table></figure>
+<p>所以要小心不要出现只有读或者只有写的 channel 若是出现的话，分布在不同 goroutine 中时就会导致 golang 死锁，主在等子完成可是子阻塞在了 channel 读或者写上了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br></pre></td><td class="code"><pre><span class="line">package main</span><br><span class="line"></span><br><span class="line">import (</span><br><span class="line">    &quot;time&quot;</span><br><span class="line">    &quot;math/rand&quot;</span><br><span class="line">    &quot;sync&quot;</span><br><span class="line">    &quot;log&quot;</span><br><span class="line">    &quot;strconv&quot;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">func main() &#123;</span><br><span class="line">    rand.Seed(time.Now().UnixNano())</span><br><span class="line">    log.SetFlags(0)</span><br><span class="line"></span><br><span class="line">    // ...</span><br><span class="line">    const MaxRandomNumber = 100000</span><br><span class="line">    const NumReceivers = 10</span><br><span class="line">    const NumSenders = 1000</span><br><span class="line"></span><br><span class="line">    wgReceivers := sync.WaitGroup&#123;&#125;</span><br><span class="line">    wgReceivers.Add(NumReceivers)</span><br><span class="line"></span><br><span class="line">    // ...</span><br><span class="line">    dataCh := make(chan int, 100)</span><br><span class="line">    stopCh := make(chan struct&#123;&#125;)</span><br><span class="line">        // stopCh is an additional signal channel.</span><br><span class="line">        // Its sender is the moderator goroutine shown below.</span><br><span class="line">        // Its reveivers are all senders and receivers of dataCh.</span><br><span class="line">    toStop := make(chan string, 1)</span><br><span class="line">        // 设为缓冲1是为了防止moderator还未准备好就停止了</span><br><span class="line">        // the channel toStop is used to notify the moderator</span><br><span class="line">        // to close the additional signal channel (stopCh).</span><br><span class="line">        // Its senders are any senders and receivers of dataCh.</span><br><span class="line">        // Its reveiver is the moderator goroutine shown below.</span><br><span class="line"></span><br><span class="line">    var stoppedBy string</span><br><span class="line"></span><br><span class="line">    // moderator</span><br><span class="line">    go func() &#123;</span><br><span class="line">        stoppedBy = &lt;- toStop // part of the trick used to notify the moderator</span><br><span class="line">                              // to close the additional signal channel.</span><br><span class="line">        close(stopCh)</span><br><span class="line">    &#125;()</span><br><span class="line"></span><br><span class="line">    // senders</span><br><span class="line">    for i := 0; i &lt; NumSenders; i++ &#123;</span><br><span class="line">        go func(id string) &#123;</span><br><span class="line">            for &#123;</span><br><span class="line">                value := rand.Intn(MaxRandomNumber)</span><br><span class="line">                if value == 0 &#123;</span><br><span class="line">                    // here, a trick is used to notify the moderator</span><br><span class="line">                    // to close the additional signal channel.</span><br><span class="line">                    select &#123;</span><br><span class="line">                    case toStop &lt;- &quot;sender#&quot; + id:</span><br><span class="line">                    default:</span><br><span class="line">                    &#125;</span><br><span class="line">                    return</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                // the first select here is to try to exit the</span><br><span class="line">                // goroutine as early as possible.</span><br><span class="line">                select &#123;</span><br><span class="line">                case &lt;- stopCh:</span><br><span class="line">                    return</span><br><span class="line">                default:</span><br><span class="line">                &#125;</span><br><span class="line">                // 为什么要在前面在加一个select stopCh呢? 因为若是到了这一步由于select的随机性（此时stopCh和dataCh都处于活跃状态select是随机选取的），有可能会继续发送，而没有选择stopCh</span><br><span class="line">                select &#123;</span><br><span class="line">                case &lt;- stopCh:</span><br><span class="line">                    return</span><br><span class="line">                case dataCh &lt;- value:</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;(strconv.Itoa(i))</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // receivers</span><br><span class="line">    for i := 0; i &lt; NumReceivers; i++ &#123;</span><br><span class="line">        go func(id string) &#123;</span><br><span class="line">            defer wgReceivers.Done()</span><br><span class="line"></span><br><span class="line">            for &#123;</span><br><span class="line">                // same as senders, the first select here is to</span><br><span class="line">                // try to exit the goroutine as early as possible.</span><br><span class="line">                select &#123;</span><br><span class="line">                case &lt;- stopCh:</span><br><span class="line">                    return</span><br><span class="line">                default:</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                select &#123;</span><br><span class="line">                case &lt;- stopCh:</span><br><span class="line">                    return</span><br><span class="line">                case value := &lt;-dataCh:</span><br><span class="line">                    if value == MaxRandomNumber-1 &#123;</span><br><span class="line">                        // the same trick is used to notify the moderator</span><br><span class="line">                        // to close the additional signal channel.</span><br><span class="line">                        select &#123;</span><br><span class="line">                        case toStop &lt;- &quot;receiver#&quot; + id:</span><br><span class="line">                        default:</span><br><span class="line">                        &#125;</span><br><span class="line">                        return</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    log.Println(value)</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;(strconv.Itoa(i))</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // ...</span><br><span class="line">    wgReceivers.Wait()</span><br><span class="line">    log.Println(&quot;stopped by&quot;, stoppedBy)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="golang-make-返回的是值类型，用-slice-map-channel-并且会给-map-和-slice-预分配空间"><a href="#golang-make-返回的是值类型，用-slice-map-channel-并且会给-map-和-slice-预分配空间" class="headerlink" title="golang make 返回的是值类型，用 slice, map, channel, 并且会给 map 和 slice 预分配空间"></a>golang make 返回的是值类型，用 slice, map, channel, 并且会给 map 和 slice 预分配空间</h3><h3 id="golang-slice-语法可以对值也可以对引用"><a href="#golang-slice-语法可以对值也可以对引用" class="headerlink" title="golang slice 语法可以对值也可以对引用"></a>golang slice 语法可以对值也可以对引用</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">a = [1,2,34]</span><br><span class="line">t := a[1:3] // ok</span><br><span class="line">c := (&amp;a)[1:2] // ok</span><br></pre></td></tr></table></figure>
+<h3 id="golang-切片的用法是-start-end-但不包括-end"><a href="#golang-切片的用法是-start-end-但不包括-end" class="headerlink" title="golang 切片的用法是 [start:end] 但不包括 end"></a>golang 切片的用法是 [start:end] 但不包括 end</h3><h3 id="new-返回的是指针类型"><a href="#new-返回的是指针类型" class="headerlink" title="new 返回的是指针类型"></a>new 返回的是指针类型</h3><h3 id="golang-也存在-js-中的那个经典问题就是"><a href="#golang-也存在-js-中的那个经典问题就是" class="headerlink" title="golang 也存在 js 中的那个经典问题就是"></a>golang 也存在 js 中的那个经典问题就是</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">func main() &#123;</span><br><span class="line">	runtime.GOMAXPROCS(1)</span><br><span class="line">	wg := sync.WaitGroup&#123;&#125;</span><br><span class="line">	wg.Add(20)</span><br><span class="line">	for i := 0; i &lt; 10; i++ &#123;</span><br><span class="line">		go func() &#123;</span><br><span class="line">			fmt.Println(&quot;i: &quot;, i)</span><br><span class="line">			wg.Done()</span><br><span class="line">		&#125;()</span><br><span class="line">	&#125;</span><br><span class="line">	for i := 0; i &lt; 10; i++ &#123;</span><br><span class="line">		go func(i int) &#123;</span><br><span class="line">			fmt.Println(&quot;i: &quot;, i)</span><br><span class="line">			wg.Done()</span><br><span class="line">		&#125;(i)</span><br><span class="line">	&#125;</span><br><span class="line">	wg.Wait()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>第一个打印的 i 都是 10， 因为他们打印的都是同一个变量 i。</p>
+<h3 id="golang-中-return-defer-返回值的顺序"><a href="#golang-中-return-defer-返回值的顺序" class="headerlink" title="golang 中 return defer 返回值的顺序"></a>golang 中 return defer 返回值的顺序</h3><p>先来假设出结论，帮助大家理解原因：</p>
+<p>多个 defer 的执行顺序为“后进先出”；</p>
+<p>defer、return、返回值三者的执行逻辑应该是：return 最先执行，return 负责将结果写入返回值中；接着 defer 开始执行一些收尾工作；最后函数携带当前返回值退出。</p>
+<p>如何解释两种结果的不同：</p>
+<p>上面两段代码的返回结果之所以不同，其实从上面第 2 条结论很好理解。</p>
+<p>a()int 函数的返回值没有被提前声名，其值来自于其他变量的赋值，而 defer 中修改的也是其他变量，而非返回值本身，因此函数退出时返回值并没有被改变。</p>
+<p>b()(i int) 函数的返回值被提前声名，也就意味着 defer 中是可以调用到真实返回值的，因此 defer 在 return 赋值返回值 i 之后，再一次地修改了 i 的值，最终函数退出后的返回值才会是 defer 修改过的值。</p>
+<p>defer 是在函数结束前执行的，当返回值的临时变量赋给外部时才算调用结束吧！a = fn(2) 当把值给了 a 才算结束</p>
+<blockquote>
+<p>我们可以这么理解 return 肯定先执行执行的结果就是把返回值计算出来并且赋值给返回值所存在的临时变量, 但我们命名返回值的时候，返回值并不是临时变量而是函数中声明的变量</p>
+</blockquote>
+<h3 id="在函数有多个返回值时，只要有一个返回值有指定命名，其他的也必须有命名"><a href="#在函数有多个返回值时，只要有一个返回值有指定命名，其他的也必须有命名" class="headerlink" title="在函数有多个返回值时，只要有一个返回值有指定命名，其他的也必须有命名"></a>在函数有多个返回值时，只要有一个返回值有指定命名，其他的也必须有命名</h3><h3 id="append-只能作用在-slice-上而不能是指针"><a href="#append-只能作用在-slice-上而不能是指针" class="headerlink" title="append 只能作用在 slice 上而不能是指针"></a>append 只能作用在 slice 上而不能是指针</h3><p>参见签名</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">func append(slice []Type, elems ...Type) []Type</span><br></pre></td></tr></table></figure>
+<p>错误的栗子</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">package main</span><br><span class="line"></span><br><span class="line">import &quot;fmt&quot;</span><br><span class="line"></span><br><span class="line">func main() &#123;</span><br><span class="line">	s1 := []int&#123;1, 2, 3&#125;</span><br><span class="line">	s2 := []int&#123;4, 5&#125;</span><br><span class="line">	s1 = append(s1, s2)</span><br><span class="line">	fmt.Println(s1)</span><br><span class="line">&#125; // 错误因为 append接下来的参数是以一个一个传递的切片中的元素，而不是切片 正确的是 s1 = append(s1, ...s2)</span><br></pre></td></tr></table></figure>
+<h3 id="进行结构体比较时候，只有相同类型的结构体才可以比较，结构体是否相同不但与属性类型个数有关，还与属性顺序相关。并且结构体可比较的前提是结构的属性都可比较。map-和-slice-还有-function-不可比较"><a href="#进行结构体比较时候，只有相同类型的结构体才可以比较，结构体是否相同不但与属性类型个数有关，还与属性顺序相关。并且结构体可比较的前提是结构的属性都可比较。map-和-slice-还有-function-不可比较" class="headerlink" title="进行结构体比较时候，只有相同类型的结构体才可以比较，结构体是否相同不但与属性类型个数有关，还与属性顺序相关。并且结构体可比较的前提是结构的属性都可比较。map 和 slice 还有 function 不可比较"></a>进行结构体比较时候，只有相同类型的结构体才可以比较，结构体是否相同不但与属性类型个数有关，还与属性顺序相关。并且结构体可比较的前提是结构的属性都可比较。map 和 slice 还有 function 不可比较</h3><p>就是说属性名字不同，类型不同或者顺序不同都是不能比较的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">func main() &#123;</span><br><span class="line"></span><br><span class="line">	sn1 := struct &#123;</span><br><span class="line">		age  int</span><br><span class="line">		name string</span><br><span class="line">	&#125;&#123;age: 11, name: &quot;qq&quot;&#125;</span><br><span class="line">	sn2 := struct &#123;</span><br><span class="line">		age  int</span><br><span class="line">		name string</span><br><span class="line">	&#125;&#123;age: 11, name: &quot;qq&quot;&#125;</span><br><span class="line"></span><br><span class="line">	if sn1 == sn2 &#123;</span><br><span class="line">		fmt.Println(&quot;sn1 == sn2&quot;)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	sm1 := struct &#123;</span><br><span class="line">		age int</span><br><span class="line">		m   map[string]string</span><br><span class="line">	&#125;&#123;age: 11, m: map[string]string&#123;&quot;a&quot;: &quot;1&quot;&#125;&#125;</span><br><span class="line">	sm2 := struct &#123;</span><br><span class="line">		age int</span><br><span class="line">		m   map[string]string</span><br><span class="line">	&#125;&#123;age: 11, m: map[string]string&#123;&quot;a&quot;: &quot;1&quot;&#125;&#125;</span><br><span class="line"></span><br><span class="line">	if sm1 == sm2 &#123;</span><br><span class="line">		fmt.Println(&quot;sm1 == sm2&quot;)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此处 sn1 可以和 sn2 使用==比较但是如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sn3:= struct &#123;</span><br><span class="line">    name string</span><br><span class="line">    age  int</span><br><span class="line">&#125;&#123;age:11,name:&quot;qq&quot;&#125;</span><br></pre></td></tr></table></figure>
+<p>sn3 就不能比较了</p>
+<p>还有上例中，含有不可比较的 map,slice，func 等，所以 sm1 和 sm2 是不可比较的但是我们可以使用 deepEqual 来进行比较</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">if reflect.DeepEqual(sn1, sm) &#123;</span><br><span class="line">    fmt.Println(&quot;sn1 ==sm&quot;)</span><br><span class="line">&#125;else &#123;</span><br><span class="line">    fmt.Println(&quot;sn1 !=sm&quot;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="赋值模式的限制"><a href="#赋值模式的限制" class="headerlink" title=":= 赋值模式的限制"></a>:= 赋值模式的限制</h3><p>定义变量同时显式初始化不能提供数据类型只能在函数内部使用</p>
+<h3 id="nil-可以用作-interface、function、pointer、map、slice-和-channel-的“空值”-是不可以作为其他类型的空值的，比如-String-string-的空值是“”"><a href="#nil-可以用作-interface、function、pointer、map、slice-和-channel-的“空值”-是不可以作为其他类型的空值的，比如-String-string-的空值是“”" class="headerlink" title="nil 可以用作 interface、function、pointer、map、slice 和 channel 的“空值”, 是不可以作为其他类型的空值的，比如 String, string 的空值是“”"></a>nil 可以用作 interface、function、pointer、map、slice 和 channel 的“空值”, 是不可以作为其他类型的空值的，比如 String, string 的空值是“”</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">var a chan int</span><br><span class="line">// a 是空值nil</span><br><span class="line">// chan的初始化一定是用make</span><br><span class="line"></span><br><span class="line">var a map[int]string</span><br><span class="line">// a 是空值nil</span><br><span class="line">// map初始化一定使用make</span><br><span class="line">// 使用new 生成的map也是nil的map</span><br></pre></td></tr></table></figure>
+<h3 id="itoa"><a href="#itoa" class="headerlink" title="itoa"></a>itoa</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">const (</span><br><span class="line">	x = iota</span><br><span class="line">	y</span><br><span class="line">	z = &quot;zz&quot;</span><br><span class="line">	k</span><br><span class="line">	p = iota</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">func main()  &#123;</span><br><span class="line">	fmt.Println(x,y,z,k,p)</span><br><span class="line">&#125;</span><br><span class="line">// 结果</span><br><span class="line">0</span><br><span class="line">1</span><br><span class="line">zz</span><br><span class="line">zz</span><br><span class="line">4（直接计算当前的值）</span><br></pre></td></tr></table></figure>
+<h3 id="golang-const-常量可以使用-itoa-赋值，-甚至是自定义类型"><a href="#golang-const-常量可以使用-itoa-赋值，-甚至是自定义类型" class="headerlink" title="golang const 常量可以使用 itoa 赋值， 甚至是自定义类型"></a>golang const 常量可以使用 itoa 赋值， 甚至是自定义类型</h3><p><a href="https://segmentfault.com/a/1190000000656284" target="_blank" rel="noopener">参见</a></p>
+<p>若是自定义类型类似于枚举，当我们传递字面量（如：2，3）时也是可以被识别为枚举值的。</p>
+<ul>
+<li>当在一行声明两个常量 itoa 时，itoa 是只有到了下一行才会增长</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">const (</span><br><span class="line">    Apple, Banana = iota + 1, iota + 2</span><br><span class="line">    Cherimoya, Durian</span><br><span class="line">    Elderberry, Fig</span><br><span class="line">)</span><br><span class="line">// 输出</span><br><span class="line">// Apple: 1</span><br><span class="line">// Banana: 2</span><br><span class="line">// Cherimoya: 2</span><br><span class="line">// Durian: 3</span><br><span class="line">// Elderberry: 3</span><br><span class="line">// Fig: 4</span><br></pre></td></tr></table></figure>
+<ul>
+<li>itoa 从 0 开始增长，当我们们不使用 itoa 时，且赋值一个则所有的都会是这个值</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">const (</span><br><span class="line">  a = &quot;1&quot;</span><br><span class="line">  b</span><br><span class="line">  c</span><br><span class="line">  d</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h3 id="goto-不能跳转到其他函数或者内层代码-只能在本函数以及相同的-scope-内"><a href="#goto-不能跳转到其他函数或者内层代码-只能在本函数以及相同的-scope-内" class="headerlink" title="goto 不能跳转到其他函数或者内层代码, 只能在本函数以及相同的 scope 内"></a>goto 不能跳转到其他函数或者内层代码, 只能在本函数以及相同的 scope 内</h3><p>下面的就是错的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">package main</span><br><span class="line"></span><br><span class="line">func main()  &#123;</span><br><span class="line"></span><br><span class="line">    for i:=0;i&lt;10 ;i++  &#123;</span><br><span class="line">    loop:</span><br><span class="line">        println(i)</span><br><span class="line">    &#125;</span><br><span class="line">    goto loop</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="注意-defintion-和-type-alias-的区别-defintion-是定义了一个新的类型，alias-仅仅是个别名"><a href="#注意-defintion-和-type-alias-的区别-defintion-是定义了一个新的类型，alias-仅仅是个别名" class="headerlink" title="注意 defintion 和 type alias 的区别 defintion 是定义了一个新的类型，alias 仅仅是个别名"></a>注意 defintion 和 type alias 的区别 defintion 是定义了一个新的类型，alias 仅仅是个别名</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">package main</span><br><span class="line">import &quot;fmt&quot;</span><br><span class="line"></span><br><span class="line">func main()  &#123;</span><br><span class="line">    type MyInt1 int</span><br><span class="line">    type MyInt2 = int</span><br><span class="line">    var i int =9</span><br><span class="line">    var i1 MyInt1 = i // 错误 MyInt1是个新类型</span><br><span class="line">    var i2 MyInt2 = i // yes 是个别名</span><br><span class="line">    fmt.Println(i1,i2)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="1-我们在返回值中定义的命名返回值，可以直接在函数中使用不用再重新定义-2-内部-scope-中新定义的内部变量是会覆盖掉外部的变量"><a href="#1-我们在返回值中定义的命名返回值，可以直接在函数中使用不用再重新定义-2-内部-scope-中新定义的内部变量是会覆盖掉外部的变量" class="headerlink" title="1. 我们在返回值中定义的命名返回值，可以直接在函数中使用不用再重新定义 2. 内部 scope 中新定义的内部变量是会覆盖掉外部的变量"></a>1. 我们在返回值中定义的命名返回值，可以直接在函数中使用不用再重新定义 2. 内部 scope 中新定义的内部变量是会覆盖掉外部的变量</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">package main</span><br><span class="line"></span><br><span class="line">import (</span><br><span class="line">    &quot;errors&quot;</span><br><span class="line">    &quot;fmt&quot;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">var ErrDidNotWork = errors.New(&quot;did not work&quot;)</span><br><span class="line"></span><br><span class="line">func DoTheThing(reallyDoIt bool) (err error) &#123;</span><br><span class="line">    if reallyDoIt &#123;</span><br><span class="line">        result, err := tryTheThing()</span><br><span class="line">        if err != nil || result != &quot;it worked&quot; &#123;</span><br><span class="line">            err = ErrDidNotWork</span><br><span class="line">        &#125;</span><br><span class="line">        fmt.Println(err)</span><br><span class="line">    &#125;</span><br><span class="line">    return err</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func tryTheThing() (string,error)  &#123;</span><br><span class="line">    return &quot;&quot;,ErrDidNotWork</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func main() &#123;</span><br><span class="line">    fmt.Println(DoTheThing(true))</span><br><span class="line">    fmt.Println(DoTheThing(false))</span><br><span class="line">&#125;</span><br><span class="line">// 输出两个</span><br><span class="line">&lt;nil&gt;</span><br><span class="line">&lt;nil&gt;</span><br></pre></td></tr></table></figure>
+<p>改为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">func DoTheThing(reallyDoIt bool) (err error) &#123;</span><br><span class="line">    var result string</span><br><span class="line">    if reallyDoIt &#123;</span><br><span class="line">        result, err = tryTheThing() // 不要新定义变量</span><br><span class="line">        if err != nil || result != &quot;it worked&quot; &#123;</span><br><span class="line">            err = ErrDidNotWork</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return err</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="panic-仅有最后一个可以被-revover-捕获-panic-中可以传任何值，不仅仅可以传-string"><a href="#panic-仅有最后一个可以被-revover-捕获-panic-中可以传任何值，不仅仅可以传-string" class="headerlink" title="panic 仅有最后一个可以被 revover 捕获,panic 中可以传任何值，不仅仅可以传 string"></a>panic 仅有最后一个可以被 revover 捕获,panic 中可以传任何值，不仅仅可以传 string</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">func main()  &#123;</span><br><span class="line">    defer func() &#123;</span><br><span class="line">        if err:=recover();err!=nil&#123;</span><br><span class="line">            fmt.Println(&quot;++++&quot;)</span><br><span class="line">            f:=err.(func()string)</span><br><span class="line">            fmt.Println(err,f(),reflect.TypeOf(err).Kind().String())</span><br><span class="line">        &#125;else &#123;</span><br><span class="line">            fmt.Println(&quot;fatal&quot;)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;()</span><br><span class="line"></span><br><span class="line">    defer func() &#123;</span><br><span class="line">        // 这里就recover是捕获不到err的，所以这里的err是nil</span><br><span class="line">        if err:=recover();err!=nil&#123;</span><br><span class="line">            fmt.Println(&quot;++++&quot;)</span><br><span class="line">            f:=err.(func()string)</span><br><span class="line">            fmt.Println(err,f(),reflect.TypeOf(err).Kind().String())</span><br><span class="line">        &#125;else &#123;</span><br><span class="line">            fmt.Println(&quot;fatal&quot;)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;()</span><br><span class="line"></span><br><span class="line">    defer func() &#123;</span><br><span class="line">        panic(func() string &#123;</span><br><span class="line">            return  &quot;defer panic&quot;</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;()</span><br><span class="line">    panic(&quot;panic&quot;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="不管运行顺序如何，当参数为函数的时候，要先计算参数的值"><a href="#不管运行顺序如何，当参数为函数的时候，要先计算参数的值" class="headerlink" title="不管运行顺序如何，当参数为函数的时候，要先计算参数的值"></a>不管运行顺序如何，当参数为函数的时候，要先计算参数的值</h3><h3 id="map-引用不存在的-key，不报错"><a href="#map-引用不存在的-key，不报错" class="headerlink" title="map 引用不存在的 key，不报错"></a>map 引用不存在的 key，不报错</h3><h3 id="map-使用-range-遍历顺序问题，并不是录入的顺序，而是随机顺序"><a href="#map-使用-range-遍历顺序问题，并不是录入的顺序，而是随机顺序" class="headerlink" title="map 使用 range 遍历顺序问题，并不是录入的顺序，而是随机顺序"></a>map 使用 range 遍历顺序问题，并不是录入的顺序，而是随机顺序</h3><h3 id="append-函数返回更新后的-slice（长度和容量可能会变），必须重新用-slice-的变量接收，不然无法编译通过"><a href="#append-函数返回更新后的-slice（长度和容量可能会变），必须重新用-slice-的变量接收，不然无法编译通过" class="headerlink" title="append 函数返回更新后的 slice（长度和容量可能会变），必须重新用 slice 的变量接收，不然无法编译通过"></a>append 函数返回更新后的 slice（长度和容量可能会变），必须重新用 slice 的变量接收，不然无法编译通过</h3><h3 id="golang-channel-和一个-goroutine-组合起来就是一个-web-worker-的模式，只是我们在-js-里管理的是-web-worker-的句柄，而在-golang-里面我们要管理的是-channel-这里-golang-的一个优势是我可以把多个-channel-和一个-goroutine-绑定，而-web-worker-一个句柄就对应这个一个-web-worker-是不可能多对一的。"><a href="#golang-channel-和一个-goroutine-组合起来就是一个-web-worker-的模式，只是我们在-js-里管理的是-web-worker-的句柄，而在-golang-里面我们要管理的是-channel-这里-golang-的一个优势是我可以把多个-channel-和一个-goroutine-绑定，而-web-worker-一个句柄就对应这个一个-web-worker-是不可能多对一的。" class="headerlink" title="golang channel 和一个 goroutine 组合起来就是一个 web-worker 的模式，只是我们在 js 里管理的是 web-worker 的句柄，而在 golang 里面我们要管理的是 channel,这里 golang 的一个优势是我可以把多个 channel 和一个 goroutine 绑定，而 web-worker 一个句柄就对应这个一个 web-worker 是不可能多对一的。"></a>golang channel 和一个 goroutine 组合起来就是一个 web-worker 的模式，只是我们在 js 里管理的是 web-worker 的句柄，而在 golang 里面我们要管理的是 channel,这里 golang 的一个优势是我可以把多个 channel 和一个 goroutine 绑定，而 web-worker 一个句柄就对应这个一个 web-worker 是不可能多对一的。</h3><h3 id="golang-channel-的使用方式两种"><a href="#golang-channel-的使用方式两种" class="headerlink" title="golang channel 的使用方式两种"></a>golang channel 的使用方式两种</h3><ol>
+<li>调用者生成传递个 goroutine。</li>
+<li>被调用者生成返回给调用者。</li>
+</ol>
+<h3 id="内嵌结构体，当内嵌结构体不是指针时，是会有默认值得，这就符合了-golang-得概念，所有的变量都有默认值，指针的默认值是-nil"><a href="#内嵌结构体，当内嵌结构体不是指针时，是会有默认值得，这就符合了-golang-得概念，所有的变量都有默认值，指针的默认值是-nil" class="headerlink" title="内嵌结构体，当内嵌结构体不是指针时，是会有默认值得，这就符合了 golang 得概念，所有的变量都有默认值，指针的默认值是 nil."></a>内嵌结构体，当内嵌结构体不是指针时，是会有默认值得，这就符合了 golang 得概念，所有的变量都有默认值，指针的默认值是 nil.</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">package main</span><br><span class="line">import &quot;sync&quot;</span><br><span class="line">type A struct &#123;</span><br><span class="line">    sync.Mutex</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func main() &#123;</span><br><span class="line">    a := A&#123;&#125;</span><br><span class="line">    a.Lock()</span><br><span class="line">    a.Unlock()</span><br><span class="line">    fmt.Println(&quot;Mutex a &quot;, a)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面代码运行是 ok 的。</p>
+<h3 id="两个-golang-问题-http-colobu-com-2018-03-08-two-issues-in-go-development"><a href="#两个-golang-问题-http-colobu-com-2018-03-08-two-issues-in-go-development" class="headerlink" title="两个 golang 问题 http://colobu.com/2018/03/08/two-issues-in-go-development/"></a>两个 golang 问题 <a href="http://colobu.com/2018/03/08/two-issues-in-go-development/" target="_blank" rel="noopener">http://colobu.com/2018/03/08/two-issues-in-go-development/</a></h3><h3 id="golang-包的引入路径-GOPATH-src-…一层一层查找"><a href="#golang-包的引入路径-GOPATH-src-…一层一层查找" class="headerlink" title="golang 包的引入路径 GOPATH/src/…一层一层查找"></a>golang 包的引入路径 GOPATH/src/…一层一层查找</h3><h3 id="bin-是可执行的文件，-pkg-是编译生成的-a-文件的存放位置是静态库"><a href="#bin-是可执行的文件，-pkg-是编译生成的-a-文件的存放位置是静态库" class="headerlink" title="bin 是可执行的文件， pkg 是编译生成的.a 文件的存放位置是静态库"></a>bin 是可执行的文件， pkg 是编译生成的.a 文件的存放位置是静态库</h3><h3 id="src-是存放源文件的命令"><a href="#src-是存放源文件的命令" class="headerlink" title="src 是存放源文件的命令"></a>src 是存放源文件的命令</h3><h3 id="安装问题-golang-x-tools-gt-https-github-com-golang-tools"><a href="#安装问题-golang-x-tools-gt-https-github-com-golang-tools" class="headerlink" title="安装问题 golang/x/tools &gt; https://github.com/golang/tools"></a>安装问题 golang/x/tools &gt; <a href="https://github.com/golang/tools" target="_blank" rel="noopener">https://github.com/golang/tools</a></h3><p>下载放到 src 下的 golang/x/下</p>
+<h3 id="安装问题-golang-x-net-gt-https-github-com-golang-net"><a href="#安装问题-golang-x-net-gt-https-github-com-golang-net" class="headerlink" title="安装问题 golang/x/net &gt; https://github.com/golang/net"></a>安装问题 golang/x/net &gt; <a href="https://github.com/golang/net" target="_blank" rel="noopener">https://github.com/golang/net</a></h3><p>下载放到 src 下的 golang/x/下</p>
+<h3 id="golint-go-get-u-v-github-com-golang-lint-golint"><a href="#golint-go-get-u-v-github-com-golang-lint-golint" class="headerlink" title="golint go get -u -v github.com/golang/lint/golint"></a>golint go get -u -v github.com/golang/lint/golint</h3><h3 id="编译时的使用第三方源码包-编译时的探索"><a href="#编译时的使用第三方源码包-编译时的探索" class="headerlink" title="编译时的使用第三方源码包 编译时的探索"></a>编译时的使用第三方源码包 <a href="https://tonybai.com/2015/03/09/understanding-import-packages/" target="_blank" rel="noopener">编译时的探索</a></h3><ol>
+<li>在使用第三方包的时候，当源码和.a 均已安装的情况下，编译器链接的是源码</li>
+<li>所谓的使用第三方包源码，实际上是链接了以该最新源码编译的临时目录下的.a 文件而已。</li>
+<li>标准库在编译时也是必须要源码的。不过与自定义包不同的是，即便你修改了 fmt 包的源码（未重新编译 GO 安装包），用户源码编译时，也不会尝试重新编译 fmt 包的，依旧只是在链接时链接已经编译好的 fmt.a</li>
+<li>Go 语言中 import 后面路径中最后的一个元素到底是包名还是路径名？答案是<strong>目录名</strong>。按照 Golang 语言习惯，一个 go package 的所有源文件放在同一个目录下，且该目录名与该包名相同，比如 libproj1/foo 目录下的 package 为 foo，foo1.go、 foo2.go…共同组成 foo package 的源文件。但目录名与包名也可以不同。</li>
+<li>一个路径下<strong>不允许有两个包</strong>。</li>
+</ol>
+<h3 id="同其他语言-nodejs-一样，一个包被导入一次后就会被缓存，再次被导入会从缓存获取"><a href="#同其他语言-nodejs-一样，一个包被导入一次后就会被缓存，再次被导入会从缓存获取" class="headerlink" title="同其他语言 nodejs 一样，一个包被导入一次后就会被缓存，再次被导入会从缓存获取"></a>同其他语言 nodejs 一样，一个包被导入一次后就会被缓存，再次被导入会从缓存获取</h3><h3 id="init-函数的执行顺序"><a href="#init-函数的执行顺序" class="headerlink" title="init 函数的执行顺序"></a>init 函数的执行顺序</h3><ol>
+<li>对同一个 go 文件的 init()调用顺序是从上到下的</li>
+<li>对同一个 package 中不同文件是按文件名字符串比较“从小到大”顺序调用各文件中的 init()函数,对于</li>
+<li>对不同的 package，如果不相互依赖的话，按照 main 包中”先 import 的后调用”的顺序调用其包中的 init()</li>
+<li>如果 package 存在依赖，则先调用最早被依赖的 package 中的 init()</li>
+<li>最后调用 main 函数</li>
+</ol>
+<h3 id="关于关闭-channel-有几点需要注意的是："><a href="#关于关闭-channel-有几点需要注意的是：" class="headerlink" title="关于关闭 channel 有几点需要注意的是："></a>关于关闭 channel 有几点需要注意的是：</h3><ol>
+<li>重复关闭 channel 会导致 panic。</li>
+<li>向关闭的 channel 发送数据会 panic。</li>
+<li>从关闭的 channel 读数据不会 panic，读出 channel 中已有的数据之后再读就是 channel 类似的默认值，比如 chan int 类型的 channel 关闭之后读取到的值为 0。</li>
+</ol>
+<h3 id="make-和-new"><a href="#make-和-new" class="headerlink" title="make 和 new"></a>make 和 new</h3><ol>
+<li>new allocate the memory and return the pointer</li>
+<li>make allocate the memory and initialize the memory cause slice, map and channel must be initialized before use<br>new 的作用是 初始化 一个指向类型的指针 (<em>T)， make 的作用是为 slice, map 或者 channel 初始化，并且返回引用 T<br>make(T, args)函数的目的与 new(T)不同。它仅仅用于创建 Slice, Map 和 Channel，并且返回类型是 T（不是 T</em>）的一个初始化的（不是零值）的实例。 这中差别的出现是由于这三种类型实质上是对在使用前必须进行初始化的数据结构的引用。 例如, Slice 是一个 具有三项内容的描述符，包括 指向数据（在一个数组内部）的指针，长度以及容量。在这三项内容被初始化之前，Slice 的值为 nil。对于 Slice，Map 和 Channel， make（）函数初始化了其内部的数据结构，并且准备了将要使用的值。</li>
+</ol>
+<h3 id="产品中一定不要使用默认的-http-Get"><a href="#产品中一定不要使用默认的-http-Get" class="headerlink" title="产品中一定不要使用默认的 http.Get"></a>产品中一定不要使用默认的 http.Get</h3><p>如果你觉得方便，直接使用 http.Get 或者类似的方法发送请求，可能会导致一些问题， 因为这默认是使用 DefaultClient 作为 client:</p>
+<ol>
+<li>多 goroutine 共享，这意味着在别处对 DefaultClient 的改动会影响你当前的使用</li>
+<li>未设置 connection timeout 和 read/write timeout</li>
+<li>默认的 idle connection 等设置可能不满足你的需求</li>
+</ol>
+<h3 id="检查网络错误或者超时-net-Error-和-err-Timeout-可以检查是不是超时错误"><a href="#检查网络错误或者超时-net-Error-和-err-Timeout-可以检查是不是超时错误" class="headerlink" title="检查网络错误或者超时 net.Error 和 err.Timeout() 可以检查是不是超时错误"></a>检查网络错误或者超时 net.Error 和 err.Timeout() 可以检查是不是超时错误</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">if err, ok := err.(net.Error); ok &amp;&amp; err.Timeout() &#123;</span><br><span class="line">    ……</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="golang-命名返回值"><a href="#golang-命名返回值" class="headerlink" title="golang 命名返回值"></a>golang 命名返回值</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">func test()(a int) &#123;</span><br><span class="line">    return</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>实际上 a 相当于已经命名了，相当于</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">func test() int &#123;</span><br><span class="line">    var a int</span><br><span class="line">    return a</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="channel-关闭问题"><a href="#channel-关闭问题" class="headerlink" title="channel 关闭问题"></a>channel 关闭问题</h3><ul>
+<li>通过 recover 来恢复来恢复</li>
+<li>通过 Mutex 来保证不会向已关闭的 channel 发送消息</li>
+<li>通过 sync.Once 来关闭，保证不会重复关闭好的原则是：</li>
+</ul>
+<ol>
+<li>不要在接收端关闭 channel, 避免向关闭的 channel 发送消息</li>
+<li>不要关闭有多个并发发送者的 channel</li>
+</ol>
+<h3 id="golang-里面所有未赋值的变量都会赋值为默认值，就连内嵌-struct-infterface-也一样"><a href="#golang-里面所有未赋值的变量都会赋值为默认值，就连内嵌-struct-infterface-也一样" class="headerlink" title="golang 里面所有未赋值的变量都会赋值为默认值，就连内嵌 struct, infterface 也一样"></a>golang 里面所有未赋值的变量都会赋值为默认值，就连内嵌 struct, infterface 也一样</h3><ul>
+<li>内嵌 struct 会变为相应字段的默认值</li>
+<li>内嵌 interface 为赋值就是 nil, 因为接口变量的默认值就是 nil(但 nil 和 nil 是不同的， 这里是个坑)</li>
+</ul>
+<h3 id="若是要-marshal-时，不要输出-null-字段或者是为空的字段（结构体），需要把它赋值为指针才可以然后加上-omitempty"><a href="#若是要-marshal-时，不要输出-null-字段或者是为空的字段（结构体），需要把它赋值为指针才可以然后加上-omitempty" class="headerlink" title="若是要 marshal 时，不要输出 null 字段或者是为空的字段（结构体），需要把它赋值为指针才可以然后加上 omitempty"></a>若是要 marshal 时，不要输出 null 字段或者是为空的字段（结构体），需要把它赋值为指针才可以然后加上 omitempty</h3><p><a href="https://stackoverflow.com/questions/18088294/how-to-not-marshal-an-empty-struct-into-json-with-go?utm_medium=organic&amp;utm_source=google_rich_qa&amp;utm_campaign=google_rich_qa" target="_blank" rel="noopener">https://stackoverflow.com/questions/18088294/how-to-not-marshal-an-empty-struct-into-json-with-go?utm_medium=organic&amp;utm_source=google_rich_qa&amp;utm_campaign=google_rich_qa</a></p>
+<h3 id="http-colobu-com-2017-05-12-call-private-functions-in-other-packages-突破-golang-的访问限制"><a href="#http-colobu-com-2017-05-12-call-private-functions-in-other-packages-突破-golang-的访问限制" class="headerlink" title="http://colobu.com/2017/05/12/call-private-functions-in-other-packages/ 突破 golang 的访问限制"></a><a href="http://colobu.com/2017/05/12/call-private-functions-in-other-packages/" target="_blank" rel="noopener">http://colobu.com/2017/05/12/call-private-functions-in-other-packages/</a> 突破 golang 的访问限制</h3><h3 id="reflect"><a href="#reflect" class="headerlink" title="reflect"></a>reflect</h3><ul>
+<li>reflect.TypeOf,是获取类型的元数据</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reflect.TypeOf(i).Elem().Field(0).Tag //获取定义在struct里面的标签</span><br></pre></td></tr></table></figure>
+<ul>
+<li>reflect.ValueOf,是获取类型的值</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reflect.ValueOf(i).Elem().Field(0).String() //获取存储在第一个字段里面的值</span><br></pre></td></tr></table></figure>
+<h3 id="http-www-01happy-com-p3206"><a href="#http-www-01happy-com-p3206" class="headerlink" title="http://www.01happy.com/p3206/"></a><a href="http://www.01happy.com/p3206/" target="_blank" rel="noopener">http://www.01happy.com/p3206/</a></h3><p>最后再次重复一遍反射三定律：</p>
+<ul>
+<li>反射可以将“接口类型变量”转换为“反射类型对象”。</li>
+<li>反射可以将“反射类型对象”转换为“接口类型变量”。</li>
+<li>如果要修改“反射类型对象”，其值必须是“可写的”（settable）。</li>
+</ul>
+<p>一旦你理解了这些定律，使用反射将会是一件非常简单的事情。它是一件强大的工具，使用时务必谨慎使用，更不要滥用。</p>
+<h3 id="只有可以-addressable-的变量才可以使用-reflect-进行赋值修改即："><a href="#只有可以-addressable-的变量才可以使用-reflect-进行赋值修改即：" class="headerlink" title="只有可以 addressable 的变量才可以使用 reflect 进行赋值修改即："></a>只有可以 addressable 的变量才可以使用 reflect 进行赋值修改即：</h3><p>wrong</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var x float64 = 3.4</span><br><span class="line">v := reflect.ValueOf(x)</span><br><span class="line">v.SetFloat(7.1) // Error: will panic.</span><br></pre></td></tr></table></figure>
+<p>yes</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">var x float64 = 3.4</span><br><span class="line">p := reflect.ValueOf(&amp;x) // Note: take the address of x.</span><br><span class="line">fmt.Println(&quot;type of p:&quot;, p.Type())</span><br><span class="line">fmt.Println(&quot;settability of p:&quot;, p.CanSet())</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>存入 map 的是值是不可以 addressable 的 a = map [string]int; &amp;a[“s”], 这个很好理解因为，map 回去做冲突处理，地址有可能发生变化。</p>
+</blockquote>
+<h3 id="go-web-的一些建议-https-medium-com-matryer-how-i-write-go-http-services-after-seven-years-37c208122831"><a href="#go-web-的一些建议-https-medium-com-matryer-how-i-write-go-http-services-after-seven-years-37c208122831" class="headerlink" title="[go web 的一些建议](https://medium.com/@matryer/how-i-write-go-http-services-after-seven-years-37c208122831"></a>[go web 的一些建议](<a href="https://medium.com/@matryer/how-i-write-go-http-services-after-seven-years-37c208122831" target="_blank" rel="noopener">https://medium.com/@matryer/how-i-write-go-http-services-after-seven-years-37c208122831</a></h3><ol>
+<li><p>Shared dependencies are fields of the structure<br>通过结构体的字段共享依赖，而不是到处引入（适用于所有的）</p>
+</li>
+<li><p>I have a single file inside every component called routes.go where all the routing can live:</p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">package app</span><br><span class="line">func (s *server) routes() &#123;</span><br><span class="line">    s.router.HandleFunc(&quot;/api/&quot;, s.handleAPI())</span><br><span class="line">    s.router.HandleFunc(&quot;/about&quot;, s.handleAbout())</span><br><span class="line">    s.router.HandleFunc(&quot;/&quot;, s.handleIndex())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>This is handy because most code maintenance starts with a URL and an error report — so one glance at routes.go will direct us where to look.</p>
+<ol start="3">
+<li>If a particular handler has a dependency, take it as an argument. 若是有特殊依赖则作为参数传入</li>
+</ol>
+<p>4.</p>
+<h3 id="https-github-com-dgryski-go-perfbook-blob-master-performance-md"><a href="#https-github-com-dgryski-go-perfbook-blob-master-performance-md" class="headerlink" title="https://github.com/dgryski/go-perfbook/blob/master/performance.md"></a><a href="https://github.com/dgryski/go-perfbook/blob/master/performance.md" target="_blank" rel="noopener">https://github.com/dgryski/go-perfbook/blob/master/performance.md</a></h3><h3 id="https-my-oschina-net-xinxingegeya-blog-729673-golang-unsafe-包的-unsafe-特性"><a href="#https-my-oschina-net-xinxingegeya-blog-729673-golang-unsafe-包的-unsafe-特性" class="headerlink" title="https://my.oschina.net/xinxingegeya/blog/729673 golang unsafe 包的 unsafe 特性"></a><a href="https://my.oschina.net/xinxingegeya/blog/729673" target="_blank" rel="noopener">https://my.oschina.net/xinxingegeya/blog/729673</a> golang unsafe 包的 unsafe 特性</h3><h3 id="错误和异常，意料之内的是错误，意料之外的是异常-https-studygolang-com-articles-11753-fr-sidebar"><a href="#错误和异常，意料之内的是错误，意料之外的是异常-https-studygolang-com-articles-11753-fr-sidebar" class="headerlink" title="错误和异常，意料之内的是错误，意料之外的是异常(https://studygolang.com/articles/11753?fr=sidebar)"></a>错误和异常，意料之内的是错误，意料之外的是异常(<a href="https://studygolang.com/articles/11753?fr=sidebar" target="_blank" rel="noopener">https://studygolang.com/articles/11753?fr=sidebar</a>)</h3><h3 id="从标准输入读取"><a href="#从标准输入读取" class="headerlink" title="从标准输入读取"></a>从标准输入读取</h3><ol>
+<li>os.Stdin 实现了 Reader 接口可以直接 Read</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">s := make([]byte, 10)</span><br><span class="line">n, err := os.Stdin.Read(s)</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>fmt.Scanf() 可以读取 so.Stdin</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var firstname, secondname string</span><br><span class="line">fmt.Scanln(&amp;FirstName, &amp;SecondNames)    //Scanln 扫描来自标准输入的文本，将空格分隔的值依次存放到后续的参数内，直到碰到换行。</span><br><span class="line">fmt.Scanf(&quot;%s %s&quot;, &amp;firstName, &amp;lastName)    //Scanf与其类似，除了 Scanf 的第一个参数用作格式字符串，用来决定如何读取。</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>os.Stdin 是个 Reader 但是没有缓冲， 可以使用 bufio.NewReader()生成一个带缓冲的</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">inputReader := bufio.NewReader(os.Stdin)</span><br><span class="line">for &#123;</span><br><span class="line">    input, _ := inputReader.ReadString(&apos;\n&apos;)</span><br><span class="line">    fmt.Println(input)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Reader-接口"><a href="#Reader-接口" class="headerlink" title="Reader 接口"></a>Reader 接口</h3><ol>
+<li>Read 方法<br>也就是说，当 Read 方法返回错误时，不代表没有读取到任何数据。调用者应该处理返回的任何数据，之后才处理可能的错误。<br>io.EOF 变量的定义：var EOF = errors.New(“EOF”)，是 error 类型。根据 reader 接口的说明，在 n &gt; 0 且数据被读完了的情况下，返回的 error 有可能是 EOF 也有可能是 nil。</li>
+</ol>
+<h3 id="Writer-接口"><a href="#Writer-接口" class="headerlink" title="Writer 接口"></a>Writer 接口</h3><ol>
+<li>Write 方法<br>Write 将 len(p) 个字节从 p 中写入到基本数据流中。它返回从 p 中被写入的字节数 n（0 &lt;= n &lt;= len(p)）以及任何遇到的引起写入提前停止的错误。若 Write 返回的 n &lt; len(p)，它就必须返回一个 非nil 的错误。</li>
+</ol>
+<h3 id="golang-比较行为"><a href="#golang-比较行为" class="headerlink" title="golang 比较行为"></a>golang <a href="https://golang.org/ref/spec#Comparison_operators" target="_blank" rel="noopener">比较行为</a></h3><ol>
+<li>指针只有指针指向的内容是同一个时才相等</li>
+<li>接口值可以比较， 但若是接口值得类型相同，但是值却是不可比较的例如slice等，就会报runtime error</li>
+</ol>
+<p>Slice, map, and function values are not comparable</p>
+<h3 id="func的receiver是-值时-无论调用者是指针还是值都可以调用func"><a href="#func的receiver是-值时-无论调用者是指针还是值都可以调用func" class="headerlink" title="func的receiver是 值时 无论调用者是指针还是值都可以调用func"></a>func的receiver是 值时 无论调用者是指针还是值都可以调用func</h3><p>如下若是使用指针作为receiver，则print 值时无法调用到String<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">type A struct &#123;</span><br><span class="line">	c int</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func (a A) String() string &#123;</span><br><span class="line">	return &quot;dj&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func format() &#123;</span><br><span class="line"></span><br><span class="line">	a := &amp;A&#123;c: 22&#125;</span><br><span class="line">	fmt.Println(a)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="bufio的readSlice返回的是bufio-Reader的里的buf（Reader缓存的slice），因此当再此读取以后返回的slice的值是改变的"><a href="#bufio的readSlice返回的是bufio-Reader的里的buf（Reader缓存的slice），因此当再此读取以后返回的slice的值是改变的" class="headerlink" title="bufio的readSlice返回的是bufio.Reader的里的buf（Reader缓存的slice），因此当再此读取以后返回的slice的值是改变的"></a>bufio的readSlice返回的是bufio.Reader的里的buf（Reader缓存的slice），因此当再此读取以后返回的slice的值是改变的</h3><blockquote>
+<p>一般的reader都是没有缓冲的，bufio就是给reader加缓冲的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">func readSlice() &#123;</span><br><span class="line">	reader := bufio.NewReader(strings.NewReader(&quot;http://studygolang.com.\nIt is the home of gophers&quot;))</span><br><span class="line">	line, _ := reader.ReadSlice(&apos;\n&apos;)</span><br><span class="line">	fmt.Println(&quot;the line is &quot;, string(line))</span><br><span class="line">	n, _ := reader.ReadSlice(&apos;\n&apos;)</span><br><span class="line">	fmt.Println(string(n), string(line))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<p>最后n和slice的值相同</p>
+<p>而ReadBytes和ReadString就不会出现这个问题了，他们都新开辟的空间</p>
+<p>如果ReadSlice在找到界定符之前遇到了error，<br>它就会返回缓存中所有的数据和错误本身（经常是 io.EOF）。<br>如果在找到界定符之前缓存已经满了，ReadSlice会返回bufio.ErrBufferFull错误。<br>当且仅当返回的结果（line）没有以界定符结束的时候，ReadSlice返回err != nil，<br>也就是说，如果ReadSlice返回的结果line不是以界定符delim结尾，那么返回的err也一定不等于nil<br>（可能是bufio.ErrBufferFull或io.EOF）。<br>并且当下次在读取时会继续向前<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">func ReadSliceSize() &#123;</span><br><span class="line">	reader := bufio.NewReaderSize(strings.NewReader(&quot;http://studygolang.com.\nIt is the home of gophers&quot;), 10)</span><br><span class="line">	line, _ := reader.ReadSlice(&apos;\n&apos;)</span><br><span class="line">	fmt.Println(&quot;the line is &quot;, string(line))</span><br><span class="line">	n, _ := reader.ReadSlice(&apos;\n&apos;)</span><br><span class="line">	fmt.Println(string(n), string(line))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>然而使用ReadBytes和ReadString就没有这个问题了，bufio.reader会自动为我们处理。</p>
+<h3 id="golang排序"><a href="#golang排序" class="headerlink" title="golang排序"></a>golang排序</h3><p>对基本类型排序</p>
+<ol>
+<li>int, float等<br>sort包有sort.Ints, sort.Float64s等方法排序，会改变原数组</li>
+<li>其他类型则需要实现 sort.Interface接口了 ，如less,等</li>
+</ol>
+<h3 id="程序中使用time-Time"><a href="#程序中使用time-Time" class="headerlink" title="程序中使用time.Time"></a>程序中使用time.Time</h3><p>程序中应使用 Time 类型值来保存和传递时间，而不是指针。就是说，表示时间的变量和字段，应为time.Time类型，而不是*time.Time.类型。一个Time类型值可以被多个go程同时使用</p>
+<h3 id="time-格式化"><a href="#time-格式化" class="headerlink" title="time 格式化"></a>time 格式化</h3><p>这是实际开发中常用到的。</p>
+<ol>
+<li>time.Parse 和 time.ParseInLocation</li>
+<li>time.Time.Format<br>解析<br>对于解析，要特别注意时区问题，否则很容易出 bug。比如：</li>
+</ol>
+<p>t, _ := time.Parse(“2006-01-02 15:04:05”, “2016-06-13 09:14:00”)<br>fmt.Println(time.Now().Sub(t).Hours())<br>2016-06-13 09:14:00 这个时间可能是参数传递过来的。这段代码的结果跟预期的不一样。</p>
+<p>原因是 time.Now() 的时区是 time.Local，而 time.Parse 解析出来的时区却是 time.UTC（可以通过 Time.Location() 函数知道是哪个时区）。在中国，它们相差 8 小时。</p>
+<p>所以，一般的，我们应该总是使用 time.ParseInLocation 来解析时间，并给第三个参数传递 time.Local。</p>
+<h3 id="string和number互转"><a href="#string和number互转" class="headerlink" title="string和number互转"></a>string和number互转</h3><ol>
+<li>ParseBool, ParseFloat, ParseInt, and ParseUint convert strings to values</li>
+<li>FormatBool, FormatFloat, FormatInt, and FormatUint convert values to strings:</li>
+</ol>
+<h3 id="number和byte-数字和字节互转"><a href="#number和byte-数字和字节互转" class="headerlink" title="number和byte (数字和字节互转)"></a>number和byte (数字和字节互转)</h3><h3 id="想进行地址的加减操作就得使用uintptr"><a href="#想进行地址的加减操作就得使用uintptr" class="headerlink" title="想进行地址的加减操作就得使用uintptr"></a>想进行地址的加减操作就得使用uintptr</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">bts := [5]byte&#123;2, 3, 4, 5, 6&#125;</span><br><span class="line">fmt.Println(bts)</span><br><span class="line">c := (*[4]byte)(unsafe.Pointer((uintptr(unsafe.Pointer(&amp;bts)) + uintptr(1))))[:]</span><br><span class="line">fmt.Println(c)</span><br></pre></td></tr></table></figure>
+<p>输出正确，直接使用 slice就错误（bts := []byte{2,3,4,5,6}）<br>原因是：bts为slice的时候 bts的内部结构是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">type SliceHeader struct &#123;</span><br><span class="line">        Data uintptr</span><br><span class="line">        Len  int</span><br><span class="line">        Cap  int</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>也就是说转化为[]byte以后 只有Data的地址，Len和Cap的值被转化为了字节</p>
+<h3 id="string-和-byte-无copy转换"><a href="#string-和-byte-无copy转换" class="headerlink" title="string 和 []byte 无copy转换"></a>string 和 []byte 无copy转换</h3><p>// reflect.SliceHeader and reflect.StringHeader<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">type SliceHeader struct &#123;</span><br><span class="line">        Data uintptr</span><br><span class="line">        Len  int</span><br><span class="line">        Cap  int</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">type StringHeader struct &#123;</span><br><span class="line">        Data uintptr</span><br><span class="line">        Len  int</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">/*</span><br><span class="line">  struct string&#123;</span><br><span class="line">    uint8 *str;</span><br><span class="line">    int len;</span><br><span class="line">  &#125;</span><br><span class="line">  struct []uint8&#123;</span><br><span class="line">    uint8 *array;</span><br><span class="line">    int len;</span><br><span class="line">    int cap;</span><br><span class="line">  &#125;</span><br><span class="line">  uintptr是golang的内置类型，是能存储指针的整型，uintptr的底层类型是int，它和unsafe.Pointer可相互转换。</span><br><span class="line">  但是转换后的string与[]byte共享底层空间，如果修改了[]byte那么string的值也会改变，就违背了string应该是只读的规范了，可能会造成难以预期的影响。</span><br><span class="line">*/</span><br><span class="line">func str2byte(s string) []byte &#123;</span><br><span class="line">    x := (*[2]uintptr)unsafe.Pointer(&amp;s)</span><br><span class="line">    h := [3]uintptr&#123;x[0],x[1],x[1]&#125;</span><br><span class="line">    return *(*[]byte)(unsafe.Pointer(&amp;h))</span><br><span class="line">&#125;</span><br><span class="line">func byte2str(b []byte) string&#123;</span><br><span class="line">    return *(*string)(unsafe.Pointer(&amp;b))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="golang-json问题"><a href="#golang-json问题" class="headerlink" title="golang json问题"></a>golang json问题</h3><ol>
+<li>json tag <code>json:&quot;name,omitempty,type&quot;</code> json: “name,[option]”</li>
+<li><p>int 为0时，若tag 为omitempty, int会不被序列化出来， omitempty，tag里面加上omitempy，可以在序列化的时候忽略0值或者空值<br> 解决办法是使用 指针</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">type Test struct &#123;</span><br><span class="line">    String  *string `json:&quot;string,omitempty&quot;`</span><br><span class="line">    Integer *int    `json:&quot;integer,omitempty&quot;`</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>int8 byte uint8 json序列化的时候 会被当做字符串处理</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">type CA struct &#123;  </span><br><span class="line">    List []uint8  </span><br><span class="line">&#125;  </span><br><span class="line">  </span><br><span class="line">func main() &#123;  </span><br><span class="line">    ca := CA&#123;[]uint8&#123;1,2,3,4,5,6,7,8,9,0&#125;&#125;  </span><br><span class="line">    r, _ := json.Marshal(ca)  </span><br><span class="line">    fmt.Println(string(r)) //&#123;&quot;List&quot;:&quot;AQIDBAUGBwgJAA==&quot;&#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="当我们想给某操作加缓冲区时就可以使用bytes-Buffer"><a href="#当我们想给某操作加缓冲区时就可以使用bytes-Buffer" class="headerlink" title="当我们想给某操作加缓冲区时就可以使用bytes.Buffer"></a>当我们想给某操作加缓冲区时就可以使用bytes.Buffer</h3>
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/06/06/instanceof带来的思考/"><span>instanceof带来的思考与es规范的研究</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/06/06/instanceof带来的思考/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-06-05T16:00:00.000Z">
+          2018-06-06
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <blockquote>
+<p>源码面前了无秘密，规范面前也一样啊！</p>
+</blockquote>
+<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><p>今天在jjc的群里正美大大抛出了一个问题</p>
+<img src="/2018/06/06/instanceof带来的思考/question.jpeg" title="问题">
+<p>答案全是false</p>
+<h3 id="郁闷点"><a href="#郁闷点" class="headerlink" title="郁闷点"></a>郁闷点</h3><p>我很郁闷了，我觉得按照instanceof的执行过程应该是true啊！<br>为啥呢？因为一下两点</p>
+<ul>
+<li>我记忆中instanceof的流程是，比如： “k instanceof v”就是验证v.prototype 在 k的原型链中</li>
+</ul>
+<p>证明如下<br><img src="/2018/06/06/instanceof带来的思考/instanceof验证问题.jpg" title="验证"></p>
+<ul>
+<li>而在REPL中查看 如下<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(2).\__proto\__ === Number.prototype</span><br><span class="line">// true</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>那么为啥 2 instanceof Number 是false呢</p>
+<h3 id="接下来我要开始装逼了"><a href="#接下来我要开始装逼了" class="headerlink" title="接下来我要开始装逼了"></a>接下来我要开始装逼了</h3><blockquote>
+<p>下面的es规范是基于<a href="https://www.ecma-international.org/ecma-262/5.1/" target="_blank" rel="noopener">ecma-262/5.1</a>的，es6的规范有了一些变化，有了更多的新东西，更加严谨，但原理是一致的。</p>
+</blockquote>
+<ul>
+<li>先来讲讲js里的原始类型</li>
+</ul>
+<p>我们知道js中的原始类型(primitive) 只有如下几种<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Undefined, Null, Boolean, String, Number</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p> es6中多了一个原始类型 Symbol</p>
+</blockquote>
+<p>要注意，Number是指原始类型而不是内置的Number对象, 其他类似</p>
+<p>因此 3, ‘123’, true, false, null, undefined等是原始类型，不是对象(Object)哦。</p>
+<p>也就是说3 和 new Number(3)或者Number(3)不是一个类型哦，后两者是对象<br>参见下图</p>
+<img src="/2018/06/06/instanceof带来的思考/number.png" title="验证">
+<blockquote>
+<p>各位看官有没有看到里面的另一句话啊: Number object 可以通过是用Number函数方式的调用在转换为Number value。 Number(new Number(3)) instanceof Number === false</p>
+</blockquote>
+<p>剩下的就是对象了Object，各种对象，就不缺对象</p>
+<h3 id="接下来上-instanceof-的规范-一步一步揭开秘密"><a href="#接下来上-instanceof-的规范-一步一步揭开秘密" class="headerlink" title="接下来上 instanceof 的规范, 一步一步揭开秘密"></a>接下来上 instanceof 的规范, 一步一步揭开秘密</h3><p>例子<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">3 instanceof Number</span><br></pre></td></tr></table></figure></p>
+<p>我们一步一步讲来</p>
+<h4 id="1-The-instanceof-operator"><a href="#1-The-instanceof-operator" class="headerlink" title="1. The instanceof operator"></a>1. The instanceof operator</h4><blockquote>
+<p>The production RelationalExpression : RelationalExpression instanceof ShiftExpression is evaluated as follows:</p>
+</blockquote>
+<ol>
+<li>Let lref be the result of evaluating RelationalExpression.<blockquote>
+<p>计算左侧 为3</p>
+</blockquote>
+</li>
+<li>Let lval be GetValue(lref).<blockquote>
+<p>GetValue 调用返回值赋值给lval(此处我们只要知道GetValue(3) === 3就好了，后面会细讲)</p>
+</blockquote>
+</li>
+<li>Let rref be the result of evaluating ShiftExpression.<blockquote>
+<p>计算Number ，那就是Number</p>
+</blockquote>
+</li>
+<li>Let rval be GetValue(rref).<blockquote>
+<p>同2 这里rval = Number</p>
+</blockquote>
+</li>
+<li>If Type(rval) is not Object, throw a TypeError exception.<blockquote>
+<p>Type 调用会返回rval的类型，此处是对象Object[1]。</p>
+</blockquote>
+</li>
+<li>If rval does not have a [[HasInstance]] internal method, throw a TypeError exception.<blockquote>
+<p>判断rval 是否有HasInstance 方法</p>
+</blockquote>
+</li>
+<li>Return the result of calling the [[HasInstance]] internal method of rval with argument lval.<br>使用lval作为参数调用rval的[[HasInstance方法]] 就是 Number[[HasInstance]] (3)</li>
+</ol>
+<p>接下来就该[[HasInstance]]了</p>
+<h4 id="2-HasInstance-V"><a href="#2-HasInstance-V" class="headerlink" title="2. [[HasInstance]] (V)"></a>2. [[HasInstance]] (V)</h4><p>Assume F is a Function object.</p>
+<blockquote>
+<p>假设F是一个函数对象</p>
+</blockquote>
+<p>When the [[HasInstance]] internal method of F is called with value V, the following steps are taken:</p>
+<blockquote>
+<p>当我们调用F的[[HasInstance]]方法时走如下步骤</p>
+</blockquote>
+<ol>
+<li>If V is not an object, return false.<blockquote>
+<p>如果v不是对象，返回false<br>很明显我们上面的调用就结束了。。。因为3不是个对象，而是个Number value</p>
+</blockquote>
+</li>
+<li>Let O be the result of calling the [[Get]] internal method of F with property name “prototype”.<blockquote>
+<p>获取 F的prototype 给 O</p>
+</blockquote>
+</li>
+<li>If Type(O) is not Object, throw a TypeError exception.</li>
+<li>Repeat<ul>
+<li>Let V be the value of the [[Prototype]] internal property of V.</li>
+<li>If V is null, return false.</li>
+<li>If O and V refer to the same object, return true.<blockquote>
+<p>找到V的原型链，然后依次向上查找，直到结束，若O与其中一个原型是同一个对象返回true, 否则false</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p>NOTE Function objects created using Function.prototype.bind have a different implementation of [[HasInstance]] defined in 15.3.4.5.3.</p>
+</blockquote>
+<h5 id="到此我们已经搞定为了为啥-3-instanceof-Number-是false了，打完，不收工。"><a href="#到此我们已经搞定为了为啥-3-instanceof-Number-是false了，打完，不收工。" class="headerlink" title="到此我们已经搞定为了为啥 3 instanceof Number 是false了，打完，不收工。"></a>到此我们已经搞定为了为啥 3 instanceof Number 是false了，打完，不收工。</h5><p>还有一个Symbol啊，在此有个很魔性的地方，我上面引入的ecma262/5.1是没有Symbol的，我们去看ecma262/6.0，里面是有Symbol的，可是在那里我们可以看到Symbol也进级为了原始类型，因此Symbol(‘a’) instanceof Symbol自然也是 false了，你说魔性不魔性。</p>
+<h3 id="结束了？no-不结束！GetValue我们还没讲呢"><a href="#结束了？no-不结束！GetValue我们还没讲呢" class="headerlink" title="结束了？no 不结束！GetValue我们还没讲呢"></a>结束了？no 不结束！GetValue我们还没讲呢</h3><h4 id="在此我们先来看看-Reference是啥"><a href="#在此我们先来看看-Reference是啥" class="headerlink" title="在此我们先来看看 Reference是啥"></a>在此我们先来看看 Reference是啥</h4><p>官方解释如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">The Reference type is used to explain the behaviour of such operators</span><br><span class="line">as delete, typeof, the assignment operators, the super keyword and</span><br><span class="line">other language features. For example, the left-hand operand of an</span><br><span class="line">assignment is expected to produce a reference.</span><br></pre></td></tr></table></figure></p>
+<p>我只看明白是为了解释某些操作而存在的，例如delete, typeof, super, left-hand operand等等,还有super keyword等等</p>
+<p>Reference 含有3个component</p>
+<ol>
+<li>base value: any 甚至是Environment Record</li>
+<li>referenced name: string or symbol</li>
+<li>strict reference flag: true or false</li>
+</ol>
+<h4 id="那什么时候会创建一个Reference呢-规范并没有说怎么设置，我在stackoverflow-上看到了以下三个会创建并返回Reference的情况"><a href="#那什么时候会创建一个Reference呢-规范并没有说怎么设置，我在stackoverflow-上看到了以下三个会创建并返回Reference的情况" class="headerlink" title="那什么时候会创建一个Reference呢 规范并没有说怎么设置，我在stackoverflow 上看到了以下三个会创建并返回Reference的情况"></a>那什么时候会创建一个Reference呢 规范并没有说怎么设置，我在stackoverflow 上看到了以下三个会创建并返回Reference的情况</h4><ol>
+<li><p><a href="https://www.ecma-international.org/ecma-262/5.1/#sec-11.1.2" target="_blank" rel="noopener">identifier reference</a> expressions, that <a href="https://www.ecma-international.org/ecma-262/5.1/#sec-10.3.1" target="_blank" rel="noopener">resolve the identifier</a> in the current lexical environment (or one of its parents)<br>标识符，解析标识符时会创建一个reference, base value is envRec, referenced name is identifier</p>
+</li>
+<li><p><a href="http://es5.github.io/#x11.2.1" target="_blank" rel="noopener">property accessor expressions</a>, i.e. the .… and […] operators<br>属性获取时会创建一个reference(这个就是我们后面要用到的哦)</p>
+</li>
+<li><p><a href="http://www.ecma-international.org/ecma-262/5.1/#sec-15.3.4.4" target="_blank" rel="noopener">function calls</a> to host functions are permitted to return them, <a href="https://stackoverflow.com/q/13124417/1048572" target="_blank" rel="noopener">but such don’t exist</a>.<br>这个在es5规范里有说，是可以返回，但没有规定一定返回</p>
+</li>
+</ol>
+<h4 id="接下来说说我的另一个问题了，就是下面的类型转换是怎么发生的？Number-value-gt-Number-object"><a href="#接下来说说我的另一个问题了，就是下面的类型转换是怎么发生的？Number-value-gt-Number-object" class="headerlink" title="接下来说说我的另一个问题了，就是下面的类型转换是怎么发生的？Number value =&gt; Number object"></a>接下来说说我的另一个问题了，就是下面的类型转换是怎么发生的？Number value =&gt; Number object</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(2).\__proto\__</span><br><span class="line">// [Number: 0]</span><br></pre></td></tr></table></figure>
+<p>上面的转换很显然是获取属性发生的转换，我们一步一步解析，请看下面</p>
+<h6 id="1-“-2-proto-”-是啥-从表达式走起"><a href="#1-“-2-proto-”-是啥-从表达式走起" class="headerlink" title="1. “(2).__proto__” 是啥, 从表达式走起"></a>1. “(2).__proto__” 是啥, 从表达式走起</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">11 Expressions</span><br><span class="line"></span><br><span class="line">11.1 Primary Expressions</span><br><span class="line">Syntax</span><br><span class="line">    PrimaryExpression :</span><br><span class="line">        this</span><br><span class="line">        Identifier</span><br><span class="line">        Literal</span><br><span class="line">        ArrayLiteral</span><br><span class="line">        ObjectLiteral</span><br><span class="line">        ( Expression )</span><br></pre></td></tr></table></figure>
+<p>参见上面，我们”(2)”是PrimaryExpression, 再来看看 (Expression)是啥</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">11.1.6 The Grouping Operator</span><br><span class="line">    The production PrimaryExpression : ( Expression ) is evaluated as follows:</span><br><span class="line"></span><br><span class="line">        1. Return the result of evaluating Expression. This may be of type Reference.</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>NOTE This algorithm does not apply GetValue to the result of evaluating Expression. The principal motivation for this is so that operators such as delete and typeof may be applied to parenthesised expressions.<br>很显然我们”(2)”是group expression,按照规范的描述，group expression返回的有可能是Reference</p>
+</blockquote>
+<h6 id="2-“2”-咋计算"><a href="#2-“2”-咋计算" class="headerlink" title="2. “2” 咋计算"></a>2. “2” 咋计算</h6><p>看了上面我们知道了”(2)”是啥，那按照规范所说的，”(2)”属于Express, 也可以看出来”2” 属于PrimaryExpression 中的Literal, 于是就有了下面的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">11.1.3 Literal Reference</span><br><span class="line">    A Literal is evaluated as described in 7.8.</span><br></pre></td></tr></table></figure></p>
+<p>看到了Literal 参见<a href="http://www.ecma-international.org/ecma-262/5.1/#sec-7.8" target="_blank" rel="noopener">7.8</a> 具体就是规定了Number literal的语法</p>
+<h6 id="3-2-我们解决了，那么就该”-2-proto-”了，-这是一个属性获取，于是有了下面的规范-规范先描述了属性获取的语法”-”和”-”-然后是算法描述"><a href="#3-2-我们解决了，那么就该”-2-proto-”了，-这是一个属性获取，于是有了下面的规范-规范先描述了属性获取的语法”-”和”-”-然后是算法描述" class="headerlink" title="3. (2)我们解决了，那么就该”(2).__proto__”了， 这是一个属性获取，于是有了下面的规范, 规范先描述了属性获取的语法”.”和”[]”,然后是算法描述"></a>3. (2)我们解决了，那么就该”(2).__proto__”了， 这是一个<a href="http://www.ecma-international.org/ecma-262/5.1/#sec-11.2.1" target="_blank" rel="noopener">属性获取</a>，于是有了下面的规范, 规范先描述了属性获取的语法”.”和”[]”,然后是算法描述</h6><p>The production MemberExpression : MemberExpression [ Expression ] is evaluated as follows:</p>
+<ol>
+<li>Let baseReference be the result of evaluating MemberExpression.<blockquote>
+<p>左侧计算 得到 2 赋值给baseReference</p>
+</blockquote>
+</li>
+<li>Let baseValue be GetValue(baseReference).<blockquote>
+<p>调用GetValue, 对2 ，依然返回2</p>
+</blockquote>
+</li>
+<li>Let propertyNameReference be the result of evaluating Expression.<blockquote>
+<p>计算属性Expression 赋值给 propertyNameReference， 对于’.’调用会变为’[<identifer-name-string>]’ 于是 就是”__proto__”字符串</identifer-name-string></p>
+</blockquote>
+</li>
+<li>Let propertyNameValue be GetValue(propertyNameReference).<blockquote>
+<p>调用GetValue, 对于propertyNameReference ，依然返回”__proto__”字符串</p>
+</blockquote>
+</li>
+<li>Call CheckObjectCoercible(baseValue).<blockquote>
+<p>判断baseValue不是Null或者Undefined</p>
+</blockquote>
+</li>
+<li>Let propertyNameString be ToString(propertyNameValue).<blockquote>
+<p>转为String</p>
+</blockquote>
+</li>
+<li><p>If the syntactic production that is being evaluated is contained in strict mode code, let strict be true, else let strict be false.</p>
+</li>
+<li><p>Return a value of type Reference whose base value is baseValue and whose referenced name is propertyNameString, and whose strict mode flag is strict.</p>
+<blockquote>
+<p>返回 Reference, base value是baseValue，对于我们的baseValue就是2，referenced name 是 propertyNameString，对于我们就是”__proto__”</p>
+</blockquote>
+</li>
+</ol>
+<p>The production CallExpression : CallExpression [ Expression ] is evaluated in exactly the same manner, except that the contained CallExpression is evaluated in step 1.</p>
+<blockquote>
+<p>这句话的意思就是 CallExpress和属性获取类似。</p>
+</blockquote>
+<p>到这里我们就完成了 “(2).__proto__”的完整解析，这个完整解析返回了一个Reference, 可是类型转换呢？</p>
+<h6 id="4-对属性获取返回的Reference的使用"><a href="#4-对属性获取返回的Reference的使用" class="headerlink" title="4. 对属性获取返回的Reference的使用"></a>4. 对属性获取返回的Reference的使用</h6><p>上面的步骤我们是完成了整个表达式的解析，但还没有使用表达式返回的结果，那我们来使用一下，比如 “(2).__proto__ === 2”<br>11.9.4 The Strict Equals Operator ( === )<br>    The production EqualityExpression : EqualityExpression === RelationalExpression is evaluated as follows:</p>
+<ol>
+<li>Let lref be the result of evaluating EqualityExpression.<blockquote>
+<p>解析 EqualityExpression ,我们从前面可以得知，”(2).__proto__”， 解析之后是一个Reference, 类似于 {baseValue: 2, referencedName: “__proto__”, strict:…}</p>
+</blockquote>
+</li>
+<li><p>Let lval be GetValue(lref).</p>
+<blockquote>
+<p>重头戏来了 把我们上一步得到的Reference 作为参数调用 GetValue会返回什么呢？ 见下</p>
+</blockquote>
+</li>
+<li><p>Let rref be the result of evaluating RelationalExpression.</p>
+</li>
+<li>Let rval be GetValue(rref).</li>
+<li>Return the result of performing the strict equality comparison rval === lval. (See 11.9.6)</li>
+</ol>
+<h6 id="5-GetValue调用"><a href="#5-GetValue调用" class="headerlink" title="5. GetValue调用"></a>5. GetValue调用</h6><p>上面的严格等于我们就不分析了，不是重点，来看看GetValue吧。很长很高能</p>
+<p>8.7.1 GetValue (V)</p>
+<ol>
+<li>If Type(V) is not Reference, return V.<blockquote>
+<p>判断V是不是一个Reference,不是直接返回V， 现在明白了GetValue(2)为啥返回2了吧。</p>
+</blockquote>
+</li>
+<li>Let base be the result of calling GetBase(V).<blockquote>
+<p>获取base value, 对我们的Ref 就是2</p>
+</blockquote>
+</li>
+<li>If IsUnresolvableReference(V), throw a ReferenceError exception.<blockquote>
+<p>这是用来判断base value为非null和undefined的</p>
+</blockquote>
+</li>
+<li><p>If IsPropertyReference(V), then</p>
+<ol>
+<li>If HasPrimitiveBase(V) is false, then let get be the [[Get]] internal method of base, otherwise let get be the special [[Get]] internal method defined below.<blockquote>
+<p>base value 不是原始类型，则让get为base的内部[[Get]]方法，若是原始类型则参见下面的internal [[GET]]方法的逻辑，嗯，我们的base value是2，于是就得走下面的internal [[GET]]方法了</p>
+</blockquote>
+</li>
+<li>Return the result of calling the get internal method using base as its this value, and passing GetReferencedName(V) for the argument. <blockquote>
+<p>调用get，使用referenceName作为参数, base value作为this<br>判断V的base value是不是object, number, string, Boolean</p>
+</blockquote>
+</li>
+</ol>
+</li>
+<li><p>Else, base must be an environment record.</p>
+<blockquote>
+<p>不是 上面列举的几类，那就一定是environment record</p>
+<ol>
+<li>Return the result of calling the GetBindingValue (see 10.2.1) concrete method of base passing GetReferencedName(V) and IsStrictReference(V) as arguments.</li>
+</ol>
+</blockquote>
+</li>
+</ol>
+<p>The following [[Get]] internal method is used by GetValue when V is a property reference with a primitive base value. It is called using base as its this value and with property P as its argument. The following steps are taken:</p>
+<blockquote>
+<p>internal [[GET]]method</p>
+</blockquote>
+<ol>
+<li><p>Let O be ToObject(base).</p>
+<blockquote>
+<p>我的神啊，神啊，神啊，神啊，神啊，神啊，神啊，神啊，神啊，神啊，神啊，神啊，神啊，神啊，神啊， 终于看到了类型转换啊！！！ ToObject(base), 这个很简单了，把原始类型转换为对应Object类型，比如2(Number Value), 转换为Number Object, 其他类似 <a href="http://www.ecma-international.org/ecma-262/5.1/#sec-9.9" target="_blank" rel="noopener">参见</a></p>
+</blockquote>
+</li>
+<li><p>Let desc be the result of calling the [[GetProperty]] internal method of O with property name P.</p>
+<blockquote>
+<p>…不解释了，往下就很容易理解了</p>
+</blockquote>
+</li>
+<li>If desc is undefined, return undefined.</li>
+<li>If IsDataDescriptor(desc) is true, return desc.[[Value]].</li>
+<li>Otherwise, IsAccessorDescriptor(desc) must be true so, let getter be desc.[[Get]] (see 8.10).</li>
+<li>If getter is undefined, return undefined.</li>
+<li>Return the result calling the [[Call]] internal method of getter providing base as the this value and providing no arguments.</li>
+</ol>
+<blockquote>
+<p>NOTE The object that may be created in step 1 is not accessible outside of the above method. An implementation might choose to avoid the actual creation of the object. The only situation where such an actual property access that uses this internal method can have visible effect is when it invokes an accessor function. 这些说的就是step 1创建的object，不应当被外部访问到。</p>
+</blockquote>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>源码面前了无秘密，规范面前也一样啊！其实但我们理解了Reference 类型，那么this绑定的问题也就迎刃而解了，大家可以再去看看<a href="https://www.ecma-international.org/ecma-262/5.1/#sec-11.2.3" target="_blank" rel="noopener">this的绑定问题</a>也是基于Reference的</p>
+<p>注<br>[1]<a href="http://www.ecma-international.org/ecma-262/6.0/#sec-ecmascript-data-types-and-values" target="_blank" rel="noopener">Type(v)解释</a></p>
+<blockquote>
+<p>根据具体的内容返回相应的类型，如字面3,返回Number Type，new Number(3) 返回Object 类型</p>
+</blockquote>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+
+<nav class="pagination">
+  
+  <a href="/" class="pagination-prev">Prev</a>
+  
+  
+  <a href="/page/3/" class="pagination-next">Next</a>
+  
+</nav>
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 hello2dj (dj_amazing@sina.com)
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

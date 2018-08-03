@@ -1,0 +1,181 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Oberservable之“hot”和“cold”的区别 | hello2dj | if you can&#39;t explain it simply, you don&#39;t understand it well enough</title>
+
+  
+  <meta name="author" content="hello2dj (dj_amazing@sina.com)">
+  
+
+  
+  <meta name="description" content="每个人都是带着棱角来到世上，只有磨平棱角才能走的更远">
+  
+
+  
+  
+  <meta name="keywords" content="rxjs,reactive programming,Ben Lesh(原文作者)">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="Oberservable之“hot”和“cold”的区别"/>
+
+  <meta property="og:site_name" content="hello2dj"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="hello2dj" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">hello2dj</a>
+    </h1>
+    <p class="site-description">if you can&#39;t explain it simply, you don&#39;t understand it well enough</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/categories">Categories</a></li>
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>Oberservable之“hot”和“cold”的区别</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/07/14/hot&cold/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-07-14T13:00:30.039Z">
+          2018-07-14
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>我又要先上图了：<br><img src="https://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/02/1455228348streams.png" alt=""></p>
+<p><a href="https://medium.com/@benlesh/hot-vs-cold-observables-f8094ed53339" target="_blank" rel="noopener">原文地址(english, 需翻墙)</a></p>
+<h1 id="TL-DR-当你不想一次又一次的创建你的producer时，你需要一个HOT-observable"><a href="#TL-DR-当你不想一次又一次的创建你的producer时，你需要一个HOT-observable" class="headerlink" title="TL;DR: 当你不想一次又一次的创建你的producer时，你需要一个HOT observable"></a>TL;DR: 当你不想一次又一次的创建你的producer时，你需要一个HOT observable</h1><h3 id="COLD-就是你的Observable创建了生产者（就是当你创建observable时创建producer）"><a href="#COLD-就是你的Observable创建了生产者（就是当你创建observable时创建producer）" class="headerlink" title="COLD 就是你的Observable创建了生产者（就是当你创建observable时创建producer）"></a>COLD 就是你的Observable创建了生产者（就是当你创建observable时创建producer）</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// COLD</span><br><span class="line">const cold = new Observable((observer) =&gt; &#123;</span><br><span class="line">  const producer = new Producer();</span><br><span class="line">  // have observer listen to producer here</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="HOT-就是你的observable-关闭你的生产者"><a href="#HOT-就是你的observable-关闭你的生产者" class="headerlink" title="HOT 就是你的observable 关闭你的生产者"></a>HOT 就是你的observable 关闭你的生产者</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// HOT</span><br><span class="line">const producer = new Producer();</span><br><span class="line">cosnt hot = new Observable((observer) =&gt; &#123;</span><br><span class="line">  // have observer listen to producer here</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="继续深入"><a href="#继续深入" class="headerlink" title="继续深入"></a>继续深入</h3><p>我的上篇<a href="https://medium.com/@benlesh/learning-observable-by-building-observable-d5da57405d87" target="_blank" rel="noopener">文章</a>介绍了observables就是函数。那篇文章的目的是解开observerable的神秘，但是没有深入那个困扰大家的问题：HOT VS COLD</p>
+<h3 id="Observables-are-just-functions"><a href="#Observables-are-just-functions" class="headerlink" title="Observables are just functions!"></a>Observables are just functions!</h3><p>Observables 就是一个绑定observer和producer的函数。是的，那就是全部。他其实不需要创建producer,他们仅仅是建立observer对producer的监听，并且返回一个函数可以用来移除监听器。对obserable的调用就好像是在调用一个函数，并且传递一个observer</p>
+<h3 id="那么什么是producer？"><a href="#那么什么是producer？" class="headerlink" title="那么什么是producer？"></a>那么什么是producer？</h3><p>生产者就是你的observable的数据来源。他可能是一个web socket, 或者是一个DOM event, 又或者是一个迭代器，甚至有可能是对一个数组的循环。总之，他可以是任何东西，可以用来获取数据并且传递给<code>observer.next(value)</code>。</p>
+<h3 id="Cold-observables-生产者在内部创建"><a href="#Cold-observables-生产者在内部创建" class="headerlink" title="Cold observables: 生产者在内部创建"></a>Cold observables: 生产者在<strong>内部</strong>创建</h3><p>如果一个observable的producer是在subscribe时创建并且激活的那么他就是 ‘cold’。这意味着，如果observables是函数，那么生产者就是在调用这个函数是创建和激活的。</p>
+<ol>
+<li>creates the producer</li>
+<li>activates the producer</li>
+<li>start listening to the producer</li>
+<li>unicast</li>
+</ol>
+<p>下面这个栗子就是‘cold’, 因为他对websocket的监听是在你subscribe observable时建立的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">const source = new Observable((observer) =&gt; &#123;</span><br><span class="line">  const socket = new WebSocket(&apos;ws://someurl&apos;);</span><br><span class="line">  socket.addEventListener(&apos;message&apos;, (e) =&gt; observer.next(e));</span><br><span class="line">  return () =&gt; socket.close();</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>因此任何subscribe source的对象，都会有自己的WebSocket的实例，并且当他unsubscribe的时候，他将会关闭那个socket。这意味着我们source仅仅只是unicast,因为这个生产者仅仅只能给一个监听者发送数据。<a href="http://jsbin.com/wabuguy/1/edit?js,output" target="_blank" rel="noopener">这里有一个简单的栗子jsbin</a></p>
+<h3 id="HOT-observables-生产者是在外部创建的"><a href="#HOT-observables-生产者是在外部创建的" class="headerlink" title="HOT observables: 生产者是在外部创建的"></a>HOT observables: 生产者是在<strong>外部</strong>创建的</h3><p>如果一个observable的生产者是在<strong>订阅之外</strong>(就是不是在订阅时产生的行为)创建或者是激活的那么他就是’hot’。</p>
+<ol>
+<li>共享对生产者的引用</li>
+<li>开始监听生产者</li>
+<li>多播(通常是)<br>如果我们把上面的栗子中对于WebSocket的创建挪到obserable的外面，那么他就是hot了<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">const socket = new WebSocket(&apos;ws://someurl&apos;);</span><br><span class="line">const source = new Observable((observer) =&gt; &#123;</span><br><span class="line">  socket.addEventListener(&apos;message&apos;, (e) =&gt; observer.next(e));</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>现在任何订阅<code>source</code>的对象都共享一个相同的WebSocket实例。他将会高效的多播数据到所有的订阅者。但是这里还有个小问题：我们的obserable没有了对socket的取消逻辑。这意味着一旦发生了错误或者结束后，甚至是取消订阅，我们都无法关闭socket。所以我们真正想要的是让我们的’cold’ observable 变成hot。这里有个例子就没有取消的逻辑<a href="Here is a JSBin showing this basic concept.">jsbin</a></p>
+<h3 id="我们为什么需要-’hot‘-observable"><a href="#我们为什么需要-’hot‘-observable" class="headerlink" title="我们为什么需要 ’hot‘ observable?"></a>我们为什么需要 ’hot‘ observable?</h3><p>从第一个cold observable的列子我可以看到如果所有的observable都是cold是会有一些问题的。比如，你不止一次的订阅一个observable,但是他有可能每次都创建了一些稀缺资源，好比 web socket connection, 可事实是你并不想创建很多的web socket连接。事实上你可能很容易的对一个observable创建很多的订阅,并且是在你没意识的情况下。假设我们需要从web socket的订阅中过滤出奇数和偶数，于是最终我们可能写出如下的代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">source.filter(x =&gt; x % 2 === 0)</span><br><span class="line">  .subscribe(x =&gt; console.log(&apos;even&apos;, x));</span><br><span class="line">source.filter(x =&gt; x % 2 ==== 1)</span><br><span class="line">  .subscribe(x =&gt; console.log(&apos;odd&apos;, x));</span><br></pre></td></tr></table></figure></p>
+<h3 id="Rx-的subjects"><a href="#Rx-的subjects" class="headerlink" title="Rx 的subjects"></a>Rx 的subjects</h3><p>在我们把’cold’ observable 变得 ’hot‘之前，我们需要先介绍一个新的类型：Rx Subject。他有如下特性：</p>
+<ol>
+<li>他是一个obserable.他的结构类似一个observable, 并且用相同的操作符</li>
+<li>他是一个observer, 他是一个鸭子类型的observer。当他订阅一个observable是，他会像一个observer那样把数据传递给’next‘方法</li>
+<li>他是多播的。所有通过’subscribe‘犯法订阅的observers都会加入到一个内部的observers list</li>
+<li><p>当他结束的时候就是真的结束了（意味着结束后不可以在重用）。无论是发生了unsubscribe（这我试出来了见下代码）或者complete, 亦或者是发生了error之后，Subjects是不可以再重用的。（When it’s done, it’s done. Subjects cannot be reused after they’re unsubscribed, completed or errored.<br>）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// The death of a Subject</span><br><span class="line">const subject = new Subject();</span><br><span class="line">subject.subscribe(x =&gt; console.log(x));</span><br><span class="line">subject.next(1);    // 1</span><br><span class="line">subject.next(2);    // 2</span><br><span class="line">subject.complete();</span><br><span class="line">subject.next(3);    // silently ignored</span><br><span class="line">subject.unsubscribe();</span><br><span class="line">subject.next(4);    // Unhandled ObjectUnsubscribedError</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>当你通过他自身传递数据时，他会进行#2，就是obser那一套。又若是你通过next传递数据，他又会表现出他observable的一面。</p>
+</li>
+</ol>
+<p>之所以称之为’subject‘是因为上述第三点。 在四人帮的设计模式里，’Subjects‘是一个拥有’addObserver‘方法的类。在这个例子里面，’addObserver‘方法是’subscribe‘，这里有一个<a href="http://jsbin.com/muziva/1/edit?js,output" target="_blank" rel="noopener">jsbin</a>的例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">const &#123; Subject &#125; = Rx;</span><br><span class="line"></span><br><span class="line">const subject = new Subject();</span><br><span class="line"></span><br><span class="line">// you can subscribe to them like any other observable</span><br><span class="line"></span><br><span class="line">subject.subscribe(x =&gt; console.log(&apos;one&apos;, x), err =&gt; console.error(&apos;one&apos;, err));</span><br><span class="line">subject.subscribe(x =&gt; console.log(&apos;two&apos;, x), err =&gt; console.error(&apos;two&apos;, err));</span><br><span class="line">subject.subscribe(x =&gt; console.log(&apos;three&apos;, x), err =&gt; console.error(&apos;three&apos;, err));</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// and you can next values into subjects.</span><br><span class="line">// NOTICE: each value is sent to *all* subscribers. This is the multicast nature of subjects.</span><br><span class="line"></span><br><span class="line">subject.next(1);</span><br><span class="line">subject.next(2);</span><br><span class="line">subject.next(3);</span><br><span class="line"></span><br><span class="line">// An error will also be sent to all subscribers</span><br><span class="line">subject.error(new Error(&apos;bad&apos;));</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// NOTICE: once it&apos;s errored or completed, you can&apos;t send new values into it</span><br><span class="line">try &#123;</span><br><span class="line">  subject.next(4); //throws ObjectUnsubscribedError</span><br><span class="line">&#125; catch (err) &#123;</span><br><span class="line">  console.error(&apos;oops&apos;, err);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="使一个-’COLD‘-Observable-‘HOT’"><a href="#使一个-’COLD‘-Observable-‘HOT’" class="headerlink" title="使一个 ’COLD‘ Observable ‘HOT’"></a>使一个 ’COLD‘ Observable ‘HOT’</h3><p>当我们使用了Subject，我们可以使用一些函数式编程方法来使一个 ’cold‘ Observable ‘hot’:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">function makeHot(cold) &#123;</span><br><span class="line">  const subject = new Subject();</span><br><span class="line">  cold.subscribe(subject);</span><br><span class="line">  return new Observable((observer) =&gt; subject.subscribe(observer));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 整体流程就是：observer -&gt; subject -&gt; cold(依次订阅下一个observable)</span><br></pre></td></tr></table></figure></p>
+<p>我们的makeHot方法可以接收任何的cold observable并且可以通过创建一个共享的subject。这里有个例子<a href="http://jsbin.com/ketodu/1/edit?js,output" target="_blank" rel="noopener">jsbin</a></p>
+<p>但是我们仍然有一些小的问题，因为，我们仍然没有跟踪我们源observable的subscription(就是cancel函数)，因此当我们想要取消的时候，我们该怎么取消呢？我们可以通过添加引用计数来解决这个问题：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">function makeHotRefCounted(cold) &#123;</span><br><span class="line">  const subject = new Subject();</span><br><span class="line">  const mainSub = cold.subscribe(subject);</span><br><span class="line">  let refs = 0;</span><br><span class="line">  return new Observable((observer) =&gt; &#123;</span><br><span class="line">    refs++;</span><br><span class="line">    let sub = subject.subscribe(observer);</span><br><span class="line">    return () =&gt; &#123;</span><br><span class="line">      refs--;</span><br><span class="line">      if (refs === 0) mainSub.unsubscribe();</span><br><span class="line">      sub.unsubscribe();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这样我们就有了unsubscribe函数了。<a href="http://jsbin.com/lubata/1/edit?js,output" target="_blank" rel="noopener">jsbin</a></p>
+<h3 id="在Rxjs中，使用’publish-‘或者’share-‘"><a href="#在Rxjs中，使用’publish-‘或者’share-‘" class="headerlink" title="在Rxjs中，使用’publish()‘或者’share()‘"></a>在Rxjs中，使用’publish()‘或者’share()‘</h3><p>你应当使用publish或者share而不是上面造的makeHot。 有很多种方法可以是cold变为hot, 并且在Rx中有很多种高效简洁的方法来实现。</p>
+<p>在rxjs 5中，share操作符，可以是cold变成hot，以及使用引用计数的observable。并且这个observable还可以重试当他失败或者成功。因为当他错误，完成或者取消订阅以后，subjects就不可以重新使用了，于是<code>share()</code>操作符会重新回收死掉的subjects并且在生成一个新的subject,使得我们可以重新订阅。<br>这里有一个栗子<a href="http://jsbin.com/mexuma/1/edit?js,output" target="_blank" rel="noopener">jsbin</a><br>经过尝试错误，取消订阅是可以的重新订阅的。</p>
+<h1 id="The-“Warm”-Observable"><a href="#The-“Warm”-Observable" class="headerlink" title="The “Warm” Observable"></a>The “Warm” Observable</h1><p>Given everything stated above, one might be able to see how an Observable, being that it’s just a function, could actually be both “hot” and “cold”. Perhaps it observes two producers? One it creates and one it closes over? That’s probably bad juju, but there are rare cases where it might be necessary. A multiplexed web socket for example, must share a socket, but send its own subscription and filter out a data stream.</p>
+<h3 id="温暖的-observable自己看吧"><a href="#温暖的-observable自己看吧" class="headerlink" title="温暖的 observable自己看吧"></a>温暖的 observable自己看吧</h3><h3 id="’hot‘和’cold‘都是针对生产者来说的"><a href="#’hot‘和’cold‘都是针对生产者来说的" class="headerlink" title="’hot‘和’cold‘都是针对生产者来说的"></a>’hot‘和’cold‘都是针对生产者来说的</h3><p>当你是用shared 引用来关闭producer,那么他是hot。 如果你是在你的observable中创建生产者那么他是cold,若是两者都做，那么我猜他是’warm‘吧！</p>
+<blockquote>
+<p>hot Observable通常是多播的，但若是producer一次只提供一个监听器数据，此时再说他是多播的就会有些模糊了。</p>
+</blockquote>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/rxjs/">rxjs</a><a href="/tags/reactive-programming/">reactive programming</a><a href="/tags/Ben-Lesh-原文作者/">Ben Lesh(原文作者)</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 hello2dj (dj_amazing@sina.com)
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

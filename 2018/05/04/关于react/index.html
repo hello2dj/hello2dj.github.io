@@ -1,0 +1,158 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>关于react | hello2dj | if you can&#39;t explain it simply, you don&#39;t understand it well enough</title>
+
+  
+  <meta name="author" content="hello2dj (dj_amazing@sina.com)">
+  
+
+  
+  <meta name="description" content="每个人都是带着棱角来到世上，只有磨平棱角才能走的更远">
+  
+
+  
+  
+  <meta name="keywords" content="react">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="关于react"/>
+
+  <meta property="og:site_name" content="hello2dj"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="hello2dj" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">hello2dj</a>
+    </h1>
+    <p class="site-description">if you can&#39;t explain it simply, you don&#39;t understand it well enough</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/categories">Categories</a></li>
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>关于react</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/05/04/关于react/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-05-03T16:00:00.000Z">
+          2018-05-04
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h3 id="什么-jsx"><a href="#什么-jsx" class="headerlink" title="什么 jsx"></a>什么 jsx</h3><p>Fundamentally, JSX just provides syntactic sugar for the React.createElement(component, props, …children) function. The JSX code:</p>
+<h3 id="react-element-vs-component"><a href="#react-element-vs-component" class="headerlink" title="react element vs component"></a>react element vs component</h3><h4 id="element"><a href="#element" class="headerlink" title="element"></a>element</h4><blockquote>
+<p>Simply put, a React element describes what you want to see on the screen. Not so simply put, a React element is an object representation of a DOM node.’</p>
+</blockquote>
+<h3 id="react-element-简单说就是描述了你在屏幕上所看到的，复杂点说就是一个-DOM-node-的-js-object-表现代理"><a href="#react-element-简单说就是描述了你在屏幕上所看到的，复杂点说就是一个-DOM-node-的-js-object-表现代理" class="headerlink" title="react element 简单说就是描述了你在屏幕上所看到的，复杂点说就是一个 DOM node 的 js object 表现代理"></a>react element 简单说就是描述了你在屏幕上所看到的，复杂点说就是一个 DOM node 的 js object 表现代理</h3><blockquote>
+<p>In order to create our object representation of a DOM node (aka React element), we can use React’s createElement method.</p>
+</blockquote>
+<h3 id="为了创建一个-DOM-node-的-js-object-表现代理，我们需要使用-react-的-createElement-方法"><a href="#为了创建一个-DOM-node-的-js-object-表现代理，我们需要使用-react-的-createElement-方法" class="headerlink" title="为了创建一个 DOM node 的 js object 表现代理，我们需要使用 react 的 createElement 方法"></a>为了创建一个 DOM node 的 js object 表现代理，我们需要使用 react 的 createElement 方法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">const element = React.createElement(</span><br><span class="line">  &apos;div&apos;,</span><br><span class="line">  &#123;id: &apos;login-btn&apos;&#125;,</span><br><span class="line">  &apos;Login&apos;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h3 id="而我们所看到的所有如图片里的写法都是-jsx-当他们被-babel-转义后就是这个"><a href="#而我们所看到的所有如图片里的写法都是-jsx-当他们被-babel-转义后就是这个" class="headerlink" title="而我们所看到的所有如图片里的写法都是 jsx, 当他们被 babel 转义后就是这个"></a>而我们所看到的所有如图片里的写法都是 jsx, 当他们被 babel 转义后就是这个</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">React.createElement(Icon, null)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>So finally, what do we call it when we write out our component like this, <icon>? We can call it “creating an element” because after the JSX is transpiled, that’s exactly what’s happening.<br>也就是我们在 jsx 文件里的所有的类似的写法都是在写 createElement()方法（jsx 会被 babel 转义）</icon></p>
+</blockquote>
+<h3 id="如下"><a href="#如下" class="headerlink" title="如下"></a>如下</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">function Button (&#123; addFriend &#125;) &#123;</span><br><span class="line">  return (</span><br><span class="line">    &lt;button onClick=&#123;addFriend&#125;&gt;Add Friend&lt;/button&gt;</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function User (&#123; name, addFriend &#125;) &#123;</span><br><span class="line">  return (</span><br><span class="line">    &lt;div&gt;</span><br><span class="line">      &lt;p&gt;&#123;name&#125;&lt;/p&gt;</span><br><span class="line">      &lt;Button addFriend=&#123;addFriend&#125;/&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="会被转为"><a href="#会被转为" class="headerlink" title="会被转为"></a>会被转为</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">function Button (&#123; addFriend &#125;) &#123;</span><br><span class="line">  return React.createElement(</span><br><span class="line">    &quot;button&quot;,</span><br><span class="line">    &#123; onClick: addFriend &#125;,</span><br><span class="line">    &quot;Add Friend&quot;</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function User(&#123; name, addFriend &#125;) &#123;</span><br><span class="line">  return React.createElement(</span><br><span class="line">    &quot;div&quot;,</span><br><span class="line">    null,</span><br><span class="line">    React.createElement(</span><br><span class="line">      &quot;p&quot;,</span><br><span class="line">      null,</span><br><span class="line">      name</span><br><span class="line">    ),</span><br><span class="line">    React.createElement(Button, &#123; addFriend &#125;)</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="component"><a href="#component" class="headerlink" title="component"></a>component</h3><blockquote>
+<p>“Components are the building blocks of React”. Notice, however, that we started this post with elements. The reason for this is because once you understand elements, understanding components is a smooth transition. A component is a function or a Class which optionally accepts input and returns a React element.</p>
+</blockquote>
+<h3 id="理解了上面的-react-element-就知道-component-了，对上段英文翻译一下就是，-component-是构建-react-应用的基础，理解了-element-就知道了，component-就是一个类或者是一个函数，他接收输入-并且返回一个-element-以供-react-使用"><a href="#理解了上面的-react-element-就知道-component-了，对上段英文翻译一下就是，-component-是构建-react-应用的基础，理解了-element-就知道了，component-就是一个类或者是一个函数，他接收输入-并且返回一个-element-以供-react-使用" class="headerlink" title="理解了上面的 react element 就知道 component 了，对上段英文翻译一下就是， component 是构建 react 应用的基础，理解了 element 就知道了，component 就是一个类或者是一个函数，他接收输入 并且返回一个 element 以供 react 使用"></a>理解了上面的 react element 就知道 component 了，对上段英文翻译一下就是， component 是构建 react 应用的基础，理解了 element 就知道了，component 就是一个类或者是一个函数，他接收输入 并且返回一个 element 以供 react 使用</h3><ol>
+<li>createElement(type, props, […children])<br>type 是 tagName string, 或者 component(class, function) 又或者是 fragment</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">createElement -&gt; 解析props, 生成key或者ref, -&gt;生成vnode</span><br></pre></td></tr></table></figure>
+<h3 id="http-blog-csdn-net-liangklfang-article-details-72782920"><a href="#http-blog-csdn-net-liangklfang-article-details-72782920" class="headerlink" title="http://blog.csdn.net/liangklfang/article/details/72782920"></a><a href="http://blog.csdn.net/liangklfang/article/details/72782920" target="_blank" rel="noopener">http://blog.csdn.net/liangklfang/article/details/72782920</a></h3><h3 id="getSnapshotBeforeUpdate（https-reactjs-org-blog-2018-03-27-update-on-async-rendering-html-reading-dom-properties-b-】、【"><a href="#getSnapshotBeforeUpdate（https-reactjs-org-blog-2018-03-27-update-on-async-rendering-html-reading-dom-properties-b-】、【" class="headerlink" title="getSnapshotBeforeUpdate（https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#reading-dom-properties-b=】、【"></a>getSnapshotBeforeUpdate（<a href="https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#reading-dom-properties-b=】、【" target="_blank" rel="noopener">https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#reading-dom-properties-b=】、【</a></h3><p>这个生命周期函数是在 render 之后 DOM 更新之前调用的</p>
+<p>若是想要获取 DOM 更新之前的 DOM 数据可以在这个函数里获取</p>
+<h3 id="react-关于-props-和-state-的函数或属性"><a href="#react-关于-props-和-state-的函数或属性" class="headerlink" title="react 关于 props 和 state 的函数或属性"></a>react 关于 props 和 state 的函数或属性</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">static defaultProps = &#123;&#125; // 默认属性</span><br><span class="line">getDefaultProps , 函数的形式获取默认属性</span><br><span class="line">getInitialState , 函数的形式获取初始state</span><br></pre></td></tr></table></figure>
+<h3 id="ts中的keyof-是展示一个对象中的-key"><a href="#ts中的keyof-是展示一个对象中的-key" class="headerlink" title="ts中的keyof 是展示一个对象中的 key"></a>ts中的keyof 是展示一个对象中的 key</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">keyof &#123;a: 3&#125; // a</span><br><span class="line"></span><br><span class="line">type Partial&lt;T&gt; = &#123;</span><br><span class="line">    [P in keyof T]?: T[P];  // P是T中的key, 且加了？ 就是可选的意思</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">type Required&lt;T&gt; = &#123;</span><br><span class="line">    [P in keyof T]-?: T[P]; // -? 就是去掉 ？ 去掉可选性， 也可以使+？添加可选属性</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">type Readonly&lt;T&gt; = &#123;</span><br><span class="line">    readonly [P in keyof T]: T[P]; // 全部加上readonly属性</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/react/">react</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 hello2dj (dj_amazing@sina.com)
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

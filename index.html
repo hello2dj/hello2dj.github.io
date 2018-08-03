@@ -1,0 +1,1091 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>hello2dj | if you can&#39;t explain it simply, you don&#39;t understand it well enough</title>
+
+  
+  <meta name="author" content="hello2dj (dj_amazing@sina.com)">
+  
+
+  
+  <meta name="description" content="每个人都是带着棱角来到世上，只有磨平棱角才能走的更远">
+  
+
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  
+
+  <meta property="og:site_name" content="hello2dj"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="hello2dj" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">hello2dj</a>
+    </h1>
+    <p class="site-description">if you can&#39;t explain it simply, you don&#39;t understand it well enough</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/categories">Categories</a></li>
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/08/02/node源码系列1/"><span>node源码系列1</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/08/02/node源码系列1/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-08-02T10:50:27.000Z">
+          2018-08-02
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>纯贴一波代码，这段代码在/internal/process/fixed_queue.js, 使用在/internal/process/next_tick.js中，用来管理添加的next_tick的回调函数，在早期版本中使用的array来管理，在某一期就换成了这个，我测试性能，他俩不在一个数量级（其实都不用测试因为fixed_queue，本身用的array），array明显快于fixed_queue, 但我也没有找到替换的理由。这个数据够很有意思</p>
+<ol>
+<li>他相当于是一个一个的ringbuffer 连接起来的单向链表</li>
+<li>使用ringbuffer是为了更好更高效的利用内存(这也是我推测的替换的一个原因)， 因为以前用的是是一个大的array，当next_tick过多就会出现一个array占用过多内存，对gc不友好，小块小块的操作也利于对象的回收<blockquote>
+<p>这里又个我们上了一个生动的课程就是分而治之，既然大块内存不利于开辟与操作，有浪费的可能，那就每一次拿一小块，就像是node的事件循环，他并不是把所有的事件统统放到一个queue中，而是做了拆分，根据事件的种类进行拆分，再说一一个就是go的channel，若是所有的数据都通过一个channel进行传递，也是可以，但当量大的时候返回会很弱， 但是拆分过细也不行，就好比go的channel他的调度能力也是有限的，不是无穷无尽的，当达到10w是就会出现饿死的goroutine。 返回来看我们的fixed_queue, 他的每个ringbuffer 设置的大小是2048，而不是10，因为若是太小，反而有加剧了gc的工作，因为要过于频繁的gc。</p>
+</blockquote>
+</li>
+<li>为什么大小是2048， 我们以往在实现ringbuffer的时候都是通过 mod来进行判断，在这里我们有学习了， 当Size为2的n次方时我们还可以通过是用 (Size - 1) &amp; x来取模<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Size = 8;</span><br><span class="line">Size - 1 = b111;</span><br><span class="line">显然 n 无论是多少和111相与得到的值都是在（0, 7）内正好是8的模</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br></pre></td><td class="code"><pre><span class="line">&apos;use strict&apos;;</span><br><span class="line"></span><br><span class="line">// Currently optimal queue size, tested on V8 6.0 - 6.6. Must be power of two.</span><br><span class="line">const kSize = 2048;</span><br><span class="line">const kMask = kSize - 1;</span><br><span class="line"></span><br><span class="line">// The FixedQueue is implemented as a singly-linked list of fixed-size</span><br><span class="line">// circular buffers. It looks something like this:</span><br><span class="line">//</span><br><span class="line">//  head                                                       tail</span><br><span class="line">//    |                                                          |</span><br><span class="line">//    v                                                          v</span><br><span class="line">// +-----------+ &lt;-----\       +-----------+ &lt;------\         +-----------+</span><br><span class="line">// |  [null]   |        \----- |   next    |         \------- |   next    |</span><br><span class="line">// +-----------+               +-----------+                  +-----------+</span><br><span class="line">// |   item    | &lt;-- bottom    |   item    | &lt;-- bottom       |  [empty]  |</span><br><span class="line">// |   item    |               |   item    |                  |  [empty]  |</span><br><span class="line">// |   item    |               |   item    |                  |  [empty]  |</span><br><span class="line">// |   item    |               |   item    |                  |  [empty]  |</span><br><span class="line">// |   item    |               |   item    |       bottom --&gt; |   item    |</span><br><span class="line">// |   item    |               |   item    |                  |   item    |</span><br><span class="line">// |    ...    |               |    ...    |                  |    ...    |</span><br><span class="line">// |   item    |               |   item    |                  |   item    |</span><br><span class="line">// |   item    |               |   item    |                  |   item    |</span><br><span class="line">// |  [empty]  | &lt;-- top       |   item    |                  |   item    |</span><br><span class="line">// |  [empty]  |               |   item    |                  |   item    |</span><br><span class="line">// |  [empty]  |               |  [empty]  | &lt;-- top  top --&gt; |  [empty]  |</span><br><span class="line">// +-----------+               +-----------+                  +-----------+</span><br><span class="line">//</span><br><span class="line">// Or, if there is only one circular buffer, it looks something</span><br><span class="line">// like either of these:</span><br><span class="line">//</span><br><span class="line">//  head   tail                                 head   tail</span><br><span class="line">//    |     |                                     |     |</span><br><span class="line">//    v     v                                     v     v</span><br><span class="line">// +-----------+                               +-----------+</span><br><span class="line">// |  [null]   |                               |  [null]   |</span><br><span class="line">// +-----------+                               +-----------+</span><br><span class="line">// |  [empty]  |                               |   item    |</span><br><span class="line">// |  [empty]  |                               |   item    |</span><br><span class="line">// |   item    | &lt;-- bottom            top --&gt; |  [empty]  |</span><br><span class="line">// |   item    |                               |  [empty]  |</span><br><span class="line">// |  [empty]  | &lt;-- top            bottom --&gt; |   item    |</span><br><span class="line">// |  [empty]  |                               |   item    |</span><br><span class="line">// +-----------+                               +-----------+</span><br><span class="line">//</span><br><span class="line">// Adding a value means moving `top` forward by one, removing means</span><br><span class="line">// moving `bottom` forward by one. After reaching the end, the queue</span><br><span class="line">// wraps around.</span><br><span class="line">//</span><br><span class="line">// When `top === bottom` the current queue is empty and when</span><br><span class="line">// `top + 1 === bottom` it&apos;s full. This wastes a single space of storage</span><br><span class="line">// but allows much quicker checks.</span><br><span class="line"></span><br><span class="line">const FixedCircularBuffer = class FixedCircularBuffer &#123;</span><br><span class="line">    constructor() &#123;</span><br><span class="line">        this.bottom = 0;</span><br><span class="line">        this.top = 0;</span><br><span class="line">        this.list = new Array(kSize);</span><br><span class="line">        this.next = null;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    isEmpty() &#123;</span><br><span class="line">        return this.top === this.bottom;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    isFull() &#123;</span><br><span class="line">        return ((this.top + 1) &amp; kMask) === this.bottom;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    push(data) &#123;</span><br><span class="line">        this.list[ this.top ] = data;</span><br><span class="line">        this.top = (this.top + 1) &amp; kMask;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    shift() &#123;</span><br><span class="line">        const nextItem = this.list[ this.bottom ];</span><br><span class="line">        if (nextItem === undefined)</span><br><span class="line">            return null;</span><br><span class="line">        this.list[ this.bottom ] = undefined;</span><br><span class="line">        this.bottom = (this.bottom + 1) &amp; kMask;</span><br><span class="line">        return nextItem;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">class FixedQueue &#123;</span><br><span class="line">    constructor() &#123;</span><br><span class="line">        this.head = this.tail = new FixedCircularBuffer();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    isEmpty() &#123;</span><br><span class="line">        return this.head.isEmpty();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    push(data) &#123;</span><br><span class="line">        if (this.head.isFull()) &#123;</span><br><span class="line">            // Head is full: Creates a new queue, sets the old queue&apos;s `.next` to it,</span><br><span class="line">            // and sets it as the new main queue.</span><br><span class="line">            this.head = this.head.next = new FixedCircularBuffer();</span><br><span class="line">        &#125;</span><br><span class="line">        this.head.push(data);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    shift() &#123;</span><br><span class="line">        const &#123; tail &#125; = this;</span><br><span class="line">        const next = tail.shift();</span><br><span class="line">        if (tail.isEmpty() &amp;&amp; tail.next !== null) &#123;</span><br><span class="line">            // If there is another queue, it forms the new tail.</span><br><span class="line">            this.tail = tail.next;</span><br><span class="line">        &#125;</span><br><span class="line">        return next;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/nodejs/">nodejs</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/07/14/简话协变和逆变/"><span>简话协变和逆变</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/07/14/简话协变和逆变/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-07-14T13:00:30.102Z">
+          2018-07-14
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <blockquote>
+<p><a href="https://www.stephanboyer.com/post/132/what-are-covariance-and-contravariance" target="_blank" rel="noopener">原文地址</a></p>
+</blockquote>
+<p><img src="http://upload-images.jianshu.io/upload_images/4803763-49e1b847646a94db.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="一图胜千言"></p>
+<h1 id="什么是协变和逆变？"><a href="#什么是协变和逆变？" class="headerlink" title="什么是协变和逆变？"></a>什么是协变和逆变？</h1><p>子类型(subtyping)在编程语言理论中一直是个复杂的话题。对协变和逆变的误解是造成这个问题的一个主要原因。这篇文章就是来说明这两个术语的。</p>
+<p>接下来我们将会使用以下符号:</p>
+<ul>
+<li>A &lt;: B 意思是A是B的子类型</li>
+<li>A -&gt; B 代表一个函数参数是A,返回值是B</li>
+<li>e : T 意思是e的类型是T</li>
+</ul>
+<h1 id="一个有意思的问题"><a href="#一个有意思的问题" class="headerlink" title="一个有意思的问题"></a>一个有意思的问题</h1><p>假设我们有这么三个类型<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Greyhoud &lt;: Dog &lt;: Animal</span><br></pre></td></tr></table></figure></p>
+<p>可以看出Greyhound 是Dog的子类型，并且Dog 是Animal的子类型。通常来说，子类型是具有传递性的，因此Greyhound也是Animal的子类型。</p>
+<p><strong>问题</strong>: 下面那个类型是Dog -&gt; Dog的子类型</p>
+<ol>
+<li>Greyhound -&gt; Greyhound</li>
+<li>Greyhound -&gt; Animal</li>
+<li>Animal -&gt; Animal</li>
+<li>Animal -&gt; Greyhound</li>
+</ol>
+<p>我们如何回答这个问题呢？假设f是一个接收Dog -&gt; Dog 函数类型作为参数的函数。此时我们并不关心f的返回值类型，举个栗子吧，假设：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">f: (Dog -&gt; Dog) -&gt; String</span><br></pre></td></tr></table></figure></p>
+<p>现在我想用g作为参数来调用f,接下来我们一一看一下当g是上述类型时会是什么情况:</p>
+<ol>
+<li><p>假设g: Grehound -&gt; Grehound, 那个f(g)是否是类型安全的呢？<br>不是的，因为f有可能会用其他的Dog的子类型来调用g,比如：GemanShepherd</p>
+</li>
+<li><p>假设g: Geryhound -&gt; Animal, 那个f(g)是否是类型安全的呢？<br>不是的，原因同上</p>
+</li>
+<li><p>假设g: Animal -&gt; Animal, 那个f(g)是否是类型安全的呢？<br>不是的，因为f有可能调用了g,然后使用它的返回值让他吠，但并不是所有的动物都会吠。</p>
+</li>
+<li><p>假设g: Animal -&gt; Greyhound, 那个f(g)是否是类型安全的呢？<br>是的，这个是安全的，f可以使用任意类型的Dog调用g，因为所有的Dog都是Animal,并且，f可以假设g的返回值就是Dog，因为所有的Greyhound都是Dog。</p>
+</li>
+</ol>
+<h1 id="那么接下来该说啥呢？"><a href="#那么接下来该说啥呢？" class="headerlink" title="那么接下来该说啥呢？"></a>那么接下来该说啥呢？</h1><p>可以看出这个是类型安全的:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(Animal -&gt; Greyhound) &lt;: (Dog -&gt; Dog)</span><br></pre></td></tr></table></figure></p>
+<p>返回值的类型很直接可以看出: Greyhound 是Dog的子类型。但是参数的类型有点儿炸： Animal是Dog的祖(super)类型啊！</p>
+<p>为了用我们的行话(jargon)来解释这个奇怪的原因,我们规定参数的返回值类型是协变的，然而参数类型是逆变的。返回值是协变的意味着：A &lt;: B暗指(T -&gt; A) &lt;: (T -&gt; B)(A是B的子类就是说（T -&gt; A）是 （T -&gt; B）的子类型)。参数类型的逆变意味着: A &lt;: B 暗指（B -&gt; T）&lt;: （A -T)(A和B交换位置)</p>
+<p>有趣的事实是：在Typescript中，参数类型是双变的（即可以是逆变又可以是协变），很显然这是不合理(unsound)的表现（但是在2.6中可以使用–strictFunctionTypes来修正）</p>
+<h1 id="那么其他类型呢？"><a href="#那么其他类型呢？" class="headerlink" title="那么其他类型呢？"></a>那么其他类型呢？</h1><p><strong>问题</strong>: 那么List<dog>是List<animal>的子类型么？</animal></dog></p>
+<p>这问题的答案不是那么好说明的？如果list是不可变的，那么他就是类型安全的，但如果list是可变的，那么他就肯定不是安全的！</p>
+<p>为什么呢？假设我需要一个List<animal>然后你给我传了一个List<dog>,然而我认为你给我传的就是List<animal>,那么我就有可能往list中再插入一个Cat, 那么你的List<dog>里面就有了一个Cat!显然类型系统是不允许你这么做的。</dog></animal></dog></animal></p>
+<p>正式说明： 当我们的list是不可变(数据是否可变)的时候我们是允许类型是可协变的，但是若是可变(数据是否可变)得list那么list类型必须是不可变的(是指类型是否可变，无论是协变还是逆变都是不可以的)。</p>
+<p><strong>有趣的事实</strong>: 在Java里面，数组即是可变(是指数据是否可变)的又是类型可协变。显然这是不合理的(unsound)</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/typescript/">typescript</a><a href="/tags/subtype/">subtype</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/07/14/增加你的影响-读后感/"><span>安姐的文章之“增加你的影响力：为别人的决定辩论”-读后感</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/07/14/增加你的影响-读后感/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-07-14T13:00:30.101Z">
+          2018-07-14
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>今天安姐发了一篇新的文章<a href="https://mp.weixin.qq.com/s/CUPJfsMRSwODcajVjZu42Q" target="_blank" rel="noopener">增加你的影响力：为别人的决定辩论</a></p>
+<p>总结一下读完的感觉</p>
+<ol>
+<li><p>为 team 的决定辩论，而不是甩手<br>一个决定必然是大家达成了统一或者说是多数决定的。一旦决定达成了，即使你是保留意见，你也应当为这个决定坚守立场。而不是只有抱怨的说，谁谁决定请问他。当然若是你是少数派，若是你能睡服大家，ok，那么决定都到你这了。但若是依然没能成功，那你也应当捍卫这个决定（捍卫有些过火但最少不是一句谁谁决定的找他去）。总之我们是一个 team 应当维护这个 team 的决定。</p>
+</li>
+<li><p>不要总是想着撇清关系，对交流开方当其他人来询问一个系统或者 bug 或者设计的时候，若是自己参与的那么就应当进行说明，即使没有深度参与也不应当以敷衍的话语了结对话，比如</p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">“这是我们组产品经理决定的，你去问他们吧。”</span><br><span class="line">或者：</span><br><span class="line">“这是那谁谁谁的代码，已经走了，谁也不知道他为什么这样做。”</span><br><span class="line">或者：</span><br><span class="line">“这个一直就是这样了，我的改动只是 refactoring，没有动原来的逻辑。”</span><br><span class="line">再或者：“谁谁谁告诉我要这样做，我也不清楚为什么。”</span><br></pre></td></tr></table></figure>
+<p>想这些话语一般都会直接结束对话的。但这些话语一般都是为了撇清责任而说的，但事实是来询问的人一般也不是来问责的，而是来交流的，甚至有一些建设性的意见。我们最好是积极参与进去无论他问的是不是你直接参与的。但是如果人真的是很着急的状态我觉得你还是直接说上面的话吧，不要耽误时间….(大哭)。若真的是完全没有参与那么你也应当对询问之人进行引导方便他能快速的找到对的人。</p>
+<ol start="3">
+<li>思考整体与全局不要只是关心自己的那方面，应当有意识的成为整个项目的责任人，这里贴一下安姐的话</li>
+</ol>
+<p>当你开始基于一些决定，或者已有的设计，甚至已有的代码开展新的工作的时候，你就把自己认为是所有相关问题、设计的真正主人。你就需要去做下面的一些功课：</p>
+<ul>
+<li><p>别人问的问题，你多少了解一点历史情况。可以根据历史情况，客观的帮助解释。比如，这样做确实不够通用，但是当时因为时间紧急，并且没有现在这么多的场景的应用。所以这个设计在那个时候其实是有道理的。或是因为别的资源限制，这个决定是在当时的限制下的决定。</p>
+</li>
+<li><p>别人问的问题，其实也是你比较困惑的问题。那么作为团队的一部分，你其实比对方更应该对问题的答案感兴趣。为什么你没有在组里试图去了解这个问题？或者你应该接下来找到相关的人，去了解其背景或者初衷。</p>
+</li>
+<li><p>别人问的问题，其实是你和组里别人已经争论很久的问题。虽然最后的决定和你的想法不一致，但是为什么会这样做决定，对方一定有说服你的理由，哪怕是技术无关的理由。那么这应该就是你为这个决定辩论的理由。如果对方的理由都没有说服你，那为什么你同意这个决定呢？如果你还是觉得不同意，那么，你应该和自己人先商量清楚。如果你觉得完全不能妥协，那么你应该和相关的人讨论。一旦达成一个统一，你就应该为这个决定辩护。而不是为自己之前的、被说服的想法辩护，对决定吐槽。因为对于没有参与这个争论的人来说，听了你的片面说法，对解决问题没有太大的帮助。</p>
+</li>
+</ul>
+<ol start="4">
+<li><p>坚持自己的看法与推进系统前进相统一坚持自己的看法不是死坚持因为有时是多数决定的，此时我们可以保留己见但却万万不是消极的抵抗，因为这对项目的推进没有任何好处，应当在保持己见的时候积极推动项目</p>
+</li>
+<li><p>责任越大能力越大以前大家都说的是能力越大责任越大，看完后我觉得可以反过来说责任越大能力也会随之越大的，责任越大接触与担当的越多，自然能力成长越大。</p>
+</li>
+<li><p>多作对项目有利的事儿-为项目做出贡献不要总是宣传消极，多做对项目有利的事儿，不是大家互相攻击就能对项目有利，也不是互相猜忌就对项目有利。</p>
+</li>
+</ol>
+<p>7)  不要做下面的人</p>
+<pre><code>&gt; 工作中难免遇到一些人，当他跟你争论的时候，没有足够的理由，当时同意或者默认你的观点。可是离开会议后，跟别人一交流，又改变主意，或者完全不把自己的同意当回事。这样的人几乎不可能成为工作中的决策者，或者被委以重任的人。因为他既不能在和不同意见争论时坚守自己认为正确的看法，也不能在自己被说服取得一致后对推动整个项目的进展有任何贡献。因为他其实是不能为一个决定辩论，又不愿为自己表面同意的另一个决定辩论。
+
+    做墙头草可以，但你应当把你做墙头草的理由说出来，而不是仅仅是随风倒。
+</code></pre><p>很多时候，你是有机会对其负责的，只是你选择了不。好处是你不担什么责任。但是职场中，如果你认为你只对你从头到尾一手做的东西负责，或是只对完全由你决定的东西负责，那么最后，你几乎不用对任何事情负责</p>
+<p>总结：选择担当，不仅仅只是选择了责任，还有能力的成长，责任越大，能力就会越大</p>
+<p>ps:</p>
+<ol>
+<li>但有责任而又没有权利就会是一件蛋疼的事儿了。那意味着啥事儿你都没有拍板的权力，但是责任都是你的。</li>
+<li>我宁可和聪明人(这里的聪明人不是指那些爱耍小聪明的人，心机过深的人)争的面红耳赤，也不愿与面红耳赤者说一句话。</li>
+</ol>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/安姐/">安姐</a><a href="/tags/工作/">工作</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/07/14/欢乐的使用rxjs-promise-async-await/"><span>欢乐的使用rxjs-promise-async-await</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/07/14/欢乐的使用rxjs-promise-async-await/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-07-14T13:00:30.101Z">
+          2018-07-14
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>先上图：<br><img src="https://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/02/1455228348streams.png" alt=""></p>
+<p><a href="https://medium.com/@benlesh/rxjs-observable-interop-with-promises-and-async-await-bebb05306875" target="_blank" rel="noopener">原文地址(english, 需翻墙)</a></p>
+<h3 id="Rxjs-observable和promise以及Async-Await的互相操作"><a href="#Rxjs-observable和promise以及Async-Await的互相操作" class="headerlink" title="Rxjs observable和promise以及Async-Await的互相操作"></a>Rxjs observable和promise以及Async-Await的互相操作</h3><p>无论何时我都会被问到一个问题那就是如何再使用rxjs的时候使用promise和async和await呢？或者什么时候不能混合使用？我也说过几个不要同时使用的栗子。rxjs从一开始就可以很好的和promise一起使用。希望这篇文章能够很好的阐述一下。</p>
+<h3 id="如果他接受Observable-那么他就可以接受promise"><a href="#如果他接受Observable-那么他就可以接受promise" class="headerlink" title="如果他接受Observable, 那么他就可以接受promise"></a>如果他接受Observable, 那么他就可以接受promise</h3><p>举个栗子，假如你在使用switchMap, 那么你就可以像返回一个Observable一样返回一个Promise。就像下面这样 <a href="http://jsbin.com/xevozit/edit?js,console" target="_blank" rel="noopener">jsbin</a>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">// An observable that emits 10 multiples of 100 every 1 second</span><br><span class="line">const source$ = Observable.interval(1000)</span><br><span class="line">  .take(10)</span><br><span class="line">  .map(x =&gt; x * 100);</span><br><span class="line">/**</span><br><span class="line"> * returns a promise that waits `ms` milliseconds and emits &quot;done&quot;</span><br><span class="line"> */</span><br><span class="line">function promiseDelay(ms) &#123;</span><br><span class="line">  return new Promise(resolve =&gt; &#123;</span><br><span class="line">    setTimeout(() =&gt; resolve(&apos;done&apos;), ms);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// using it in a switchMap</span><br><span class="line">source$.switchMap(x =&gt; promiseDelay(x)) // works</span><br><span class="line">  .subscribe(x =&gt; console.log(x)); </span><br><span class="line"></span><br><span class="line">source$.switchMap(promiseDelay) // just a little more terse</span><br><span class="line">  .subscribe(x =&gt; console.log(x)); </span><br><span class="line"></span><br><span class="line">// or takeUntil</span><br><span class="line">source$.takeUntil(doAsyncThing(&apos;hi&apos;)) // totally works</span><br><span class="line">  .subscribe(x =&gt; console.log(x))</span><br><span class="line"></span><br><span class="line">// or weird stuff you want to do like</span><br><span class="line">Observable.of(promiseDelay(100), promiseDelay(10000)).mergeAll()</span><br><span class="line">  .subscribe(x =&gt; console.log(x))</span><br></pre></td></tr></table></figure></p>
+<p>经验证确实工作的很好</p>
+<h3 id="使用defer函数可以让返回promise的函数可以重新执行化"><a href="#使用defer函数可以让返回promise的函数可以重新执行化" class="headerlink" title="使用defer函数可以让返回promise的函数可以重新执行化"></a>使用defer函数可以让返回promise的函数可以重新执行化</h3><p>如果你的函数返回一个promise你可以使用Observable.defer包裹他，就可以使得他在发生错误是可以进行重试<a href="http://jsbin.com/dogabof/edit?js,console" target="_blank" rel="noopener">jsbin</a>。<br>Observable.defer: Returns an observable sequence that invokes the specified factory function whenever a new observer subscribes.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">function getErroringPromise() &#123;</span><br><span class="line">  console.log(&apos;getErroringPromise called&apos;);</span><br><span class="line">  return Promise.reject(new Error(&apos;sad&apos;));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Observable.defer(getErroringPromise)</span><br><span class="line">  .retry(3)</span><br><span class="line">  .subscribe(x =&gt; console.log);</span><br><span class="line"></span><br><span class="line">// logs &quot;getErroringPromise called&quot; 4 times (once + 3 retries), then errors</span><br></pre></td></tr></table></figure></p>
+<p>经验证确实工作的很好</p>
+<h3 id="使用defer来封装async-await"><a href="#使用defer来封装async-await" class="headerlink" title="使用defer来封装async-await"></a>使用defer来封装async-await</h3><p>defer是一个强有力的工具，你也可以用它来封装async-await函数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Observable.defer(async function() &#123;</span><br><span class="line">  const a = await promiseDelay(1000).then(() =&gt; 1);</span><br><span class="line">  const b = a + await promiseDelay(1000).then(() =&gt; 2);</span><br><span class="line">  return a + b + await promiseDelay(1000).then(() =&gt; 3);</span><br><span class="line">&#125;)</span><br><span class="line">.subscribe(x =&gt; console.log(x)) // logs 7</span><br></pre></td></tr></table></figure></p>
+<p>这个没有jsbin尝试失败了呃，因为不支持async-await,估计是我的姿势错了,但我在本地试了ok。</p>
+<h3 id="用forEach订阅一个Observable-然后来创建使用async-await的函数来并发执行任务。"><a href="#用forEach订阅一个Observable-然后来创建使用async-await的函数来并发执行任务。" class="headerlink" title="用forEach订阅一个Observable, 然后来创建使用async-await的函数来并发执行任务。"></a>用forEach订阅一个Observable, 然后来创建使用async-await的函数来并发执行任务。</h3><p>forEach 介绍：<br><img src="/2018/07/14/欢乐的使用rxjs-promise-async-await/forEach.png"><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">const click$ = Observable.fromEvent(button, &apos;clicks&apos;);</span><br><span class="line">/**</span><br><span class="line"> * Waits for 10 clicks of the button</span><br><span class="line"> * then posts a timestamp of the tenth click to an endpoint</span><br><span class="line"> * using fetch</span><br><span class="line"> */</span><br><span class="line">async function doWork() &#123;</span><br><span class="line">  await click$.take(10)</span><br><span class="line">    .forEach((_, i) =&gt; console.log(`click $&#123;i + 1&#125;`));</span><br><span class="line">  return await fetch(</span><br><span class="line">    &apos;notify/tenclicks&apos;,</span><br><span class="line">    &#123; method: &apos;POST&apos;, body: Date.now() &#125;</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>经本地验证很ok</p>
+<h3 id="使用toPromise-和async-await来把最后一个订阅值返回为一个Promise"><a href="#使用toPromise-和async-await来把最后一个订阅值返回为一个Promise" class="headerlink" title="使用toPromise()和async/await来把最后一个订阅值返回为一个Promise"></a>使用toPromise()和async/await来把最后一个订阅值返回为一个Promise</h3><p>事实上toPromise比较怪异因为他并不是rxjs规范所定义的操作符，只是我们提供了而已。而且toPromise只会把最后一个值使用promise进行包装，那就意味着，若是Observable一直不触发complete那么这个promise就永远不会resolve。</p>
+<blockquote>
+<p>toPromise是一个反模式，只有在需要promise的时候才使用，不要乱用，比如await<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">const source$ = Observable.interval(1000).take(3); // 0, 1, 2</span><br><span class="line">// waits 3 seconds, then logs &quot;2&quot;.</span><br><span class="line">// because the observable takes 3 seconds to complete, and </span><br><span class="line">// the interval emits incremented numbers starting at 0</span><br><span class="line">async function test() &#123;</span><br><span class="line">  console.log(await source$.toPromise());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<p>经本地验证很ok。</p>
+<h3 id="总结：Observable-和-Promise能很好的一起使用"><a href="#总结：Observable-和-Promise能很好的一起使用" class="headerlink" title="总结：Observable 和 Promise能很好的一起使用"></a>总结：Observable 和 Promise能很好的一起使用</h3><p>基本上如果你的目的就是active programming那么就应当使用Rxjs.Observable。但为了符合人体工程学，我们还是提供了和Promise的互操作，谁让他这么流行呢！其实当我们在async/await中使用forEach的是后会带来更多的可能性。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/rxjs/">rxjs</a><a href="/tags/reactive-programming/">reactive programming</a><a href="/tags/Ben-Lesh-原文作者/">Ben Lesh(原文作者)</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/07/14/一且从加密说起/"><span>一切从加密说起</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/07/14/一且从加密说起/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-07-14T13:00:30.099Z">
+          2018-07-14
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p><img src="https://documents.trendmicro.com/images/TEx/articles/encryption1.jpg" alt="加密"></p>
+<h3 id="我们为什么需要加密"><a href="#我们为什么需要加密" class="headerlink" title="我们为什么需要加密"></a><a href="https://www.schneier.com/blog/archives/2015/06/why_we_encrypt.html" target="_blank" rel="noopener">我们为什么需要加密</a></h3><ul>
+<li><h5 id="加密可以保护我们的数据。无论数据是正存放在我们自己的计算机上，还是位于数据中心，或者正在通过互联网传送的途中，加密都可以提供防护。加密可以保护我们的聊天，不管是视频、语音还是文字。加密可以保护我们的隐私，可以隐藏我们的踪迹，甚至有时候，它会保护我们的性命。这种保护是攸关我们每个人的。"><a href="#加密可以保护我们的数据。无论数据是正存放在我们自己的计算机上，还是位于数据中心，或者正在通过互联网传送的途中，加密都可以提供防护。加密可以保护我们的聊天，不管是视频、语音还是文字。加密可以保护我们的隐私，可以隐藏我们的踪迹，甚至有时候，它会保护我们的性命。这种保护是攸关我们每个人的。" class="headerlink" title="加密可以保护我们的数据。无论数据是正存放在我们自己的计算机上，还是位于数据中心，或者正在通过互联网传送的途中，加密都可以提供防护。加密可以保护我们的聊天，不管是视频、语音还是文字。加密可以保护我们的隐私，可以隐藏我们的踪迹，甚至有时候，它会保护我们的性命。这种保护是攸关我们每个人的。"></a>加密可以保护我们的数据。无论数据是正存放在我们自己的计算机上，还是位于数据中心，或者正在通过互联网传送的途中，加密都可以提供防护。加密可以保护我们的聊天，不管是视频、语音还是文字。加密可以保护我们的隐私，可以隐藏我们的踪迹，甚至有时候，它会保护我们的性命。这种保护是攸关我们每个人的。</h5></li>
+<li><h3 id="加密是我们所拥有的最强力的隐私保护技术，是唯一适合避免大规模监视。"><a href="#加密是我们所拥有的最强力的隐私保护技术，是唯一适合避免大规模监视。" class="headerlink" title="加密是我们所拥有的最强力的隐私保护技术，是唯一适合避免大规模监视。"></a>加密是我们所拥有的最强力的隐私保护技术，是唯一适合避免大规模监视。</h3></li>
+<li><h3 id="避免犯罪分子撒网寻找可乘之机——的技术。"><a href="#避免犯罪分子撒网寻找可乘之机——的技术。" class="headerlink" title="避免犯罪分子撒网寻找可乘之机——的技术。"></a>避免犯罪分子撒网寻找可乘之机——的技术。</h3></li>
+<li><h3 id="通过使用加密迫使双方都只能专注于具体的个体目标，我们也保护了这个社会。"><a href="#通过使用加密迫使双方都只能专注于具体的个体目标，我们也保护了这个社会。" class="headerlink" title="通过使用加密迫使双方都只能专注于具体的个体目标，我们也保护了这个社会。"></a>通过使用加密迫使双方都只能专注于具体的个体目标，我们也保护了这个社会。</h3></li>
+</ul>
+<h3 id="加密算法"><a href="#加密算法" class="headerlink" title="加密算法"></a>加密算法</h3><ul>
+<li><h4 id="对称加密-加密者和解密者用的秘钥都是一样的"><a href="#对称加密-加密者和解密者用的秘钥都是一样的" class="headerlink" title="对称加密(加密者和解密者用的秘钥都是一样的)"></a>对称加密(加密者和解密者用的秘钥都是一样的)</h4><ul>
+<li><h4 id="常见的对称加密算法有-DES、3DES、AES、Blowfish、IDEA、RC5、RC6"><a href="#常见的对称加密算法有-DES、3DES、AES、Blowfish、IDEA、RC5、RC6" class="headerlink" title="常见的对称加密算法有 DES、3DES、AES、Blowfish、IDEA、RC5、RC6"></a>常见的对称加密算法有 DES、3DES、AES、Blowfish、IDEA、RC5、RC6</h4></li>
+<li>举个简单例子，我把我的数据块切分成 32 位大小的，然后都和我的秘钥 key(32 位)进行异或，在相加，这就是个简单的对称加密了。。。有了我的 key 就可以解开了，在异或一次我的 key 就解开了</li>
+<li><h4 id="举个例子-AES-的模式，有-128，256-bit-的，接下来是加密模式"><a href="#举个例子-AES-的模式，有-128，256-bit-的，接下来是加密模式" class="headerlink" title="举个例子 AES 的模式，有 128，256 bit 的，接下来是加密模式"></a>举个例子 AES 的模式，有 128，256 bit 的，接下来是加密模式</h4>ECB：是一种基础的加密方式，密文被分割成分组长度相等的块（不足补齐），然后单独一个个加密，一个个输出组成密文。<br>CBC：是一种循环模式，前一个分组的密文和当前分组的明文异或操作后再加密，这样做的目的是增强破解难度。<br>CFB/OFB 实际上是一种反馈模式，目的也是增强破解的难度。还有填充方式，cbc 是需要填充的， cbc 还需要 iv, 初始化向量</li>
+</ul>
+<blockquote>
+<p>ECB 和 CBC 的加密结果是不一样的，两者的模式不同，而且 CBC 会在第一个密码块运算时加入一个初始化向量。</p>
+</blockquote>
+</li>
+<li><h4 id="非对称加密-加密者和解密者使用的-key-是不同，就说加密者使用-key1-加密，解谜者使用-key2-解密"><a href="#非对称加密-加密者和解密者使用的-key-是不同，就说加密者使用-key1-加密，解谜者使用-key2-解密" class="headerlink" title="非对称加密(加密者和解密者使用的 key 是不同，就说加密者使用 key1 加密，解谜者使用 key2 解密)"></a>非对称加密(加密者和解密者使用的 key 是不同，就说加密者使用 key1 加密，解谜者使用 key2 解密)</h4><ol>
+<li><p>非对称加密算法 RSA、ECC（移动设备用）、Diffie-Hellman、El Gamal、DSA（数字签名用），有个公钥和私钥，公钥加密的数据只有对应的私钥能解开，而私钥加密的数据就只有公钥能解开了 (<a href="http://www.ruanyifeng.com/blog/2013/06/rsa_algorithm_part_one.html" target="_blank" rel="noopener">rsa 原理</a>),被破解的难度在于大整数的因式分解困难, rsa 的加密明文是必须小于 key 的 <a href="http://www.metsky.com/archives/657.html" target="_blank" rel="noopener">明文，密文长度</a>而密文长度是和密钥长度是一致的。</p>
+</li>
+<li><p>安全性 ECDH &gt; DHE &gt; RSA,DH, 前两者提供前向安全: 前向安全: 用来产生会话密钥(session key)的长期密钥(long-term key)泄露出去，不会造成之前通讯时使用的会话密钥(session key)的泄露，也就不会暴漏以前的通讯内容。简单的说，当你丢了这个 long-term key 之后，你以后的行为的安全性无法保证，但是你之前的行为是保证安全的</p>
+</li>
+<li><p>rsa 加密时注意项, 跟 DES，AES 一样，RSA 也是一个块加密算法（ block cipher algorithm），总是在一个固定长度的块上进行操作。 当明文长度不够加密的长度时需要补足, 因为一次加密的长度是有固定的，为什么是固定的请看 rsa 原理篇</p>
+</li>
+</ol>
+</li>
+</ul>
+<pre><code>RSA 加密常用的填充方式有下面 3 种：
+
+1.  RSA_PKCS1_PADDING 填充模式，最常用的模式，当你选择 RSA_PKCS1_PADDING 填充模式时，如果你的明文不够 128 字节， 加密的时候会在你的明文中随机填充一些数据，所以会导致对同样的明文每次加密后的结果都不一样。对加密后的密文，服务器使用相同的填充方式都能解密。解密后的明文也就是之前加密的明文。
+
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">要求:</span><br><span class="line">输入：必须 比 RSA 钥模长(modulus) 短至少11个字节, 也就是　RSA_size(rsa) – 11</span><br><span class="line">如果输入的明文过长，必须切割，　然后填充</span><br><span class="line"></span><br><span class="line">输出：和modulus一样长</span><br><span class="line"></span><br><span class="line">根据这个要求，对于512bit的密钥，　block length = 512/8 – 11 = 53 字节</span><br></pre></td></tr></table></figure>
+
+2.  for RSA_NO_PADDING 　　不填充，当你在客户端选择 RSA_NO_PADDING 填充模式时，如果你的明文不够 128 字节， 加密的时候会在你的明文前面，前向的填充零。解密后的明文也会包括前面填充的零，这是服务器需要注意把解密后的字段前向填充的零去掉，才是真正之前加密的明文
+
+
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">输入：可以和RSA钥模长一样长，如果输入的明文过长，必须切割，　然后填充</span><br><span class="line"></span><br><span class="line">输出：和modulus一样长</span><br><span class="line"></span><br><span class="line">但跟AES等不同的是，　block length是跟key length有关的。</span><br><span class="line"></span><br><span class="line">每次RSA加密的明文的长度是受RSA填充模式限制的，但是RSA每次加密的块长度就是key length。</span><br></pre></td></tr></table></figure>
+
+3.  RSA_PKCS1_OAEP_PADDING，RSA_PKCS1_OAEP_PADDING 填充模式没有使用过， 他是 PKCS#1 推出的新的填充方式，安全性是最高的，和前面 RSA_PKCS1_PADDING 的区别就是加密前的编码方式不一样
+
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：RSA_size(rsa) – 41</span><br><span class="line"></span><br><span class="line">输出：和modulus一样长</span><br></pre></td></tr></table></figure>
+
+一句话不同的填充方式加解密也是不同的，使用的时候要注意
+</code></pre><h3 id="ssl-tls-的加密流程"><a href="#ssl-tls-的加密流程" class="headerlink" title="ssl/tls 的加密流程"></a>ssl/tls 的加密流程</h3><p><a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html" target="_blank" rel="noopener">详见</a></p>
+<h3 id="数字证书"><a href="#数字证书" class="headerlink" title="数字证书"></a>数字证书</h3><ul>
+<li><h4 id="数字证书和数字签名的原理"><a href="#数字证书和数字签名的原理" class="headerlink" title="数字证书和数字签名的原理"></a><a href="http://www.ruanyifeng.com/blog/2011/08/what_is_a_digital_signature.html" target="_blank" rel="noopener">数字证书和数字签名的原理</a></h4>简单来说数字签名就是传输信息的摘要，数字证书就是 CA 用自己的私钥把你的公钥及其他信息加密后生成内容, 即 CA 用自己的私钥来给你的公钥做数字签名</li>
+<li><h4 id="现在的数字证书一般采用证书的格式遵循-ITUT-X-509-国际标准。一个标准的-X-509-数字证书包含以下一些内容"><a href="#现在的数字证书一般采用证书的格式遵循-ITUT-X-509-国际标准。一个标准的-X-509-数字证书包含以下一些内容" class="headerlink" title="现在的数字证书一般采用证书的格式遵循 ITUT X.509 国际标准。一个标准的 X.509 数字证书包含以下一些内容"></a>现在的数字证书一般采用证书的格式遵循 ITUT X.509 国际标准。一个标准的 X.509 数字证书包含以下一些内容</h4><ol>
+<li>证书的版本信息;</li>
+<li>证书的序列号，每个证书都有一个唯一的证书序列号;</li>
+<li>证书所使用的签名算法;</li>
+<li>证书的发行机构名称，命名规则一般采用 X.500 格式;</li>
+<li>证书的有效期，现在通用的证书一般采用 UTC 时间格式，它的计时范围为 1950-2049;</li>
+<li>证书所有人的名称，命名规则一般采用 X.500 格式;</li>
+<li>证书所有人的公开密钥;</li>
+<li>证书发行者对证书的签名。</li>
+</ol>
+<ul>
+<li><h4 id="证书格式"><a href="#证书格式" class="headerlink" title="证书格式"></a>证书格式</h4><ul>
+<li><h5 id="PEM-格式"><a href="#PEM-格式" class="headerlink" title="PEM 格式"></a>PEM 格式</h5><p>PEM 格式通常用于数字证书认证机构（Certificate Authorities，CA），扩展名为.pem, .crt, .cer, and .key。内容为 Base64 编码的 ASCII 码文件，有类似”—–BEGIN CERTIFICATE—–” 和 “—–END CERTIFICATE—–”的头尾标记。服务器认证证书，中级认证证书和私钥都可以储存为 PEM 格式（认证证书其实就是公钥）。Apache 和类似的服务器使用 PEM 格式证书。</p>
+</li>
+<li><h5 id="DER-格式"><a href="#DER-格式" class="headerlink" title="DER 格式"></a>DER 格式</h5><p>DER 格式与 PEM 不同之处在于其使用二进制而不是 Base64 编码的 ASCII。扩展名为.der，但也经常使用.cer 用作扩展名，所有类型的认证证书和私钥都可以存储为 DER 格式。Java 是其典型使用平台。</p>
+</li>
+<li><h5 id="PKCS-7-P7B-格式"><a href="#PKCS-7-P7B-格式" class="headerlink" title="PKCS#7/P7B 格式"></a>PKCS#7/P7B 格式</h5><p>PKCS#7 或 P7B 格式通常以 Base64 的格式存储，扩展名为.p7b 或 .p7c，有类似 BEGIN PKCS7—–” 和 “—–END PKCS7—–”的头尾标记。PKCS#7 或 P7B 只能存储认证证书或证书路径中的证书（就是存储认证证书链，本级，上级，到根级都存到一个文件中）。不能存储私钥，Windows 和 Tomcat 都支持这种格式。</p>
+</li>
+<li><h5 id="PKCS-12-PFX-格式"><a href="#PKCS-12-PFX-格式" class="headerlink" title="PKCS#12/PFX 格式"></a>PKCS#12/PFX 格式</h5><p>PKCS#12 或 PFX 格式是以加密的二进制形式存储服务器认证证书，中级认证证书和私钥。扩展名为.pfx 和 .p12，PXF 通常用于 Windows 中导入导出认证证书和私钥。</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>X.509 证书标准支持三种不对称加密算法：RSA, DSA, Diffie-Hellman algorithms。最常用的是 RSA 算法</p>
+</li>
+<li><p>数字签名的作用</p>
+<ol>
+<li>是能确定消息的不可抵赖性，因为他人假冒不了发送方的私钥签名。发送方是用自己的私钥对信息进行加密的，只有使用发送方的公钥才能解密。</li>
+<li>是数字签名能保障消息的完整性。一次数字签名采用一个特定的哈希函数，它对不同文件产生的数字摘要的值也是不相同的</li>
+</ol>
+</li>
+<li>数字证书的作用<ol>
+<li>不可抵赖性</li>
+<li>消息的完整性</li>
+<li>身份认证</li>
+</ol>
+</li>
+</ul>
+<h3 id="CA-数字证书认证机构（英语：Certificate-Authority，缩写为-CA）"><a href="#CA-数字证书认证机构（英语：Certificate-Authority，缩写为-CA）" class="headerlink" title="CA 数字证书认证机构（英语：Certificate Authority，缩写为 CA）"></a>CA 数字证书认证机构（英语：Certificate Authority，缩写为 CA）</h3><ul>
+<li>负责发放和管理数字证书的权威机构，承担公钥体系中公钥的合法性检验的责任。</li>
+<li>CA 是证书的签发机构，它是 PKI 的核心。CA 是负责签发证书、认证证书、管理已颁发证书的机关。它要制定政策和具体步骤来验证、识别用户身份，并对用户证书进行签名，以确保证书持有者的身份和公钥的拥有权。</li>
+<li>CA 也拥有一个证书（内含公钥）和私钥。网上的公众用户通过验证 CA 的签字从而信任 CA ，任何人都可以得到 CA 的证书（含公钥），用以验证它所签发的证书。</li>
+<li>如果用户想得到一份属于自己的证书，他应先向 CA 提出申请。在 CA 判明申请者的身份后，便为他分配一个公钥，并且 CA 将该公钥与申请者的身份信息绑在一起，并为之签字后，便形成证书发给申请者。</li>
+<li>如果一个用户想鉴别另一个证书的真伪，他就用 CA 的公钥对那个证书上的签字进行验证，一旦验证通过，该证书就被认为是有效的</li>
+</ul>
+<h3 id="公钥基础设施（Public-Key-Infrastructure，简称-PKI）"><a href="#公钥基础设施（Public-Key-Infrastructure，简称-PKI）" class="headerlink" title="公钥基础设施（Public Key Infrastructure，简称 PKI）"></a>公钥基础设施（Public Key Infrastructure，简称 PKI）</h3><p><a href="https://zh.wikipedia.org/wiki/%E5%85%AC%E9%96%8B%E9%87%91%E9%91%B0%E5%9F%BA%E7%A4%8E%E5%BB%BA%E8%A8%AD" target="_blank" rel="noopener">wiki</a></p>
+<p>参考:</p>
+<ol>
+<li><a href="https://segmentfault.com/a/1190000007283514" target="_blank" rel="noopener">tsl/ssl 进阶</a></li>
+<li><a href="http://www.cnblogs.com/fishou/p/4206451.html" target="_blank" rel="noopener">ecdh, dh</a></li>
+<li><a href="http://blog.csdn.net/hherima/article/details/52469488" target="_blank" rel="noopener">pki 体系</a></li>
+<li><a href="http://www.jianshu.com/p/46e48bc517d0" target="_blank" rel="noopener">ca 证书链</a></li>
+</ol>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/crypto/">crypto</a><a href="/tags/ssl-tsl/">ssl/tsl</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/07/14/一帧一世界/"><span>一帧一世界</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/07/14/一帧一世界/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-07-14T13:00:30.099Z">
+          2018-07-14
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <blockquote>
+<p><a href="https://aerotwist.com/blog/the-anatomy-of-a-frame/" target="_blank" rel="noopener">原文地址</a></p>
+</blockquote>
+<h3 id="一帧的时间内到底发生了什么"><a href="#一帧的时间内到底发生了什么" class="headerlink" title="一帧的时间内到底发生了什么"></a>一帧的时间内到底发生了什么</h3><p>一些开发者经常会问我一个问题:页面到像素渲染的流程到底是啥？以及什么时候发生渲染以及为啥。所以啊我就发现好好的解释一下渲染像素到屏幕的过程是很有必要滴，且听我细细道来</p>
+<blockquote>
+<p>本文是从chrome/Blink的角度来谈的。其中大部分对于其他浏览器来说也是大同小异的，好比layout 或者stlye calcs, 但是总体架构可能不太一样。</p>
+</blockquote>
+<h3 id="俗话说一图胜千言"><a href="#俗话说一图胜千言" class="headerlink" title="俗话说一图胜千言"></a>俗话说一图胜千言</h3><p>确实如此，那我们也从一副图开始说起吧<br><img src="https://aerotwist.com/static/blog/the-anatomy-of-a-frame/anatomy-of-a-frame.svg" alt=""></p>
+<blockquote>
+<p>上图就是从得到像素到绘制到屏幕的整个完整过程</p>
+</blockquote>
+<h3 id="Processes"><a href="#Processes" class="headerlink" title="Processes"></a>Processes</h3><p>图里面有太多的东西了，所以我在下面进行了更详细的介绍，对于我们的理解来说这是很有帮助的</p>
+<ol>
+<li><p>render process. 一个tab页就是会有一个render process, 他包含了很对的thread, 他负责对我们的操作做出回应。 这些thread 包括 Compositor, Tile Worker, 以及main threads</p>
+</li>
+<li><p>GPU process. 这个是单一的进程(就是说无论你打开多少个tab都只有这一个GPU process),他服务于所有的tab。实际渲染到屏幕的像素数据都是由那些提交到GPU process的帧中的tile数据(贴图)以及其他一些数据(例如顶点数据，矩阵数据)，GPU就包含了一个thread， 而这个GPU thread才是实际干活的。</p>
+</li>
+</ol>
+<h3 id="render-process-threads"><a href="#render-process-threads" class="headerlink" title="render process threads"></a>render process threads</h3><p>接下来让我们看看render process中的threads</p>
+<ol>
+<li><p>Compositor thread. 当产生<a href="http://blog.csdn.net/zzqhost/article/details/7785376" target="_blank" rel="noopener">vsync</a> event(vsync是指os告诉浏览器如何产生新的一帧）时这个thread是第一个被通知的。同时也会接受所有的input事件，Compositor会尽量避免打扰main thread, 他会尝试处理输入，例如处理滚动(这可不代表滚动就有compositor处理的哦)。如果他能处理，那么他会直接去更改layer的位置然后吧frames同过GPU thread 提交大GPU去， 但是如果要处理输入的事件，或者其他一个可视化的工作，那么他就会把这些交给main thread</p>
+</li>
+<li><p>Main Thread. 这个是浏览器处理任务的thread，包括我们所熟知的和喜爱的js, styles, layout 以及 paint(这些在将来有可能会因为Houdini而发生改变，通过使用Houdini我们可以在Compositor Thread中run一些code).这个thread也或得了一个荣耀“最能引起卡顿的家伙”， 很大一部分原因是因为有太多的东西在这里运行了</p>
+</li>
+<li><p>Compositor Tile Worker(s).这些都是由Compositor Thread启动的，是用来处理光栅化任务的(栅格化这个术语可以用于任何将向量图形转换成位图的过程)。</p>
+</li>
+</ol>
+<p>我们可以把Compositor Thread 当做“大boss”。因为他不去运行js，不去布局，不去paint,或者其他事情。他所要做的事情除了启动main thread, 就是把frames传输给screen. 而且如果他没有在等待input event, 他就可以在等待main thread完成任务的同时传输frames</p>
+<p>你也可已设想 Serviec Workers 和 Web Workers 运行在this process(应该是指render process),但是我把他们放到后面在说，因为他们会使事情变得太复杂。</p>
+<h3 id="main-thread-里的整体流程"><a href="#main-thread-里的整体流程" class="headerlink" title="main thread 里的整体流程"></a>main thread 里的整体流程</h3><p><img src="https://aerotwist.com/static/blog/the-anatomy-of-a-frame/main-thread.svg" alt=""></p>
+<blockquote>
+<p>oftentimes the best way to improve performance is simply to remove the need for parts of the flow to be fired!</p>
+</blockquote>
+<p>让我们逐步介绍从vsync到像素的流程。 值得记住的是，浏览器不需要执行所有这些步骤，这取决于哪些是需要进行的。 例如，如果没有新的HTML解析，那么解析HTML将不会触发。 事实上，提高性能的最佳方法通常是简单地避免整个流程中某些部分的触发例如layout或者其他！</p>
+<p>同样值得注意的是，在样式和布局下的那些红色箭头似乎指向了requestAnimationFrame。 在代码中偶然触发是完全可能的。 这称为强制同步布局（或样式），它往往不利于性能。</p>
+<ol>
+<li><p>Frame start. Vsync事件触发，一帧开始</p>
+</li>
+<li><p>输入事件。 输入数据同过compositor传递给main thread中相应的handler。每帧当中，首先触发的是事件处理的函数(如touchmove, scroll, click)，但这不是必须的，因为有些没有事件发生。调度程序会尽力而为的尝试，成功性在不同操作系统之间有所不同。 在用户交互和事件之间还有一些延迟(making its way to the main thread to be handled 不会翻译了。。。)</p>
+</li>
+<li><p>requestAnimationFrame. 这里是进行屏幕元素更新的理想场所，你可以在这里刷新数据，并且这里是离最近一次Vsync最近的时机。其他视觉或者可视化任务(visual tasks)，例如style calcs,将在这个task之后进行，因此这里是更改元素的理想时机，如果你进行了更改了-100个classes, 将不会导致100 style calcs, 他们将会被延时批量处理。这里有一个要注意的地方就是不要在这里访问computed styles 或者是布局属性(例如el.style.backgroundImage or el.style.offsetWidth). 如果你这么做了，那么你将会引起样式的重新计算，或者是重新布局或者是全部，更甚至引起<a href="https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing?hl=en#avoid-layout-thrashing" target="_blank" rel="noopener">强制同步布局或者更甚至是布局恶化</a></p>
+</li>
+<li><p>Parse HTML. 任何新加入的HTML都会被处理，并且创建DOM, 你经常会在页面加载时或者在类似于appendChild这样的操作后看到他</p>
+</li>
+<li><p>Recalc Styles. 所有新加入或者改变过的样式都会被计算。这可能是整棵树，或者可以缩小范围，取决于更改的内容。 例如，更改body上的类可能是整体的，但值得注意的是，浏览器已经非常聪明地自动限制了样式计算的范围。</p>
+</li>
+<li><p>Layout. 计算每个可见元素的几何信息（每个元素的位置和大小）。 它通常是为整个文档计算的，通常计算成本与DOM大小成比例。</p>
+</li>
+<li><p>Update Layer Tree. 这个是给排序元素(z-index相关，overlap相关)创建<a href="https://www.w3ctech.com/topic/1065" target="_blank" rel="noopener">层叠上下文</a>以及深度信息的过程<br>(The process of creating the stacking contexts and depth sorting elements.)</p>
+</li>
+<li><p>Paint. 这是两部分过程中的第一个：paint是draw调用的记录（填充矩形，写入文本），以查看任何新的或视觉上已经改变的元素。 第二部分是光栅化（参见下面），绘制调用被执行，纹理被填充。这部分是绘制调用的记录，通常比光栅化要快得多，但是这两个部分通常统称为“painting”。</p>
+</li>
+<li><p>Composite. the layer 和贴图信息被计算出来并且传递回来给compositor thread 进行处理。这是因为要处理will-chandge, 相互遮挡的元素，或者是开启了硬件加速的元素。</p>
+</li>
+<li><p>Raster Scheduled and Rasterize: The draw calls recorded in the Paint task are now executed. This is done in Compositor Tile Workers, the number of which depends on the platform and device capabilities. For example, on Android you typically find one worker, on desktop you can sometimes find four. The rasterization is done in terms of layers, each of which is made up of tiles.</p>
+</li>
+<li><p>Frame End: With the tiles for the various layers all rasterized, any new tiles are committed, along with input data (which may have been changed in the event handlers), to the GPU Thread.</p>
+</li>
+<li><p>Frame Ships: Last, but by no means least, the tiles are uploaded to the GPU by the GPU Thread. The GPU, using quads and matrices (all the usual GL goodness) will draw the tiles to the screen.</p>
+</li>
+</ol>
+<h3 id="Bonus-round"><a href="#Bonus-round" class="headerlink" title="Bonus round"></a>Bonus round</h3><ul>
+<li>requestIdleCallback: if there’s any time Main Thread left at the end of a frame then requestIdleCallback can fire. This is a great opportunity to do non-essential work, like beaconing analytics data. If you’re new to requestIdleCallback have <a href="https://developers.google.com/web/updates/2015/08/using-requestidlecallback?hl=en" target="_blank" rel="noopener">a primer for it on Google Developers</a> that gives a bit more of a breakdown.</li>
+</ul>
+<h3 id="LAYERS-AND-LAYERS"><a href="#LAYERS-AND-LAYERS" class="headerlink" title="LAYERS AND LAYERS"></a>LAYERS AND LAYERS</h3><p>There are two versions of depth sorting that crop up in the workflow.</p>
+<p>Firstly, there’s the Stacking Contexts, like if you have two absolutely positioned divs that overlap. Update Layer Tree is the part of the process that ensures that z-index and the like is heeded.</p>
+<p>Secondly, there’s the Compositor Layers, which is later in the process, and applies more to the idea of painted elements. An element can be promoted to a Compositor Layer with the null transform hack, or will-change: transform, which can then be transformed around the place cheaply (good for animation!). But the browser may also have to create additional Compositor Layers to preserve the depth order specified by z-index and the like if there are overlapping elements. Fun stuff!</p>
+<h3 id="RIFFING-ON-A-THEME"><a href="#RIFFING-ON-A-THEME" class="headerlink" title="RIFFING ON A THEME"></a>RIFFING ON A THEME</h3><p>Virtually all of the process outlined above is done on the CPU. Only the last part, where tiles are uploaded and moved, is done on the GPU.</p>
+<p>On Android, however, the pixel flow is a little different when it comes to Rasterization: the GPU is used far more. Instead of Compositor Tile Workers doing the rasterization, the draw calls are executed as GL commands on the GPU in shaders.</p>
+<p>This is known as GPU Rasterization, and it’s one way to reduce the cost of paint. You can find out if your page is GPU rasterized by enabling the FPS Meter in Chrome DevTools:<br><img src="https://aerotwist.com/static/blog/the-anatomy-of-a-frame/fps-meter.jpg" alt=""></p>
+<h3 id="OTHER-RESOURCES"><a href="#OTHER-RESOURCES" class="headerlink" title="OTHER RESOURCES"></a>OTHER RESOURCES</h3><p>There’s a ton of other stuff that you might want to dive into, like how to avoid work on the Main Thread, or how this stuff works at a deeper level. Hopefully these will help you out:</p>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=Lpk1dYdo62o" target="_blank" rel="noopener">Compositing in Blink &amp; WebKit</a>. A little old now, but still worth a watch.</li>
+<li><a href="https://developers.google.com/web/fundamentals/performance/rendering/" target="_blank" rel="noopener">Browser Rendering Performance</a> - Google Developers</li>
+<li><a href="https://www.udacity.com/courses/ud860" target="_blank" rel="noopener">Browser Rendering Performance</a> - Udacity Course (totally free!).</li>
+<li><a href="https://dassur.ma/things/houdini-intro/" target="_blank" rel="noopener">Houdini</a> - The future, where you get to add more script to more parts of the flow.</li>
+</ul>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/web/">web</a><a href="/tags/chrome/">chrome</a><a href="/tags/frame/">frame</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/07/14/python基础学习/"><span>Hello pyhton</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/07/14/python基础学习/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-07-14T13:00:30.069Z">
+          2018-07-14
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p><strong>本篇是从一个大神哪里学习时总结的但忘了是哪个大神,若是引得不悦，果断删除(<a href="mailto:dj_amazing@sina.com" target="_blank" rel="noopener">dj_amazing@sina.com</a>)</strong></p>
+<p><img src="http://ds.devstore.cn/20141115/1416023053971/python.jpg" alt="一言不合就上图"></p>
+<h1 id="字符串不可变"><a href="#字符串不可变" class="headerlink" title="字符串不可变"></a>字符串不可变</h1><h1 id="Number（数字）"><a href="#Number（数字）" class="headerlink" title="Number（数字）"></a>Number（数字）</h1><p>Python3 支持 int、float、bool、complex（复数）。<br>在Python 3里，只有一种整数类型 int，表示为长整型，没有 python2 中的 Long。<br>像大多数语言一样，数值类型的赋值和计算都是很直观的。<br>内置的 type() 函数可以用来查询变量所指的对象类型。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; a, b, c, d = 20, 5.5, True, 4+3j</span><br><span class="line">&gt;&gt;&gt; print(type(a), type(b), type(c), type(d))</span><br><span class="line">&lt;class &apos;int&apos;&gt; &lt;class &apos;float&apos;&gt; &lt;class &apos;bool&apos;&gt; &lt;class &apos;complex&apos;&gt;</span><br></pre></td></tr></table></figure></p>
+<p>此外还可以用 isinstance 来判断：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; a = 111</span><br><span class="line">&gt;&gt;&gt; isinstance(a, int)</span><br><span class="line">True</span><br><span class="line">&gt;&gt;&gt; </span><br><span class="line">isinstance 和 type 的区别在于：</span><br><span class="line">class A:</span><br><span class="line">    pass</span><br><span class="line"></span><br><span class="line">class B(A):</span><br><span class="line">    pass</span><br><span class="line"></span><br><span class="line">isinstance(A(), A)  # returns True</span><br><span class="line">type(A()) == A      # returns True</span><br><span class="line">isinstance(B(), A)    # returns True</span><br><span class="line">type(B()) == A        # returns False</span><br></pre></td></tr></table></figure></p>
+<p>区别就是:</p>
+<p>type()不会认为子类是一种父类类型。</p>
+<p>isinstance()会认为子类是一种父类类型。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">注意：在 Python2 中是没有布尔型的，它用数字 0 表示 False，用 1 表示 True。到 Python3 中，把 True 和 False 定义成关键字了，但它们的值还是 1 和 0，它们可以和数字相加。</span><br></pre></td></tr></table></figure></p>
+<p>数值的除法（/）总是返回一个浮点数，要获取整数使用//操作符</p>
+<h1 id="String"><a href="#String" class="headerlink" title="String"></a>String</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/python3</span><br><span class="line"></span><br><span class="line">str = &apos;Runoob&apos;</span><br><span class="line"></span><br><span class="line">print (str)          # 输出字符串</span><br><span class="line">print (str[0:-1])    # 输出第一个个到倒数第二个的所有字符</span><br><span class="line">print (str[0])       # 输出字符串第一个字符</span><br><span class="line">print (str[2:5])     # 输出从第三个开始到第五个的字符</span><br><span class="line">print (str[2:])      # 输出从第三个开始的后的所有字符</span><br><span class="line">print (str * 2)      # 输出字符串两次</span><br><span class="line">print (str + &quot;TEST&quot;) # 连接字符串</span><br></pre></td></tr></table></figure>
+<p>与 C 字符串不同的是，Python 字符串不能被改变。向一个索引位置赋值，比如word[0] = ‘m’会导致错误。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">注意：</span><br><span class="line">1、反斜杠可以用来转义，使用r可以让反斜杠不发生转义。</span><br><span class="line">2、字符串可以用+运算符连接在一起，用*运算符重复。</span><br><span class="line">3、Python中的字符串有两种索引方式，从左往右以0开始，从右往左以-1开始。</span><br><span class="line">4、Python中的字符串不能改变。</span><br></pre></td></tr></table></figure></p>
+<h1 id="List（列表）"><a href="#List（列表）" class="headerlink" title="List（列表）"></a>List（列表）</h1><p>List（列表） 是 Python 中使用最频繁的数据类型。<br>列表可以完成大多数集合类的数据结构实现。列表中元素的类型可以不相同，它支持数字，字符串甚至可以包含列表（所谓嵌套）。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/python3</span><br><span class="line"></span><br><span class="line">list = [ &apos;abcd&apos;, 786 , 2.23, &apos;runoob&apos;, 70.2 ]</span><br><span class="line">tinylist = [123, &apos;runoob&apos;]</span><br><span class="line"></span><br><span class="line">print (list)            # 输出完整列表</span><br><span class="line">print (list[0])         # 输出列表第一个元素</span><br><span class="line">print (list[1:3])       # 从第二个开始输出到第三个元素</span><br><span class="line">print (list[2:])        # 输出从第三个元素开始的所有元素</span><br><span class="line">print (tinylist * 2)    # 输出两次列表</span><br><span class="line">print (list + tinylist) # 连接列表</span><br></pre></td></tr></table></figure></p>
+<h1 id="Tuple（元组）"><a href="#Tuple（元组）" class="headerlink" title="Tuple（元组）"></a>Tuple（元组）</h1><p>元组（tuple）与列表类似，不同之处在于元组的元素不能修改。元组写在小括号(())里，元素之间用逗号隔开。<br>元组中的元素类型也可以不相同。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/python3</span><br><span class="line"></span><br><span class="line">tuple = ( &apos;abcd&apos;, 786 , 2.23, &apos;runoob&apos;, 70.2  )</span><br><span class="line">tinytuple = (123, &apos;runoob&apos;)</span><br><span class="line"></span><br><span class="line">print (tuple)             # 输出完整元组</span><br><span class="line">print (tuple[0])          # 输出元组的第一个元素</span><br><span class="line">print (tuple[1:3])        # 输出从第二个元素开始到第三个元素</span><br><span class="line">print (tuple[2:])         # 输出从第三个元素开始的所有元素</span><br><span class="line">print (tinytuple * 2)     # 输出两次元组</span><br><span class="line">print (tuple + tinytuple) # 连接元组</span><br></pre></td></tr></table></figure></p>
+<p>注意：</p>
+<ol>
+<li>与字符串一样，元组的元素不能修改。</li>
+<li>元组也可以被索引和切片，方法一样。</li>
+<li>注意构造包含0或1个元素的元组的特殊语法规则。</li>
+<li>元组也可以使用+操作符进行拼接。</li>
+</ol>
+<h1 id="Set（集合）"><a href="#Set（集合）" class="headerlink" title="Set（集合）"></a>Set（集合）</h1><p>集合（set）是一个无序不重复元素的序列。<br>基本功能是进行成员关系测试和删除重复元素。<br>可以使用大括号({})或者 set()函数创建集合，注意：创建一个空集合必须用 set() 而不是 { }，因为 { } 是用来创建一个空字典。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/python3</span><br><span class="line"></span><br><span class="line">student = (&#123;&apos;Tom&apos;, &apos;Jim&apos;, &apos;Mary&apos;, &apos;Tom&apos;, &apos;Jack&apos;, &apos;Rose&apos;&#125;)</span><br><span class="line"></span><br><span class="line">print(student)   # 输出集合，重复的元素被自动去掉</span><br><span class="line"></span><br><span class="line"># 成员测试</span><br><span class="line">if(&apos;Rose&apos; in student) :</span><br><span class="line">    print(&apos;Rose 在集合中&apos;)</span><br><span class="line">else :</span><br><span class="line">    print(&apos;Rose 不在集合中&apos;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># set可以进行集合运算</span><br><span class="line">a = set(&apos;abracadabra&apos;)</span><br><span class="line">b = set(&apos;alacazam&apos;)</span><br><span class="line"></span><br><span class="line">print(a)</span><br><span class="line"></span><br><span class="line">print(a - b)     # a和b的差集</span><br><span class="line"></span><br><span class="line">print(a | b)     # a和b的并集</span><br><span class="line"></span><br><span class="line">print(a &amp; b)     # a和b的交集</span><br><span class="line"></span><br><span class="line">print(a ^ b)     # a和b中不同时存在的元素</span><br><span class="line">以上实例输出结果：</span><br><span class="line">&#123;&apos;Mary&apos;, &apos;Jim&apos;, &apos;Rose&apos;, &apos;Jack&apos;, &apos;Tom&apos;&#125;</span><br><span class="line">Rose 在集合中</span><br><span class="line">&#123;&apos;b&apos;, &apos;a&apos;, &apos;c&apos;, &apos;r&apos;, &apos;d&apos;&#125;</span><br><span class="line">&#123;&apos;b&apos;, &apos;d&apos;, &apos;r&apos;&#125;</span><br><span class="line">&#123;&apos;l&apos;, &apos;r&apos;, &apos;a&apos;, &apos;c&apos;, &apos;z&apos;, &apos;m&apos;, &apos;b&apos;, &apos;d&apos;&#125;</span><br><span class="line">&#123;&apos;a&apos;, &apos;c&apos;&#125;</span><br><span class="line">&#123;&apos;l&apos;, &apos;r&apos;, &apos;z&apos;, &apos;m&apos;, &apos;b&apos;, &apos;d&apos;&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="Re-模块"><a href="#Re-模块" class="headerlink" title="Re 模块"></a>Re 模块</h1><p>re.sub(r’(\b[a-z]+) \1’, r’adfasdf’, ‘cat in the the hat’) -&gt;<br>\1 是第一个捕获 就是(\b[a-z]+)，所以整个正则的意思就是匹配两个相同的单词，然后用r’adfasdf’替换</p>
+<h1 id="type"><a href="#type" class="headerlink" title="type"></a>type</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; def fn(self, name=&apos;world&apos;): # 先定义函数</span><br><span class="line">...     print(&apos;Hello, %s.&apos; % name)</span><br><span class="line">...</span><br><span class="line">&gt;&gt;&gt; Hello = type(&apos;Hello&apos;, (object,), dict(hello=fn)) # 创建Hello class</span><br><span class="line">&gt;&gt;&gt; h = Hello()</span><br><span class="line">&gt;&gt;&gt; h.hello()</span><br><span class="line">Hello, world.</span><br><span class="line">&gt;&gt;&gt; print(type(Hello))</span><br><span class="line">&lt;class &apos;type&apos;&gt;</span><br><span class="line">&gt;&gt;&gt; print(type(h))</span><br><span class="line">&lt;class &apos;__main__.Hello&apos;&gt;</span><br></pre></td></tr></table></figure>
+<p>要创建一个class类型，type()函数依次传入3个参数：</p>
+<p>class的名称；<br>继承的父类集合，注意Python支持多重继承，如果只有一个父类，别忘了tuple的单元素写法；<br>class的方法名称与函数绑定，这里我们把函数fn绑定到方法名hello上。<br>通过type()函数创建的类和直接写class是完全一样的，因为Python解释器遇到class定义时，仅仅是扫描一下class定义的语法，然后调用type()函数创建出class。</p>
+<p>正常情况下，我们都用class Xxx…来定义类，但是，type()函数也允许我们动态创建出类来，也就是说，动态语言本身支持运行期动态创建类，这和静态语言有非常大的不同，要在静态语言运行期创建类，必须构造源代码字符串再调用编译器，或者借助一些工具生成字节码实现，本质上都是动态编译，会非常复杂。</p>
+<h1 id="metaclass"><a href="#metaclass" class="headerlink" title="metaclass"></a>metaclass</h1><p>除了使用type()动态创建类以外，要控制类的创建行为，还可以使用metaclass。</p>
+<p>metaclass，直译为元类，简单的解释就是：</p>
+<p>当我们定义了类以后，就可以根据这个类创建出实例，所以：先定义类，然后创建实例。</p>
+<p>但是如果我们想创建出类呢？那就必须根据metaclass创建出类，所以：先定义metaclass，然后创建类。</p>
+<p>连接起来就是：先定义metaclass，就可以创建类，最后创建实例。</p>
+<p>所以，metaclass允许你创建类或者修改类。换句话说，你可以把类看成是metaclass创建出来的“实例”。</p>
+<p>metaclass是Python面向对象里最难理解，也是最难使用的魔术代码。正常情况下，你不会碰到需要使用metaclass的情况，所以，以下内容看不懂也没关系，因为基本上你不会用到。</p>
+<p>我们先看一个简单的例子，这个metaclass可以给我们自定义的MyList增加一个add方法：</p>
+<p>定义ListMetaclass，按照默认习惯，metaclass的类名总是以Metaclass结尾，以便清楚地表示这是一个metaclass：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># metaclass是类的模板，所以必须从`type`类型派生：</span><br><span class="line">class ListMetaclass(type):</span><br><span class="line">    def __new__(cls, name, bases, attrs):</span><br><span class="line">        attrs[&apos;add&apos;] = lambda self, value: self.append(value)</span><br><span class="line">        return type.__new__(cls, name, bases, attrs)</span><br><span class="line">有了ListMetaclass，我们在定义类的时候还要指示使用ListMetaclass来定制类，传入关键字参数metaclass：</span><br><span class="line"></span><br><span class="line">class MyList(list, metaclass=ListMetaclass):</span><br><span class="line">    pass</span><br></pre></td></tr></table></figure>
+<p>当我们传入关键字参数metaclass时，魔术就生效了，它指示Python解释器在创建MyList时，要通过ListMetaclass.<strong>new</strong>()来创建，在此，我们可以修改类的定义，比如，加上新的方法，然后，返回修改后的定义。</p>
+<p><strong>new</strong>()方法接收到的参数依次是：</p>
+<p>当前准备创建的类的对象；</p>
+<p>类的名字；</p>
+<p>类继承的父类集合；</p>
+<p>类的方法集合。</p>
+<p>测试一下MyList是否可以调用add()方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; L = MyList()</span><br><span class="line">&gt;&gt;&gt; L.add(1)</span><br><span class="line">&gt;&gt; L</span><br><span class="line">[1]</span><br><span class="line">而普通的list没有add()方法：</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; L2 = list()</span><br><span class="line">&gt;&gt;&gt; L2.add(1)</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;</span><br><span class="line">AttributeError: &apos;list&apos; object has no attribute &apos;add&apos;</span><br></pre></td></tr></table></figure></p>
+<p>动态修改有什么意义？直接在MyList定义中写上add()方法不是更简单吗？正常情况下，确实应该直接写，通过metaclass修改纯属变态。</p>
+<p>但是，总会遇到需要通过metaclass修改类定义的。ORM就是一个典型的例子。</p>
+<p>ORM全称“Object Relational Mapping”，即对象-关系映射，就是把关系数据库的一行映射为一个对象，也就是一个类对应一个表，这样，写代码更简单，不用直接操作SQL语句。</p>
+<p>要编写一个ORM框架，所有的类都只能动态定义，因为只有使用者才能根据表的结构定义出对应的类来。</p>
+<p>让我们来尝试编写一个ORM框架。</p>
+<p>编写底层模块的第一步，就是先把调用接口写出来。比如，使用者如果使用这个ORM框架，想定义一个User类来操作对应的数据库表User，我们期待他写出这样的代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">class User(Model):</span><br><span class="line"># 定义类的属性到列的映射：</span><br><span class="line">id = IntegerField(&apos;id&apos;)</span><br><span class="line">name = StringField(&apos;username&apos;)</span><br><span class="line">email = StringField(&apos;email&apos;)</span><br><span class="line">password = StringField(&apos;password&apos;)</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 创建一个实例：</span><br><span class="line">u = User(id=12345, name=&apos;Michael&apos;, email=&apos;test@orm.org&apos;, password=&apos;my-pwd&apos;)</span><br><span class="line"># 保存到数据库：</span><br><span class="line">u.save()</span><br></pre></td></tr></table></figure>
+<p>其中，父类Model和属性类型StringField、IntegerField是由ORM框架提供的，剩下的魔术方法比如save()全部由metaclass自动完成。虽然metaclass的编写会比较复杂，但ORM的使用者用起来却异常简单。</p>
+<p>现在，我们就按上面的接口来实现该ORM。</p>
+<p>首先来定义Field类，它负责保存数据库表的字段名和字段类型：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">class Field(object):</span><br><span class="line"></span><br><span class="line">    def __init__(self, name, column_type):</span><br><span class="line">        self.name = name</span><br><span class="line">        self.column_type = column_type</span><br><span class="line"></span><br><span class="line">    def __str__(self):</span><br><span class="line">        return &apos;&lt;%s:%s&gt;&apos; % (self.__class__.__name__, self.name)</span><br></pre></td></tr></table></figure>
+<p>在Field的基础上，进一步定义各种类型的Field，比如StringField，IntegerField等等：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">class StringField(Field):</span><br><span class="line"></span><br><span class="line">    def __init__(self, name):</span><br><span class="line">        super(StringField, self).__init__(name, &apos;varchar(100)&apos;)</span><br><span class="line"></span><br><span class="line">class IntegerField(Field):</span><br><span class="line"></span><br><span class="line">    def __init__(self, name):</span><br><span class="line">        super(IntegerField, self).__init__(name, &apos;bigint&apos;)</span><br></pre></td></tr></table></figure>
+<p>下一步，就是编写最复杂的ModelMetaclass了：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">class ModelMetaclass(type):</span><br><span class="line"></span><br><span class="line">    def __new__(cls, name, bases, attrs):</span><br><span class="line">        if name==&apos;Model&apos;:</span><br><span class="line">            return type.__new__(cls, name, bases, attrs)</span><br><span class="line">        print(&apos;Found model: %s&apos; % name)</span><br><span class="line">        mappings = dict()</span><br><span class="line">        for k, v in attrs.items():</span><br><span class="line">            if isinstance(v, Field):</span><br><span class="line">                print(&apos;Found mapping: %s ==&gt; %s&apos; % (k, v))</span><br><span class="line">                mappings[k] = v</span><br><span class="line">        for k in mappings.keys():</span><br><span class="line">            attrs.pop(k)</span><br><span class="line">        attrs[&apos;__mappings__&apos;] = mappings # 保存属性和列的映射关系</span><br><span class="line">        attrs[&apos;__table__&apos;] = name # 假设表名和类名一致</span><br><span class="line">        return type.__new__(cls, name, bases, attrs)</span><br></pre></td></tr></table></figure>
+<p>以及基类Model：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">class Model(dict, metaclass=ModelMetaclass):</span><br><span class="line"></span><br><span class="line">    def __init__(self, **kw):</span><br><span class="line">        super(Model, self).__init__(**kw)</span><br><span class="line"></span><br><span class="line">    def __getattr__(self, key):</span><br><span class="line">        try:</span><br><span class="line">            return self[key]</span><br><span class="line">        except KeyError:</span><br><span class="line">            raise AttributeError(r&quot;&apos;Model&apos; object has no attribute &apos;%s&apos;&quot; % key)</span><br><span class="line"></span><br><span class="line">    def __setattr__(self, key, value):</span><br><span class="line">        self[key] = value</span><br><span class="line"></span><br><span class="line">    def save(self):</span><br><span class="line">        fields = []</span><br><span class="line">        params = []</span><br><span class="line">        args = []</span><br><span class="line">        for k, v in self.__mappings__.items():</span><br><span class="line">            fields.append(v.name)</span><br><span class="line">            params.append(&apos;?&apos;)</span><br><span class="line">            args.append(getattr(self, k, None))</span><br><span class="line">        sql = &apos;insert into %s (%s) values (%s)&apos; % (self.__table__, &apos;,&apos;.join(fields), &apos;,&apos;.join(params))</span><br><span class="line">        print(&apos;SQL: %s&apos; % sql)</span><br><span class="line">        print(&apos;ARGS: %s&apos; % str(args))</span><br></pre></td></tr></table></figure>
+<p>当用户定义一个class User(Model)时，Python解释器首先在当前类User的定义中查找metaclass，如果没有找到，就继续在父类Model中查找metaclass，找到了，就使用Model中定义的metaclass的ModelMetaclass来创建User类，也就是说，metaclass可以隐式地继承到子类，但子类自己却感觉不到。</p>
+<p>在ModelMetaclass中，一共做了几件事情：</p>
+<p>排除掉对Model类的修改；</p>
+<p>在当前类（比如User）中查找定义的类的所有属性，如果找到一个Field属性，就把它保存到一个<strong>mappings</strong>的dict中，同时从类属性中删除该Field属性，否则，容易造成运行时错误（实例的属性会遮盖类的同名属性）；</p>
+<p>把表名保存到<strong>table</strong>中，这里简化为表名默认为类名。</p>
+<p>在Model类中，就可以定义各种操作数据库的方法，比如save()，delete()，find()，update等等。</p>
+<p>我们实现了save()方法，把一个实例保存到数据库中。因为有表名，属性到字段的映射和属性值的集合，就可以构造出INSERT语句。</p>
+<p>编写代码试试：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">u = User(id=12345, name=&apos;Michael&apos;, email=&apos;test@orm.org&apos;, password=&apos;my-pwd&apos;)</span><br><span class="line">u.save()</span><br><span class="line">输出如下：</span><br><span class="line"></span><br><span class="line">Found model: User</span><br><span class="line">Found mapping: email ==&gt; &lt;StringField:email&gt;</span><br><span class="line">Found mapping: password ==&gt; &lt;StringField:password&gt;</span><br><span class="line">Found mapping: id ==&gt; &lt;IntegerField:uid&gt;</span><br><span class="line">Found mapping: name ==&gt; &lt;StringField:username&gt;</span><br><span class="line">SQL: insert into User (password,email,username,id) values (?,?,?,?)</span><br><span class="line">ARGS: [&apos;my-pwd&apos;, &apos;test@orm.org&apos;, &apos;Michael&apos;, 12345]</span><br></pre></td></tr></table></figure></p>
+<p>可以看到，save()方法已经打印出了可执行的SQL语句，以及参数列表，只需要真正连接到数据库，执行该SQL语句，就可以完成真正的功能。</p>
+<p>不到100行代码，我们就通过metaclass实现了一个精简的ORM框架。</p>
+<h1 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h1><p>metaclass是Python中非常具有魔术性的对象，它可以改变类创建时的行为。这种强大的功能使用起来务必小心。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/python/">python</a><a href="/tags/基础/">基础</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/07/14/rocksdb与LSM-Tree/"><span>rocksdb与LSM-Tree</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/07/14/rocksdb与LSM-Tree/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-07-14T13:00:30.069Z">
+          2018-07-14
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p><img src="http://rocksdb.org/static/logo.svg" alt=""></p>
+<p>今天看了几篇非常棒的文章，列出来与大家共享<br><a href="http://blog.mrriddler.com/2017/05/30/LSM-Tree%E4%B8%8ERocksDB/" target="_blank" rel="noopener">rocksdb与LSM-Tree</a></p>
+<p><a href="https://soulmachine.gitbooks.io/system-design/content/cn/key-value-store.html" target="_blank" rel="noopener">leveldb简介</a></p>
+<p><a href="http://bean-li.github.io/categories/" target="_blank" rel="noopener">关于leveldb的进一步解析</a></p>
+<p>从这些文章中大致了解了leveldb为何称之为leveldb以及其内部工作原理的大致了解，值得一读再读。对于其转换随机读写为顺序读写的方式值得深思，条条大路通罗马，有的时候是思想狭隘限制我们的生活与工作，多看，多想，多思考~~</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/rocksdb/">rocksdb</a><a href="/tags/LSM-Tree/">LSM-Tree</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/07/14/reactive/"><span>说说到底啥是reactive programming</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/07/14/reactive/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-07-14T13:00:30.069Z">
+          2018-07-14
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>我又要先上图了：<br><img src="http://img.blog.csdn.net/20160311112349604" alt=""></p>
+<p>抱歉这次没有原文了！！！！</p>
+<h1 id="响应式编程"><a href="#响应式编程" class="headerlink" title="响应式编程"></a>响应式编程</h1><h3 id="先来看看rxjs介绍的reactive-programming"><a href="#先来看看rxjs介绍的reactive-programming" class="headerlink" title="先来看看rxjs介绍的reactive programming"></a>先来看看rxjs介绍的reactive programming</h3><table>
+<thead>
+<tr>
+<th></th>
+<th>Producer</th>
+<th>Consumer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pull</td>
+<td>Passive: produces data when requested.</td>
+<td>Active: decides when data is requested.</td>
+</tr>
+<tr>
+<td></td>
+</tr>
+<tr>
+<td>Push</td>
+<td>Active: produces data at its own pace.</td>
+<td>Passive: reacts to received data.</td>
+</tr>
+</tbody>
+</table>
+<p>我们可以看到，在push系统中，consumer要做的就是要决定对接受到的数据做出如何的响应。而在pull系统中consumer要做的是决定什么时候去获取数据。可能ractive programming 就是从消费者的角度来定义的吧。消费者只需要对数据做出响应即可。</p>
+<p>显然在pull的系统中，我们需要确定什么时候获取到数据，producer端是被动的，就好比前端和后端，后端就是被动。<br>那么push系统呢？是有producer来决定什么时候产生数据给Consumer的，而consumer是不关心什么时候拿到数据（典型的订阅模式啊）。<br>其实前端后端是pull，但我们也在经常性的使用push，那就是promise，当你调用promise后你是不知道什么时候才会拿得到数据的。可是promise是单值的push系统。<br>而rxjs带来了一个新的push系统，多值可取消的push系统（但rxjs不像promise那样全是异步的，rxjs可异步可同步）。</p>
+<h3 id="我们再来看看cyclejs里的介绍"><a href="#我们再来看看cyclejs里的介绍" class="headerlink" title="我们再来看看cyclejs里的介绍"></a>我们再来看看cyclejs里的介绍</h3><p><img src="https://cycle.js.org/img/passive-foo-bar.svg" alt=""><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// Inside module Foo</span><br><span class="line">function onNetworkRequest() &#123;</span><br><span class="line">  // ...</span><br><span class="line">  // 此时Foo玩去可以好好</span><br><span class="line">  CCTV.incrementCounter();</span><br><span class="line">  // ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://cycle.js.org/img/passive-foo-bar.svg" alt=""><br>此时箭头的生命是由箭尾决定的</p>
+<p>是由Foo来控制什么时候调用Bar,此时控制权在Foo,我们需要向Foo提供对外响应, Bar的内部状态是由外部来修改的</p>
+<p><img src="https://cycle.js.org/img/reactive-foo-bar.svg" alt=""><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Foo.addOnNetworkRequestListener(() =&gt; &#123; // 事件一来我大CCTV就可以主动控制了， Foo也不知道</span><br><span class="line">// 我大CCTV</span><br><span class="line">  self.incrementCounter(); // self is CCTV</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>可事实是Bar的状态完全可以是一个内部状态，而这个内部状态只需要根据外部事件的来决定做出如何的响应(reactive 的Bar)。</p>
+<p>换句话说就是Bar的内部状态是要随着外部状态的改变而做出响应，但是什么响应就是Bar内部状态的实现了，若是按照第一种方式来看，我们就把Bar对事件的实现暴露给了Foo（举个栗子好比是新闻联播，他要去记录老外那里发生了啥事儿，但我们的新闻联播的播放室会告诉老外我们要怎么播放，要播放什么了么？这就是典型响应式啊，老外发生了事情，cctv收到了事件，然后播放给国内人民）,当我们这么做了以后，Bar只需要关心自己的实现就好了，完全对自己负责就可以了</p>
+<h3 id="响应式一个最大的卖点就是构建对自我负责的模块就好了，而不是去或者不需要去改变外部或者外来的状态。"><a href="#响应式一个最大的卖点就是构建对自我负责的模块就好了，而不是去或者不需要去改变外部或者外来的状态。" class="headerlink" title="响应式一个最大的卖点就是构建对自我负责的模块就好了，而不是去或者不需要去改变外部或者外来的状态。"></a>响应式一个最大的卖点就是构建对自我负责的模块就好了，而不是去或者不需要去改变外部或者外来的状态。</h3><p>另一个好处就是关注点分离，各自关心自己的该关心的事情就好了。</p>
+<h3 id="react的stateful-Component也在做这件事-自扫门前雪-，他的Component-就是一个纯粹的自负责组件-即使是传递props"><a href="#react的stateful-Component也在做这件事-自扫门前雪-，他的Component-就是一个纯粹的自负责组件-即使是传递props" class="headerlink" title="react的stateful Component也在做这件事(自扫门前雪)，他的Component,就是一个纯粹的自负责组件,即使是传递props"></a>react的stateful Component也在做这件事(自扫门前雪)，他的Component,就是一个纯粹的自负责组件,即使是传递props</h3><p>也是，因为props是提前定义的也好比是监听机制只不过是没有起一个on….Listener罢了</p>
+<h3 id="响应式编程依赖了那些编程原则呢？"><a href="#响应式编程依赖了那些编程原则呢？" class="headerlink" title="响应式编程依赖了那些编程原则呢？"></a>响应式编程依赖了那些编程原则呢？</h3><ol>
+<li>迪米特原则：最小消息原则，知道的人越少越好</li>
+<li>依赖反转原则</li>
+<li>单一职责原则</li>
+</ol>
+<h3 id="原则综合"><a href="#原则综合" class="headerlink" title="原则综合"></a>原则综合</h3><ol>
+<li><p>单一责任原则：尽量保证一个类只会因为一个原因发生变化，当变化多于一个时，就需要分解这个类。否则将会因为内部存在过多的依赖而变得难以维护。</p>
+</li>
+<li><p>开放封闭原则：这个是我们最常使用的，具体可以体现在属性私有、方法公开这一点上。开放封闭原则讲究拥抱扩展、封闭修改。</p>
+</li>
+<li><p>里氏替换原则：保证每一个子类都能够直接替换其父类，满足is-A的关系。</p>
+</li>
+<li><p>依赖倒置原则：高层次的模块不应该依赖于低层次的模块，二者应该依赖于抽象。抽象不应该依赖于细节，细节应该依赖于抽象。</p>
+</li>
+<li><p>接口分离原则：当一个用户需要多个接口的时候，尽量将每一个接口分离出来，而不是将多个接口放在一个类中，包含所有的接口</p>
+</li>
+<li><p>迪米特法则：如果两个类之间并不需要直接通信，那么就不应该让这两个类相互作用。如果其中一个类需要调用另一个类的某一个方法的话，可以通过另外的类来转发调用，降低类与类之间的耦合。</p>
+</li>
+</ol>
+<h3 id="再一次来说说Rxjs-为什么要用他，他其实总结了出了很多我们在处理问题时的抽象，好比map-each-flatMap-感觉像是lodash了，事实是我们使用lodash的链式调用也可处理很多问题并且使用更少的代码以及更加简洁（我们可以filter-some-map-reduce-语义也更加清晰）而不是更多的for循环"><a href="#再一次来说说Rxjs-为什么要用他，他其实总结了出了很多我们在处理问题时的抽象，好比map-each-flatMap-感觉像是lodash了，事实是我们使用lodash的链式调用也可处理很多问题并且使用更少的代码以及更加简洁（我们可以filter-some-map-reduce-语义也更加清晰）而不是更多的for循环" class="headerlink" title="再一次来说说Rxjs, 为什么要用他，他其实总结了出了很多我们在处理问题时的抽象，好比map, each, flatMap,感觉像是lodash了，事实是我们使用lodash的链式调用也可处理很多问题并且使用更少的代码以及更加简洁（我们可以filter.some.map.reduce,语义也更加清晰）而不是更多的for循环"></a>再一次来说说Rxjs, 为什么要用他，他其实总结了出了很多我们在处理问题时的抽象，好比map, each, flatMap,感觉像是lodash了，事实是我们使用lodash的链式调用也可处理很多问题并且使用更少的代码以及更加简洁（我们可以filter.some.map.reduce,语义也更加清晰）而不是更多的for循环</h3><p>参考：</p>
+<ol>
+<li><a href="https://github.com/hehonghui/android-tech-frontier/tree/master/androidweekly/%E9%82%A3%E4%BA%9B%E5%B9%B4%E6%88%91%E4%BB%AC%E9%94%99%E8%BF%87%E7%9A%84%E5%93%8D%E5%BA%94%E5%BC%8F%E7%BC%96%E7%A8%8B" target="_blank" rel="noopener">The introduction to Reactive Programming you’ve been missing</a></li>
+<li><a href="https://egghead.io/lessons/rxjs-understand-reactive-programming-using-rxjs" target="_blank" rel="noopener">vedio</a></li>
+<li><a href="http://reactivex.io/rxjs/manual/overview.html#pull-versus-push" target="_blank" rel="noopener">rxjs</a></li>
+</ol>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/rxjs/">rxjs</a><a href="/tags/cyclejs/">cyclejs</a><a href="/tags/reactive-programming/">reactive programming</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/07/14/rxjs原理解析/"><span>rxjs原理解析（自建一个demo版rxjs）</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/07/14/rxjs原理解析/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-07-14T13:00:30.069Z">
+          2018-07-14
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>我又要先上图了：<br><img src="https://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/02/1455228348streams.png" alt=""></p>
+<p><a href="https://medium.com/@benlesh/learning-observable-by-building-observable-d5da57405d87" target="_blank" rel="noopener">原文地址(english, 需翻墙)</a></p>
+<h1 id="通过构造一个Observable来学习Observable"><a href="#通过构造一个Observable来学习Observable" class="headerlink" title="通过构造一个Observable来学习Observable"></a>通过构造一个Observable来学习Observable</h1><p>很多时候大家都在问我”hot” 和 “cold” observables的区别到底是啥？，或者是一个observable到底是单播还是多播？。人们对于’Rx.Observable‘的内部工作原理似乎是非常迷惑的。当被问到如何描述一个observable的时候，人们经常说的就是这样的， “他是流（streams）”或者是“他是个类似promises的东西”。但事实上，我在很多场合以及一些公开演讲上都有讲过这些东西。</p>
+<p>和promise作比较比较是有必要的，但不幸的是，恐怕不会有太大的用处。这两者都是异步原语，并且promises已经被js社区广泛接受和使用了，总体来说这是个好的开始。通过对比promise的‘then’和observable的’subscribe‘,我们可以看到两者在立即执行和延时执行上的区别，还可以看到observable的取消执行和可重用性，当然还有其他很多的东西。通过这种比较的方式学习对于observable的初学者来说是很容易接受的。但是这里有一个问题：就是这两者的不同之处远远大于类似之处。Promises都是多播的，Promise的resolve和reject都是异步的。当大家以处理promise的方式处理observables的时候，大家会发现有时候结果并不像预期的那样。Observables有时候是多播的，有时候又不是，并且通常是异步的。真的，有时候我也在责备自己，因为我有可能再使这种误解被延续。</p>
+<h1 id="Observable仅仅是一个函数，他接受一个observer-并且返回一个函数"><a href="#Observable仅仅是一个函数，他接受一个observer-并且返回一个函数" class="headerlink" title="Observable仅仅是一个函数，他接受一个observer 并且返回一个函数"></a>Observable仅仅是一个函数，他接受一个observer 并且返回一个函数</h1><p>若果你想彻底搞懂observable，你可以自己实现一个简单的observable。真的，这并没有听起来那么难。对于一个observable, 当我们去观察他的最小实现时会发现他只是一个拥有特定（specific,具体，指定，特定）目的的函数，而这个函数又有自己特定的类型。（就是一个具有特定目的的特定类型的函数）</p>
+<ol>
+<li>结构<ul>
+<li>函数</li>
+<li>接受一个observer(观察者): 一个拥有next, error 以及complete方法的对象</li>
+<li>返回一个可取消执行的函数</li>
+</ul>
+</li>
+<li>目的：<br> 连接一个observer到生产者(产生value的对象)，并且返回一个能够<br> 取消连接生产者的方法。实际上observer就是一个可以随时传入数据的的监听器处理函数（handler处理函数）</li>
+<li>基础实现：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 一个虚假的data source</span><br><span class="line">*/</span><br><span class="line">class DataSource &#123;</span><br><span class="line">    constructor() &#123;</span><br><span class="line">        let i = 0;</span><br><span class="line">        this._id = setInterval(() =&gt; this.emit(i++), 200);</span><br><span class="line">    &#125;</span><br><span class="line">    emit(n) &#123;</span><br><span class="line">        const limit = 10;</span><br><span class="line">        if (this.ondata) &#123;</span><br><span class="line">            this.ondata(n);</span><br><span class="line">        &#125;</span><br><span class="line">        if (n === limit) &#123;</span><br><span class="line">            if (this.oncomplete) &#123;</span><br><span class="line">                this.oncomplete();</span><br><span class="line">            &#125;</span><br><span class="line">            this.destroy();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    destroy() &#123;</span><br><span class="line">        clearInterval(this._id);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * 我们的 observable</span><br><span class="line">*/</span><br><span class="line"></span><br><span class="line">function MyObservable(observer) &#123;</span><br><span class="line">    const datasource = new DatSource();</span><br><span class="line">    datasource.ondata = (e) =&gt; observer.next(e);</span><br><span class="line">    datasource.onerror = (e) =&gt; observer.error(err);</span><br><span class="line">    datasource.oncomplete = () =&gt; observer.complete();</span><br><span class="line">    return () =&gt; &#123;</span><br><span class="line">        datasource.destroy();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * 接下来我们可以使用上面的observable</span><br><span class="line">*/</span><br><span class="line">const unsub = myObservable(&#123;</span><br><span class="line">    next(x) &#123; console.log(x); &#125;,</span><br><span class="line">    error(err) &#123; console.error(err); &#125;,</span><br><span class="line">    complete() &#123; console.log(&apos;done&apos;); &#125; </span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p><a href="http://jsbin.com/yazedu/1/edit?js,console,output" target="_blank" rel="noopener">你可以在jsbin上尝试一下</a></p>
+<p>正如你看到的一样，他并不复杂，他只是一个简单的契约</p>
+<h1 id="安全的Observers-优化我们的Observers"><a href="#安全的Observers-优化我们的Observers" class="headerlink" title="安全的Observers: 优化我们的Observers"></a>安全的Observers: 优化我们的Observers</h1><p>当我们谈论Rxjs或者响应式编程的时候，我们大部分时间把observables放在首位，但事实上observer的实现才是这类响应式编程的核心工作者(workhorse驮马驮东西的马)。Observables是惰性的（inert）他们仅仅是函数，他们就在那里不动一直到你’订阅‘他们，’订阅‘后他就会建立你的observer(就是把observer与producer连接在一起)，至此他们的活就干完了，然后就又变回了原始的状态等着被其他人再次调用, 另一方面observers则是保持在活跃状态，监听着producer的事件。</p>
+<p>你可以用一个带有’next‘, ‘error’以及’complete‘等方法的js 对象来订阅observable，但实际上这仅仅是个开始。在rxjs5我们提供了一些保证，下面是一些非常重要的保证：</p>
+<h1 id="Observer-保证"><a href="#Observer-保证" class="headerlink" title="Observer 保证"></a>Observer 保证</h1><ol>
+<li>若果你传入的oberser没有实现所有的方法，这也是可以的</li>
+<li>你不需要在complete和error之后调用next</li>
+<li>当你取消订阅以后，任何事件都不会被触发（error, next, or complete）</li>
+<li>当调用’complete‘和’error‘的时候需要调用unsubsription</li>
+<li>当你的next， complete，error等handlers发生异常的时候，需要调用<br> unsubscription来保证没有资源泄露</li>
+<li>next，error 以及 complete都是可选的</li>
+</ol>
+<p>为了达到以上目的，我们需要把你的observer包裹到一个SafeObserver中，这个SafeOberver会强制实现以上保证。为了实现2， 我们需要跟踪是否发生了complete 或者 error。为了实现3，我们需要让我们的SafeObserver知道消费者在什么时候调用了unsubscribe, 等等。</p>
+<p>因此如果我们真的想要实现完整的SafeObserver,那将是很庞大的，因此在此文章中就不在具体详述，简要写一下怎么用。具体的实现可以看一下<br><a href="http://jsbin.com/kezejiy/2/edit?js,console,output" target="_blank" rel="noopener">jsbin</a>(可惜我可以不在乎23333)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * A contrived data source to use in our &quot;observable&quot;</span><br><span class="line"> * NOTE: this will clearly never error</span><br><span class="line"> */</span><br><span class="line"></span><br><span class="line">class DataSource &#123;</span><br><span class="line">  constructor() &#123;</span><br><span class="line">    let i = 0;</span><br><span class="line">    this._id = setInterval(() =&gt; this.emit(i++), 200);</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  emit(n) &#123;</span><br><span class="line">    const limit = 10;</span><br><span class="line">    if (this.ondata) &#123;</span><br><span class="line">      this.ondata(n);</span><br><span class="line">    &#125;</span><br><span class="line">    if (n === limit) &#123;</span><br><span class="line">      if (this.oncomplete) &#123;</span><br><span class="line">        this.oncomplete();</span><br><span class="line">      &#125;</span><br><span class="line">      this.destroy();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  destroy() &#123;</span><br><span class="line">    clearInterval(this._id);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * Safe Observer</span><br><span class="line"> */</span><br><span class="line">class SafeObserver &#123;</span><br><span class="line">  constructor(destination) &#123;</span><br><span class="line">    this.destination = destination;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  next(value) &#123;</span><br><span class="line">    // only try to next if you&apos;re subscribed have a handler</span><br><span class="line">    if (!this.isUnsubscribed &amp;&amp; this.destination.next) &#123;</span><br><span class="line">      try &#123;</span><br><span class="line">        this.destination.next(value);</span><br><span class="line">      &#125; catch (err) &#123;</span><br><span class="line">        // if the provided handler errors, teardown resources, then throw</span><br><span class="line">        this.unsubscribe();</span><br><span class="line">        throw err;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  error(err) &#123;</span><br><span class="line">    // only try to emit error if you&apos;re subscribed and have a handler</span><br><span class="line">    if (!this.isUnsubscribed &amp;&amp; this.destination.error) &#123;</span><br><span class="line">      try &#123;</span><br><span class="line">        this.destination.error(err);</span><br><span class="line">      &#125; catch (e2) &#123;</span><br><span class="line">        // if the provided handler errors, teardown resources, then throw</span><br><span class="line">        this.unsubscribe();</span><br><span class="line">        throw e2;</span><br><span class="line">      &#125;</span><br><span class="line">      this.unsubscribe();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  complete() &#123;</span><br><span class="line">    // only try to emit completion if you&apos;re subscribed and have a handler</span><br><span class="line">    if (!this.isUnsubscribed &amp;&amp; this.destination.complete) &#123;</span><br><span class="line">      try &#123;</span><br><span class="line">        this.destination.complete();</span><br><span class="line">      &#125; catch (err) &#123;</span><br><span class="line">        // if the provided handler errors, teardown resources, then throw</span><br><span class="line">        this.unsubscribe();</span><br><span class="line">        throw err;</span><br><span class="line">      &#125;</span><br><span class="line">      this.unsubscribe();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  unsubscribe() &#123;</span><br><span class="line">    this.isUnsubscribed = true;</span><br><span class="line">    if (this.unsub) &#123;</span><br><span class="line">      this.unsub();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * our observable</span><br><span class="line"> */</span><br><span class="line">function myObservable(observer) &#123;</span><br><span class="line">  const safeObserver = new SafeObserver(observer);</span><br><span class="line">  const datasource = new DataSource();</span><br><span class="line">  datasource.ondata = (e) =&gt; safeObserver.next(e);</span><br><span class="line">  datasource.onerror = (err) =&gt; safeObserver.error(err);</span><br><span class="line">  datasource.oncomplete = () =&gt; safeObserver.complete();</span><br><span class="line"></span><br><span class="line">  safeObserver.unsub = () =&gt; &#123;</span><br><span class="line">    datasource.destroy();</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  return safeObserver.unsubscribe.bind(safeObserver);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * now let&apos;s use it</span><br><span class="line"> */</span><br><span class="line">const unsub = myObservable(&#123;</span><br><span class="line">  next(x) &#123; console.log(x); &#125;,</span><br><span class="line">  error(err) &#123; console.error(err); &#125;,</span><br><span class="line">  complete() &#123; console.log(&apos;done&apos;)&#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * uncomment to try out unsubscription</span><br><span class="line"> */</span><br><span class="line">// setTimeout(unsub, 500);</span><br></pre></td></tr></table></figure></p>
+<h1 id="Observable的设计-符合人体工程学的-Observer-安全性"><a href="#Observable的设计-符合人体工程学的-Observer-安全性" class="headerlink" title="Observable的设计: 符合人体工程学的 Observer 安全性"></a>Observable的设计: 符合人体工程学的 Observer 安全性</h1><p>若是我们把observables封装成一个class或者 一个对象，那么我们就可以很方便的把SafeObserver当做匿名的obserers传入（或者是函数就好像rxjs里的签名似的<code>subscribe(fn, fn, fn)</code>）并且以更好的符合人体工程学的方式提供给开发者。通过在Observable的’subscribe‘中把SafeObserver以内在的形式创建， Observables 又可以以一种简单的方式来使用了：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">const myObservable = new Observable((observer) =&gt; &#123;</span><br><span class="line">    const datasource = new DataSource();</span><br><span class="line">    datasource.ondata = (e) =&gt; observer.next(e);</span><br><span class="line">    datasource.onerror = (err) =&gt; observer.error(err);</span><br><span class="line">    datasource.oncomplete = () =&gt; observer.complete();</span><br><span class="line">    return () =&gt; &#123;</span><br><span class="line">        datasource.destroy();</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>你可能已经注意到了这个例子和我们的第一个例子是类似的。但是他更容易阅读和理解。具体实现可见<a href="http://jsbin.com/depeka/edit?js,console" target="_blank" rel="noopener">jsbin</a>但在jsbin里面我们可以看到在 new Observable的时候他把 observable又用safeObservable包裹了一下显然是没有必要的，因为我们在调用myObserable的subscribe的时候已经把observer用safeObservable包装过了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">class Observable &#123;</span><br><span class="line">  constructor(_subscribe) &#123;  // 我们在new Observable的时候传递的函数其实才是真正的</span><br><span class="line">    // subscribe</span><br><span class="line">    this._subscribe = _subscribe; // 保存起来当我们调用subscribe的时候回来调用他的</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  subscribe(observer) &#123; // 你看包装过了</span><br><span class="line">    const safeObserver = new SafeObserver(observer);</span><br><span class="line">    return this._subscribe(safeObserver);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="操作符：也只是个函数而已"><a href="#操作符：也只是个函数而已" class="headerlink" title="操作符：也只是个函数而已"></a>操作符：也只是个函数而已</h1><p>Rxjs中操作就是一个接收源observable，然后返回一个新的observable, 并且在你订阅他（指新的observable）的时候，他(操作符)会去订阅源observable。我们可以实现一个简单的如下：<a href="http://jsbin.com/xavaga/2/edit?js,console,output" target="_blank" rel="noopener">jsbin</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">function map(source, project) &#123;</span><br><span class="line">    return new Observable(observer) =&gt; &#123;</span><br><span class="line">        const mapObserver = &#123;</span><br><span class="line">            next: (x) =&gt; observer.next(project(x)),</span><br><span class="line">            error: (err) =&gt; observer.error(err),</span><br><span class="line">            complete: () =&gt; observer.complete()</span><br><span class="line">        &#125;;</span><br><span class="line">        return source.subscribe(mapObserver);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里最重要的地方是这个操作符做了什么： 当你订阅他所返回的observable的时候，他创建了一个’mapObserver‘去执行工作，并且把’observer’和mapObserver连在了一起。构造操作符的链式调用仅仅是创建了一个模板，用于在订阅时把observes连接在一起。</p>
+<h1 id="设计Observable-使操作符更好的链式调用"><a href="#设计Observable-使操作符更好的链式调用" class="headerlink" title="设计Observable: 使操作符更好的链式调用"></a>设计Observable: 使操作符更好的链式调用</h1><p>如果我们把所有的操作符都实现为独立的函数，那么我们的操作符链式调用会很丑陋<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">map(map(myObservable,(x) =&gt; x + 1), (x =&gt; x + 2)</span><br></pre></td></tr></table></figure></p>
+<p>那么我们可以想象一下如果我们来个5，6操作符，那个咋办？基本上时没法使用的了。</p>
+<p>我们还可以使用reduce来简化一下具体实现参考<a href="http://jsbin.com/vipuqiq/6/edit?js,console,output" target="_blank" rel="noopener">jsbin</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pipe(myObservable, map(x =&gt; x + 1), map(x =&gt; x + 2));</span><br></pre></td></tr></table></figure></p>
+<p>理想情况下，我们希望能够使用如下的方式进行链式调用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">myObservable.map(x =&gt; x + 1).map(x =&gt; x + 2);</span><br></pre></td></tr></table></figure></p>
+<p>幸运的是，我们已经把Observable包装成了一个class, 因此我们可以把操作符作为class的方法实现：<a href="">jsbin</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * Observable basic implementation</span><br><span class="line"> */</span><br><span class="line">class Observable &#123;</span><br><span class="line">  constructor(_subscribe) &#123;</span><br><span class="line">    this._subscribe = _subscribe;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  subscribe(observer) &#123;</span><br><span class="line">    const safeObserver = new SafeObserver(observer);</span><br><span class="line">    safeObserver.unsub = this._subscribe(safeObserver);</span><br><span class="line">    return safeObserver.unsubscribe.bind(safeObserver);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 在此看到了map的实现</span><br><span class="line">Observable.prototype.map = function (project) &#123;</span><br><span class="line">  return new Observable((observer) =&gt; &#123;</span><br><span class="line">    const mapObserver = &#123;</span><br><span class="line">      next: (x) =&gt; observer.next(project(x)),</span><br><span class="line">      error: (err) =&gt; observer.error(err),</span><br><span class="line">      complete: () =&gt; observer.complete()</span><br><span class="line">    &#125;;</span><br><span class="line">    return this.subscribe(mapObserver);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>现在我们就得到了我们想要的语法了。这样做还有一个好处，就是我们子类化一些特定Observable(好比包裹Promise或者需要一些静态数值时)</p>
+<h1 id="总结：Observables就是一个接收observer作为参数并且返回一个函数的函数"><a href="#总结：Observables就是一个接收observer作为参数并且返回一个函数的函数" class="headerlink" title="总结：Observables就是一个接收observer作为参数并且返回一个函数的函数"></a>总结：Observables就是一个接收observer作为参数并且返回一个函数的函数</h1><p>牢记此话，Observables are a function that take an observer and return a function. 不多也不少。如果你写了一个函数接收一个observer然后返回一个函数，那么他是同步的还是异步的呢？都有可能，他是一个函数，任何函数的行为都取决与他是如何实现的。因此在处理Observable时，就把他看作是一个你传入的函数的引用, 没有什么魔法，stateful alien type(有状态的外部类型)。当你在使用操作符的链式调用的时候，你所做的其实就是组合一个函数，建立observers的连接，并将它们连接在一起，以及将数据传递给你的observer。</p>
+<blockquote>
+<p>本文中Observable返回都是一个函数，而在Rxjs回哦在那个以及es-observable规范中返回都是Subscription对象，他有一个更好的设计。但在这里这么写保持了文章的简洁性。</p>
+</blockquote>
+<h3 id="接下来再贡献一点其他的"><a href="#接下来再贡献一点其他的" class="headerlink" title="接下来再贡献一点其他的"></a>接下来再贡献一点其他的</h3><ul>
+<li>Subject即是observer 又是observable</li>
+<li>Subject内部有存储observers的list, 因此他可以多播给这些observers</li>
+<li>Observables 就是函数用来建立生产者和消费者的监听的函数</li>
+<li>Observables 目前还没有跟踪错误， 可以使用error handler(都得用啊)或者是observeOn(这招经本地验证无效本地是node环境可能有所不同待研究)<a href="http://jsbin.com/dolutiz/edit?js,console" target="_blank" rel="noopener">jsbin</a><br>上图<br>如下不管是mapped新产生的observable还是source都终止了。最安全的做法就是一定要监听error。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">// This is going to behave strangely</span><br><span class="line">const source$ = Observable.interval(1000).share();</span><br><span class="line">const mapped$ = source$.map(x =&gt; &#123;</span><br><span class="line">  if (x === 1) &#123;</span><br><span class="line">    throw new Error(&apos;oops&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">  return x;</span><br><span class="line">&#125;);</span><br><span class="line">source$.subscribe(x =&gt; console.log(&apos;A&apos;, x));</span><br><span class="line">mapped$.subscribe(x =&gt; console.log(&apos;B&apos;, x));</span><br><span class="line">source$.subscribe(x =&gt; console.log(&apos;C&apos;, x));</span><br><span class="line">// &quot;A&quot; 0</span><br><span class="line">// &quot;B&quot; 0</span><br><span class="line">// &quot;C&quot; 0</span><br><span class="line">// &quot;A&quot; 1</span><br><span class="line">// Uncaught Error: &quot;oops&quot;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>另一个解决的办法就是使用observeOn<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">const source$ = Observable.interval(1000)</span><br><span class="line">  .share()</span><br><span class="line">  .observeOn(Rx.Scheduler.asap); // magic here</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>从subject下游抛出的同步错误会杀掉整个subject(尚未验证，不太明白说的是啥 // TODO: 验证 )</li>
+<li>大神说他自己错了，Promise的错误处理才是个好主意。</li>
+<li>将来的版本或许会支持error trap(但目前我是5.5.5了，也没支持)<br>有图有真相，最近的rxjs的一个<a href="https://github.com/Reactive-Extensions/RxJS/issues/1417" target="_blank" rel="noopener">issue</a>的讨论<img src="/2018/07/14/rxjs原理解析/error_trap.png"></li>
+<li>可能像promise那样全是异步的也不是必须的(shrug耸一下肩)。</li>
+</ul>
+<h3 id="文章评论区精彩内容"><a href="#文章评论区精彩内容" class="headerlink" title="文章评论区精彩内容"></a>文章评论区精彩内容</h3><ul>
+<li>multicast and unicast<br>单播还是多播取决于你是如何连接producer的，如果你是每次subscribe时就新建一个producer,那么就是单播，否则就是多播，但是这里面还有好多细节的，大致可以这么认为。</li>
+</ul>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/rxjs/">rxjs</a><a href="/tags/reactive-programming/">reactive programming</a><a href="/tags/Ben-Lesh-原文作者/">Ben Lesh(原文作者)</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+
+<nav class="pagination">
+  
+  
+  <a href="/page/2/" class="pagination-next">Next</a>
+  
+</nav>
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 hello2dj (dj_amazing@sina.com)
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

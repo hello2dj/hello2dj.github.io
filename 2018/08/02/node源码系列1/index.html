@@ -1,0 +1,143 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>node源码系列1 | hello2dj | if you can&#39;t explain it simply, you don&#39;t understand it well enough</title>
+
+  
+  <meta name="author" content="hello2dj (dj_amazing@sina.com)">
+  
+
+  
+  <meta name="description" content="每个人都是带着棱角来到世上，只有磨平棱角才能走的更远">
+  
+
+  
+  
+  <meta name="keywords" content="nodejs">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="node源码系列1"/>
+
+  <meta property="og:site_name" content="hello2dj"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="hello2dj" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">hello2dj</a>
+    </h1>
+    <p class="site-description">if you can&#39;t explain it simply, you don&#39;t understand it well enough</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/categories">Categories</a></li>
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>node源码系列1</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/08/02/node源码系列1/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-08-02T10:50:27.000Z">
+          2018-08-02
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>纯贴一波代码，这段代码在/internal/process/fixed_queue.js, 使用在/internal/process/next_tick.js中，用来管理添加的next_tick的回调函数，在早期版本中使用的array来管理，在某一期就换成了这个，我测试性能，他俩不在一个数量级（其实都不用测试因为fixed_queue，本身用的array），array明显快于fixed_queue, 但我也没有找到替换的理由。这个数据够很有意思</p>
+<ol>
+<li>他相当于是一个一个的ringbuffer 连接起来的单向链表</li>
+<li>使用ringbuffer是为了更好更高效的利用内存(这也是我推测的替换的一个原因)， 因为以前用的是是一个大的array，当next_tick过多就会出现一个array占用过多内存，对gc不友好，小块小块的操作也利于对象的回收<blockquote>
+<p>这里又个我们上了一个生动的课程就是分而治之，既然大块内存不利于开辟与操作，有浪费的可能，那就每一次拿一小块，就像是node的事件循环，他并不是把所有的事件统统放到一个queue中，而是做了拆分，根据事件的种类进行拆分，再说一一个就是go的channel，若是所有的数据都通过一个channel进行传递，也是可以，但当量大的时候返回会很弱， 但是拆分过细也不行，就好比go的channel他的调度能力也是有限的，不是无穷无尽的，当达到10w是就会出现饿死的goroutine。 返回来看我们的fixed_queue, 他的每个ringbuffer 设置的大小是2048，而不是10，因为若是太小，反而有加剧了gc的工作，因为要过于频繁的gc。</p>
+</blockquote>
+</li>
+<li>为什么大小是2048， 我们以往在实现ringbuffer的时候都是通过 mod来进行判断，在这里我们有学习了， 当Size为2的n次方时我们还可以通过是用 (Size - 1) &amp; x来取模<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Size = 8;</span><br><span class="line">Size - 1 = b111;</span><br><span class="line">显然 n 无论是多少和111相与得到的值都是在（0, 7）内正好是8的模</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br></pre></td><td class="code"><pre><span class="line">&apos;use strict&apos;;</span><br><span class="line"></span><br><span class="line">// Currently optimal queue size, tested on V8 6.0 - 6.6. Must be power of two.</span><br><span class="line">const kSize = 2048;</span><br><span class="line">const kMask = kSize - 1;</span><br><span class="line"></span><br><span class="line">// The FixedQueue is implemented as a singly-linked list of fixed-size</span><br><span class="line">// circular buffers. It looks something like this:</span><br><span class="line">//</span><br><span class="line">//  head                                                       tail</span><br><span class="line">//    |                                                          |</span><br><span class="line">//    v                                                          v</span><br><span class="line">// +-----------+ &lt;-----\       +-----------+ &lt;------\         +-----------+</span><br><span class="line">// |  [null]   |        \----- |   next    |         \------- |   next    |</span><br><span class="line">// +-----------+               +-----------+                  +-----------+</span><br><span class="line">// |   item    | &lt;-- bottom    |   item    | &lt;-- bottom       |  [empty]  |</span><br><span class="line">// |   item    |               |   item    |                  |  [empty]  |</span><br><span class="line">// |   item    |               |   item    |                  |  [empty]  |</span><br><span class="line">// |   item    |               |   item    |                  |  [empty]  |</span><br><span class="line">// |   item    |               |   item    |       bottom --&gt; |   item    |</span><br><span class="line">// |   item    |               |   item    |                  |   item    |</span><br><span class="line">// |    ...    |               |    ...    |                  |    ...    |</span><br><span class="line">// |   item    |               |   item    |                  |   item    |</span><br><span class="line">// |   item    |               |   item    |                  |   item    |</span><br><span class="line">// |  [empty]  | &lt;-- top       |   item    |                  |   item    |</span><br><span class="line">// |  [empty]  |               |   item    |                  |   item    |</span><br><span class="line">// |  [empty]  |               |  [empty]  | &lt;-- top  top --&gt; |  [empty]  |</span><br><span class="line">// +-----------+               +-----------+                  +-----------+</span><br><span class="line">//</span><br><span class="line">// Or, if there is only one circular buffer, it looks something</span><br><span class="line">// like either of these:</span><br><span class="line">//</span><br><span class="line">//  head   tail                                 head   tail</span><br><span class="line">//    |     |                                     |     |</span><br><span class="line">//    v     v                                     v     v</span><br><span class="line">// +-----------+                               +-----------+</span><br><span class="line">// |  [null]   |                               |  [null]   |</span><br><span class="line">// +-----------+                               +-----------+</span><br><span class="line">// |  [empty]  |                               |   item    |</span><br><span class="line">// |  [empty]  |                               |   item    |</span><br><span class="line">// |   item    | &lt;-- bottom            top --&gt; |  [empty]  |</span><br><span class="line">// |   item    |                               |  [empty]  |</span><br><span class="line">// |  [empty]  | &lt;-- top            bottom --&gt; |   item    |</span><br><span class="line">// |  [empty]  |                               |   item    |</span><br><span class="line">// +-----------+                               +-----------+</span><br><span class="line">//</span><br><span class="line">// Adding a value means moving `top` forward by one, removing means</span><br><span class="line">// moving `bottom` forward by one. After reaching the end, the queue</span><br><span class="line">// wraps around.</span><br><span class="line">//</span><br><span class="line">// When `top === bottom` the current queue is empty and when</span><br><span class="line">// `top + 1 === bottom` it&apos;s full. This wastes a single space of storage</span><br><span class="line">// but allows much quicker checks.</span><br><span class="line"></span><br><span class="line">const FixedCircularBuffer = class FixedCircularBuffer &#123;</span><br><span class="line">    constructor() &#123;</span><br><span class="line">        this.bottom = 0;</span><br><span class="line">        this.top = 0;</span><br><span class="line">        this.list = new Array(kSize);</span><br><span class="line">        this.next = null;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    isEmpty() &#123;</span><br><span class="line">        return this.top === this.bottom;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    isFull() &#123;</span><br><span class="line">        return ((this.top + 1) &amp; kMask) === this.bottom;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    push(data) &#123;</span><br><span class="line">        this.list[ this.top ] = data;</span><br><span class="line">        this.top = (this.top + 1) &amp; kMask;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    shift() &#123;</span><br><span class="line">        const nextItem = this.list[ this.bottom ];</span><br><span class="line">        if (nextItem === undefined)</span><br><span class="line">            return null;</span><br><span class="line">        this.list[ this.bottom ] = undefined;</span><br><span class="line">        this.bottom = (this.bottom + 1) &amp; kMask;</span><br><span class="line">        return nextItem;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">class FixedQueue &#123;</span><br><span class="line">    constructor() &#123;</span><br><span class="line">        this.head = this.tail = new FixedCircularBuffer();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    isEmpty() &#123;</span><br><span class="line">        return this.head.isEmpty();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    push(data) &#123;</span><br><span class="line">        if (this.head.isFull()) &#123;</span><br><span class="line">            // Head is full: Creates a new queue, sets the old queue&apos;s `.next` to it,</span><br><span class="line">            // and sets it as the new main queue.</span><br><span class="line">            this.head = this.head.next = new FixedCircularBuffer();</span><br><span class="line">        &#125;</span><br><span class="line">        this.head.push(data);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    shift() &#123;</span><br><span class="line">        const &#123; tail &#125; = this;</span><br><span class="line">        const next = tail.shift();</span><br><span class="line">        if (tail.isEmpty() &amp;&amp; tail.next !== null) &#123;</span><br><span class="line">            // If there is another queue, it forms the new tail.</span><br><span class="line">            this.tail = tail.next;</span><br><span class="line">        &#125;</span><br><span class="line">        return next;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/nodejs/">nodejs</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 hello2dj (dj_amazing@sina.com)
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

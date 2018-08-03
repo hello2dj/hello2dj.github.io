@@ -1,0 +1,280 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>memory snapshot的世界 | hello2dj | if you can&#39;t explain it simply, you don&#39;t understand it well enough</title>
+
+  
+  <meta name="author" content="hello2dj (dj_amazing@sina.com)">
+  
+
+  
+  <meta name="description" content="每个人都是带着棱角来到世上，只有磨平棱角才能走的更远">
+  
+
+  
+  
+  <meta name="keywords" content="web,chrome,memory,snapshot,heapdump">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="memory snapshot的世界"/>
+
+  <meta property="og:site_name" content="hello2dj"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="hello2dj" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">hello2dj</a>
+    </h1>
+    <p class="site-description">if you can&#39;t explain it simply, you don&#39;t understand it well enough</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/categories">Categories</a></li>
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>memory snapshot的世界</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/07/14/heapdump解析/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-07-14T13:00:30.005Z">
+          2018-07-14
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h3 id="snapshot-v8"><a href="#snapshot-v8" class="headerlink" title="snapshot(v8)"></a>snapshot(v8)</h3><ul>
+<li><p>既然要讲v8的snapshot那就得先看看snapshot的表示形式，整个snapshot里的对象是以graph的形式展示的，节点是对象(会以对象的构造函数的形式展示)，边是属性值, 例如</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">class A &#123;</span><br><span class="line">  a() &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line">那么展示就是 A - a(边) -&gt; Function</span><br></pre></td></tr></table></figure>
+<p>此图是snapshot的json格式图</p>
+<img src="/2018/07/14/heapdump解析/snapshot的json格式.png">
+<p>此图中的索引都是从零开始的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// 对应snapshot中的字段, 查找节点i的信息</span><br><span class="line">var i_type = nodes[i];</span><br><span class="line">var i_name = strings[nodes[i + 1]];</span><br><span class="line">var i_id = nodes[i + 2];</span><br><span class="line">var i_size = nodes[i + 3]</span><br><span class="line">var i_edge_count = nodes[i + 4];</span><br></pre></td></tr></table></figure>
+<p>再具体的解释如下:</p>
+<img src="/2018/07/14/heapdump解析/nodes属性.png">
+<img src="/2018/07/14/heapdump解析/edges属性.png">
+<img src="/2018/07/14/heapdump解析/遍历nodes的方式.png">
+</li>
+<li><p>那么接下来就要说一下snapshot里面是有哪些类型即节点的类型(当然这些类型都来自v8)<a href="https://github.com/v8/v8/blob/master/src/objects.h" target="_blank" rel="noopener">完整的数据类型</a>，而我们在这里要讲则是在snapshot里面定义的类型(来自v8), 这里我们要区分primitive(包扩三类number, string, symbol,js会替我们auto-boxing)和Object(不要问什么)</p>
+ <img src="/2018/07/14/heapdump解析/节点类型.png"> 
+<p>从上图我们可以清晰节点的类型一共有13种，hidden类型可能不展示</p>
+</li>
+<li>边的类型(即属性的表现形式)<img src="/2018/07/14/heapdump解析/边的类型.png">
+从上图可以看出共有7种<ul>
+<li>map, array, symbol, object, regexp, number, boolean, string, date，typedarray…这些常见的内建对象我就不解释了，大家都知道</li>
+<li>我们在sanpshot中还会经常看见两类string比较生疏的两个(这两类算在pimitive中)， sliced string和 concatenated string<ul>
+<li>那我们就来看看string，在v8里的形式  <img src="/2018/07/14/heapdump解析/字符串类型.png"> 
+在这里我们可以清晰的看出来，v8的字符串类型，里面有sliced的解释，是其他字符串的部分引用(因为字面量字符串是不可变的so可以这么办。。)，而cons的就是(a, b),或者嵌套似的((a,b),c)这样的pairs(同样是因为字面量的字符串是不可变的)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>节点类型就上面列出的那些，但是根据具体的对象，他们又有好多不同的名字(Gc roots, map / tag, system / …)</li>
+</ul>
+<h3 id="chrome-devtools-里的概念"><a href="#chrome-devtools-里的概念" class="headerlink" title="chrome devtools 里的概念"></a>chrome devtools 里的概念</h3><ul>
+<li><h4 id="shallow-size"><a href="#shallow-size" class="headerlink" title="shallow size:"></a>shallow size:</h4><p>是指对象自己本身占用的大小, 不包含引用对象内容的大小</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">const parent = &#123;</span><br><span class="line">  a: 23,</span><br><span class="line">  child: child,</span><br><span class="line">&#125;</span><br><span class="line">const child = &#123;</span><br><span class="line">  a: 23,</span><br><span class="line">  c: 12,</span><br><span class="line">&#125;;</span><br><span class="line">/**</span><br><span class="line">  child的大小就是8B(32为机器)，parent大小就有得讨论了，若不算引用的具体内容大小，parent的大小也是8，而此时就是shallow size。那么包含引用内容呢？</span><br><span class="line">*/</span><br></pre></td></tr></table></figure>
+<p>*</p>
+</li>
+<li><h4 id="retained-size"><a href="#retained-size" class="headerlink" title="retained size:"></a>retained size:</h4><p>是指不但包含对象自身，还包含该对象所能引用的或者间接引用（parent.child, parent.child.child）</p>
+</li>
+<li><h4 id="GC-roots"><a href="#GC-roots" class="headerlink" title="GC roots"></a>GC roots</h4><p>GC roots的概念来自与垃圾回收算法，js的垃圾回收算法是基于根不可达来回收不使用的内存的，就选取某个对象作为初始点，沿着这个对象的引用链往下走，凡是通过这个对象无法访问到(是指通过引用可以获取到对象)的对象就认为是可以被回收的。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/7901630-a04e0112cb083905.gif?imageMogr2/auto-orient/strip" alt=""></p>
+<p><img src="http://fengzii.com/images//2017-07-09-java-basic-five-gc-root-set.png" alt=""></p>
+<p>如上图5，6，7就无法被访问到，此时就可以认为5，6，7可以被回收了<br></p>
+<ol>
+<li>那么GC root 只有一个么？No.很明显不可能只有一个，因为有栈变量的存在</li>
+<li>那么有哪些对象可以作为GC root呢， 对于js， 有Global, Window, 栈变量，内建对象等(我们是可以自己扩展内建对象的)</li>
+<li>chrome devtools 里面的distance是指什么？ 是指通过多少次引用能访问对此对象，对于Window等就是1</li>
+</ol>
+</li>
+<li><p>从上面我们可以看出来，所有的对象是以树的形式展示的，devtools中如何显示对象树的？<br>对象的保留树<br>  就像我们前面所说的，堆就是由相互连接的对象构成的网络。在数学的世界中，这种结构称作图或者内存图。一个图是由节点和边构成的，而节点又是由边连接起来的，其中节点和边都有相应的标签。</p>
+<ul>
+<li><p>节点（或者对象）是用创建对象的<strong>构造函数</strong>标记的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">这里问题就来了那么js中的对象的构造函数都是啥呢</span><br><span class="line">const a = &apos;hello2dj&apos;;</span><br><span class="line">// a 的构造函数是 String, 但对于字面量来说还会有具体的展示类型,这与v8的内部实现相关</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>边是用<strong>属性名</strong>来标记的<br>对于不同的属性chrome 会标记不同的标识<br>对象的属性以及属性值属于不同类型并且有着相应的颜色。每个属性都会有四种类型之一(更详细的上述snapshot里面又讲)：</p>
+<ul>
+<li>a:property - 有名称的常规属性，通过 .（点）操作符或者 []（方括号）符号来访问，例如 [“foo bar”]；</li>
+<li>0:element - 有数字下标的常规属性，使用 []（方括号）来访问。</li>
+<li>a:context var - 函数上下文中的某个变量，在相应的函数闭包中使用其名字就可以访问。</li>
+<li>a:system prop - 由 JavaScript 虚拟机添加的属性，在 JavaScript 代码中无法访问。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Object count 挡在summary视图模式下查看时，会有这个，按照上述来说对象树的节点是constructor, 属性是边，那么object count 就是通过这个constructor 构造出来的对象实例数量</p>
+</li>
+<li><p>巧了还有一个我们可以在devtools里经常看到的就是有些对象是黄颜色标识的有些是红色标识的，见图, 图中很明显标识红色和黄色的原因</p>
+<img src="/2018/07/14/heapdump解析/fragment.jpg">
+<img src="/2018/07/14/heapdump解析/schema.jpg">
+<ul>
+<li>以黄色突出显示的节点具有 JavaScript 代码对它们的直接引用。 以红色突出显示的节点则没有直接引用。只有属于黄色节点的树时，它们才处于活动状态。 一般而言，您需要将注意力放在黄色节点上。 <strong>修复代码，使黄色节点处于活动状态的时间不长于需要的时间</strong>，您也需要消除属于黄色节点树的红色节点。点击黄色节点对其进行进一步调查。</li>
+<li>显然红色节点就是没有js代码直接引用的对象</li>
+</ul>
+</li>
+<li><p>在summary视图下第一栏是从constructor而这一栏是分两类的</p>
+<ul>
+<li>不带()括号的是构造器，下面包含的是用这个构造器生成的对象,这个很好实验的，自己写一个类，实例化一下就可以了</li>
+<li><p>另一类带括号的又有如下区分</p>
+<img src="/2018/07/14/heapdump解析/tag对象.png"> 
+<p>见上图，他管()的行为叫tag,那就很明显了，在括号()下面的对象就是全部的这种对象了。</p>
+<img src="/2018/07/14/heapdump解析/随心所欲.png">
+<p>我错了</p>
+<ul>
+<li>(string, regexp) 显示的是literal string 即 a=’234’中的’23’， regexp类似</li>
+<li>(num) 显示的是以number对象展示的对象</li>
+<li>(array) 那些通过数组引用的对象，说白了就是数组对象<ul>
+<li>(code deopt data)[]: v8去优化时的数据</li>
+<li>[]:就是纯数组</li>
+<li>(object properties)[]:通过对象属性引用的对象</li>
+<li>(map descriptors)[]: map类型相关，暂时搁置</li>
+<li>(object elements)[]: 暂时未知</li>
+<li>(function scope info)[]: 暂时未知</li>
+</ul>
+</li>
+<li>(system) 那就是原生代码了</li>
+<li>(compiled code) 编译过后的代码</li>
+<li>(closure) 通过闭包引用的对象，但感觉更像是闭包自己</li>
+<li>(sliced string): 搁置</li>
+<li>(undefined): 搁置</li>
+<li>(concatenated string): 搁置</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>还有一些其他<a href="https://developers.google.com/web/tools/chrome-devtools/memory-problems/memory-101" target="_blank" rel="noopener">概念</a>参见<a href="https://developers.google.com/web/tools/chrome-devtools/memory-problems/memory-101" target="_blank" rel="noopener">https://developers.google.com/web/tools/chrome-devtools/memory-problems/memory-101</a></li>
+</ul>
+<h3 id="看一次对其中两个对象的识别及分析"><a href="#看一次对其中两个对象的识别及分析" class="headerlink" title="看一次对其中两个对象的识别及分析"></a>看一次对其中两个对象的识别及分析</h3><p>代码如下，num2是一个Number对象，不知道为啥，我以字面量分配的num1，我没找到。。。(有待继续)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">num2 = new Number(234);</span><br></pre></td></tr></table></figure></p>
+<p>接下来的图示顺序分析的</p>
+<img src="/2018/07/14/heapdump解析/@28081的引用情况.png">
+<img src="/2018/07/14/heapdump解析/@28081的图.png">
+<img src="/2018/07/14/heapdump解析/@15319的引用链.png">
+<h3 id="常见的内存泄露种类"><a href="#常见的内存泄露种类" class="headerlink" title="常见的内存泄露种类"></a>常见的内存泄露种类</h3><ul>
+<li><h3 id="全局变量"><a href="#全局变量" class="headerlink" title="全局变量"></a>全局变量</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">function globalLeak() &#123;</span><br><span class="line">  bar = &apos;hello2dj&apos;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里bar没有生命就意味着他被global引用了，那么他就不会被回收</p>
+</li>
+<li><h3 id="被遗忘的计时器或回调函数"><a href="#被遗忘的计时器或回调函数" class="headerlink" title="被遗忘的计时器或回调函数"></a>被遗忘的计时器或回调函数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">var someResource = getData();</span><br><span class="line">setInterval(function() &#123;</span><br><span class="line">    var node = document.getElementById(&apos;Node&apos;);</span><br><span class="line">    if(node) &#123;</span><br><span class="line">        // 处理 node 和 someResource</span><br><span class="line">        node.innerHTML = JSON.stringify(someResource));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;, 1000);</span><br></pre></td></tr></table></figure>
+<p>此例说明：与节点或数据关联的计时器不再需要，node 对象可以删除，整个回调函数也不需要了。可是，计时器回调函数仍然没被回收（计时器停止才会被回收）。同时，someResource 如果存储了大量的数据，也是无法被回收的。</p>
+<p>还有时间监听：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">var element = document.getElementById(&apos;button&apos;);</span><br><span class="line">  function onClick(event) &#123;</span><br><span class="line">      element.innerHTML = &apos;text&apos;;</span><br><span class="line">  &#125;</span><br><span class="line">element.addEventListener(&apos;click&apos;, onClick);</span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="被引用的dom"><a href="#被引用的dom" class="headerlink" title="被引用的dom"></a>被引用的dom</h3><p>有时，保存 DOM 节点内部数据结构很有用。假如你想快速更新表格的几行内容，把每一行 DOM 存成字典（JSON 键值对）或者数组很有意义。此时，同样的 DOM 元素存在两个引用：一个在 DOM 树中，另一个在字典中。将来你决定删除这些行时，需要把两个引用都清除。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">  var elements = &#123;</span><br><span class="line">    button: document.getElementById(&apos;button&apos;),</span><br><span class="line">    image: document.getElementById(&apos;image&apos;),</span><br><span class="line">    text: document.getElementById(&apos;text&apos;)</span><br><span class="line">&#125;;</span><br><span class="line">function doStuff() &#123;</span><br><span class="line">    image.src = &apos;http://some.url/image&apos;;</span><br><span class="line">    button.click();</span><br><span class="line">    console.log(text.innerHTML);</span><br><span class="line">    // 更多逻辑</span><br><span class="line">&#125;</span><br><span class="line">function removeButton() &#123;</span><br><span class="line">    // 按钮是 body 的后代元素</span><br><span class="line">    document.body.removeChild(document.getElementById(&apos;button&apos;));</span><br><span class="line">    // 此时，仍旧存在一个全局的 #button 的引用</span><br><span class="line">    // elements 字典。button 元素仍旧在内存中，不能被 GC 回收。</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此外还要考虑 DOM 树内部或子节点的引用问题。假如你的 JavaScript 代码中保存了表格某一个 <td> 的引用。将来决定删除整个表格的时候，直觉认为 GC 会回收除了已保存的 </td><td> 以外的其它节点。实际情况并非如此：此 </td><td> 是表格的子节点，子元素与父元素是引用关系。由于代码保留了 </td><td> 的引用，导致整个表格仍待在内存中。保存 DOM 元素引用的时候，要小心谨慎。</td></p>
+</li>
+<li><h3 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h3><p>这段代码被引用了无数次了来自<a href="http://info.meteor.com/blog/an-interesting-kind-of-javascript-memory-leak" target="_blank" rel="noopener">meteor</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">var theThing = null;</span><br><span class="line">var replaceThing = function () &#123;</span><br><span class="line">  var originalThing = theThing;</span><br><span class="line">  var unused = function () &#123;</span><br><span class="line">    if (originalThing)</span><br><span class="line">      console.log(&quot;hi&quot;);</span><br><span class="line">  &#125;;</span><br><span class="line">  theThing = &#123;</span><br><span class="line">    longStr: new Array(1000000).join(&apos;*&apos;),</span><br><span class="line">    someMethod: function () &#123;</span><br><span class="line">      console.log(someMessage);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;;</span><br><span class="line">setInterval(replaceThing, 1000);</span><br></pre></td></tr></table></figure>
+<p>代码片段做了一件事情：每次调用 replaceThing ，theThing 得到一个包含一个大数组和一个新闭包（someMethod）的新对象。同时，变量 unused 是一个引用 originalThing 的闭包（先前的 replaceThing 又调用了 theThing ）。思绪混乱了吗？最重要的事情是，闭包的作用域一旦创建，它们有同样的父级作用域，作用域是共享的。someMethod 可以通过 theThing 使用，someMethod 与 unused 分享闭包作用域，尽管 unused 从未使用，它引用的 originalThing 迫使它保留在内存中（防止被回收）。当这段代码反复运行，就会看到内存占用不断上升，垃圾回收器（GC）并无法降低内存占用。本质上，闭包的链表已经创建，每一个闭包作用域携带一个指向大数组的间接的引用，造成严重的内存泄漏。</p>
+<p>Meteor 的博文 解释了如何修复此种问题。在 replaceThing 的最后添加 originalThing = null 。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3></li>
+</ul>
+<ol>
+<li><a href="https://www.zhihu.com/question/62732293" target="_blank" rel="noopener">v8类型(知乎上的一篇)</a></li>
+<li><a href="https://github.com/v8/v8/blob/master/src/objects.h" target="_blank" rel="noopener">v8类型源码注释</a></li>
+<li><a href="http://jayconrod.com/posts/52/a-tour-of-v8-object-representation" target="_blank" rel="noopener">v8-object-representation</a></li>
+<li><p><a href="http://60sky.com/post/javascript-ucs2-utf16.html" target="_blank" rel="noopener">js内部编码介绍</a></p>
+</li>
+<li><p><a href="http://bespin.cz/~ondras/html/classv8_1_1Value.html" target="_blank" rel="noopener">v8类型图</a></p>
+</li>
+<li><p><a href="https://cs.chromium.org/chromium/src/v8/include/v8-profiler.h?sq=package:chromium&amp;dr=C&amp;l=356" target="_blank" rel="noopener">snapshot的格式头文件</a></p>
+</li>
+<li><p><a href="https://cs.chromium.org/chromium/src/v8/src/profiler/heap-snapshot-generator.cc?q=heap-snapshot-generator&amp;sq=package:chromium&amp;dr=C&amp;l=17" target="_blank" rel="noopener">生成snapshot的cc文件</a></p>
+</li>
+<li><p><a href="https://developer.chrome.com/devtools/docs/heap-profiling" target="_blank" rel="noopener">heap profiling</a></p>
+</li>
+<li><p><a href="https://github.com/longtian/javascript_performance_measurement/tree/gh-pages/heap_snapshot" target="_blank" rel="noopener">snapshot格式</a></p>
+</li>
+<li><p><a href="https://addyosmani.com/blog/taming-the-unicorn-easing-javascript-memory-profiling-in-devtools/" target="_blank" rel="noopener">easy profiling</a></p>
+</li>
+<li><p><a href="https://jinlong.github.io/2016/05/01/4-Types-of-Memory-Leaks-in-JavaScript-and-How-to-Get-Rid-Of-Them/" target="_blank" rel="noopener">常见内存泄露copy于此处</a></p>
+</li>
+</ol>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/web/">web</a><a href="/tags/chrome/">chrome</a><a href="/tags/memory/">memory</a><a href="/tags/snapshot/">snapshot</a><a href="/tags/heapdump/">heapdump</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 hello2dj (dj_amazing@sina.com)
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

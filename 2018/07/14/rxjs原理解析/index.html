@@ -1,0 +1,194 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>rxjs原理解析（自建一个demo版rxjs） | hello2dj | if you can&#39;t explain it simply, you don&#39;t understand it well enough</title>
+
+  
+  <meta name="author" content="hello2dj (dj_amazing@sina.com)">
+  
+
+  
+  <meta name="description" content="每个人都是带着棱角来到世上，只有磨平棱角才能走的更远">
+  
+
+  
+  
+  <meta name="keywords" content="rxjs,reactive programming,Ben Lesh(原文作者)">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="rxjs原理解析（自建一个demo版rxjs）"/>
+
+  <meta property="og:site_name" content="hello2dj"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="hello2dj" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">hello2dj</a>
+    </h1>
+    <p class="site-description">if you can&#39;t explain it simply, you don&#39;t understand it well enough</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/categories">Categories</a></li>
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>rxjs原理解析（自建一个demo版rxjs）</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/07/14/rxjs原理解析/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-07-14T13:00:30.069Z">
+          2018-07-14
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>我又要先上图了：<br><img src="https://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/02/1455228348streams.png" alt=""></p>
+<p><a href="https://medium.com/@benlesh/learning-observable-by-building-observable-d5da57405d87" target="_blank" rel="noopener">原文地址(english, 需翻墙)</a></p>
+<h1 id="通过构造一个Observable来学习Observable"><a href="#通过构造一个Observable来学习Observable" class="headerlink" title="通过构造一个Observable来学习Observable"></a>通过构造一个Observable来学习Observable</h1><p>很多时候大家都在问我”hot” 和 “cold” observables的区别到底是啥？，或者是一个observable到底是单播还是多播？。人们对于’Rx.Observable‘的内部工作原理似乎是非常迷惑的。当被问到如何描述一个observable的时候，人们经常说的就是这样的， “他是流（streams）”或者是“他是个类似promises的东西”。但事实上，我在很多场合以及一些公开演讲上都有讲过这些东西。</p>
+<p>和promise作比较比较是有必要的，但不幸的是，恐怕不会有太大的用处。这两者都是异步原语，并且promises已经被js社区广泛接受和使用了，总体来说这是个好的开始。通过对比promise的‘then’和observable的’subscribe‘,我们可以看到两者在立即执行和延时执行上的区别，还可以看到observable的取消执行和可重用性，当然还有其他很多的东西。通过这种比较的方式学习对于observable的初学者来说是很容易接受的。但是这里有一个问题：就是这两者的不同之处远远大于类似之处。Promises都是多播的，Promise的resolve和reject都是异步的。当大家以处理promise的方式处理observables的时候，大家会发现有时候结果并不像预期的那样。Observables有时候是多播的，有时候又不是，并且通常是异步的。真的，有时候我也在责备自己，因为我有可能再使这种误解被延续。</p>
+<h1 id="Observable仅仅是一个函数，他接受一个observer-并且返回一个函数"><a href="#Observable仅仅是一个函数，他接受一个observer-并且返回一个函数" class="headerlink" title="Observable仅仅是一个函数，他接受一个observer 并且返回一个函数"></a>Observable仅仅是一个函数，他接受一个observer 并且返回一个函数</h1><p>若果你想彻底搞懂observable，你可以自己实现一个简单的observable。真的，这并没有听起来那么难。对于一个observable, 当我们去观察他的最小实现时会发现他只是一个拥有特定（specific,具体，指定，特定）目的的函数，而这个函数又有自己特定的类型。（就是一个具有特定目的的特定类型的函数）</p>
+<ol>
+<li>结构<ul>
+<li>函数</li>
+<li>接受一个observer(观察者): 一个拥有next, error 以及complete方法的对象</li>
+<li>返回一个可取消执行的函数</li>
+</ul>
+</li>
+<li>目的：<br> 连接一个observer到生产者(产生value的对象)，并且返回一个能够<br> 取消连接生产者的方法。实际上observer就是一个可以随时传入数据的的监听器处理函数（handler处理函数）</li>
+<li>基础实现：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 一个虚假的data source</span><br><span class="line">*/</span><br><span class="line">class DataSource &#123;</span><br><span class="line">    constructor() &#123;</span><br><span class="line">        let i = 0;</span><br><span class="line">        this._id = setInterval(() =&gt; this.emit(i++), 200);</span><br><span class="line">    &#125;</span><br><span class="line">    emit(n) &#123;</span><br><span class="line">        const limit = 10;</span><br><span class="line">        if (this.ondata) &#123;</span><br><span class="line">            this.ondata(n);</span><br><span class="line">        &#125;</span><br><span class="line">        if (n === limit) &#123;</span><br><span class="line">            if (this.oncomplete) &#123;</span><br><span class="line">                this.oncomplete();</span><br><span class="line">            &#125;</span><br><span class="line">            this.destroy();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    destroy() &#123;</span><br><span class="line">        clearInterval(this._id);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * 我们的 observable</span><br><span class="line">*/</span><br><span class="line"></span><br><span class="line">function MyObservable(observer) &#123;</span><br><span class="line">    const datasource = new DatSource();</span><br><span class="line">    datasource.ondata = (e) =&gt; observer.next(e);</span><br><span class="line">    datasource.onerror = (e) =&gt; observer.error(err);</span><br><span class="line">    datasource.oncomplete = () =&gt; observer.complete();</span><br><span class="line">    return () =&gt; &#123;</span><br><span class="line">        datasource.destroy();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * 接下来我们可以使用上面的observable</span><br><span class="line">*/</span><br><span class="line">const unsub = myObservable(&#123;</span><br><span class="line">    next(x) &#123; console.log(x); &#125;,</span><br><span class="line">    error(err) &#123; console.error(err); &#125;,</span><br><span class="line">    complete() &#123; console.log(&apos;done&apos;); &#125; </span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p><a href="http://jsbin.com/yazedu/1/edit?js,console,output" target="_blank" rel="noopener">你可以在jsbin上尝试一下</a></p>
+<p>正如你看到的一样，他并不复杂，他只是一个简单的契约</p>
+<h1 id="安全的Observers-优化我们的Observers"><a href="#安全的Observers-优化我们的Observers" class="headerlink" title="安全的Observers: 优化我们的Observers"></a>安全的Observers: 优化我们的Observers</h1><p>当我们谈论Rxjs或者响应式编程的时候，我们大部分时间把observables放在首位，但事实上observer的实现才是这类响应式编程的核心工作者(workhorse驮马驮东西的马)。Observables是惰性的（inert）他们仅仅是函数，他们就在那里不动一直到你’订阅‘他们，’订阅‘后他就会建立你的observer(就是把observer与producer连接在一起)，至此他们的活就干完了，然后就又变回了原始的状态等着被其他人再次调用, 另一方面observers则是保持在活跃状态，监听着producer的事件。</p>
+<p>你可以用一个带有’next‘, ‘error’以及’complete‘等方法的js 对象来订阅observable，但实际上这仅仅是个开始。在rxjs5我们提供了一些保证，下面是一些非常重要的保证：</p>
+<h1 id="Observer-保证"><a href="#Observer-保证" class="headerlink" title="Observer 保证"></a>Observer 保证</h1><ol>
+<li>若果你传入的oberser没有实现所有的方法，这也是可以的</li>
+<li>你不需要在complete和error之后调用next</li>
+<li>当你取消订阅以后，任何事件都不会被触发（error, next, or complete）</li>
+<li>当调用’complete‘和’error‘的时候需要调用unsubsription</li>
+<li>当你的next， complete，error等handlers发生异常的时候，需要调用<br> unsubscription来保证没有资源泄露</li>
+<li>next，error 以及 complete都是可选的</li>
+</ol>
+<p>为了达到以上目的，我们需要把你的observer包裹到一个SafeObserver中，这个SafeOberver会强制实现以上保证。为了实现2， 我们需要跟踪是否发生了complete 或者 error。为了实现3，我们需要让我们的SafeObserver知道消费者在什么时候调用了unsubscribe, 等等。</p>
+<p>因此如果我们真的想要实现完整的SafeObserver,那将是很庞大的，因此在此文章中就不在具体详述，简要写一下怎么用。具体的实现可以看一下<br><a href="http://jsbin.com/kezejiy/2/edit?js,console,output" target="_blank" rel="noopener">jsbin</a>(可惜我可以不在乎23333)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * A contrived data source to use in our &quot;observable&quot;</span><br><span class="line"> * NOTE: this will clearly never error</span><br><span class="line"> */</span><br><span class="line"></span><br><span class="line">class DataSource &#123;</span><br><span class="line">  constructor() &#123;</span><br><span class="line">    let i = 0;</span><br><span class="line">    this._id = setInterval(() =&gt; this.emit(i++), 200);</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  emit(n) &#123;</span><br><span class="line">    const limit = 10;</span><br><span class="line">    if (this.ondata) &#123;</span><br><span class="line">      this.ondata(n);</span><br><span class="line">    &#125;</span><br><span class="line">    if (n === limit) &#123;</span><br><span class="line">      if (this.oncomplete) &#123;</span><br><span class="line">        this.oncomplete();</span><br><span class="line">      &#125;</span><br><span class="line">      this.destroy();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  destroy() &#123;</span><br><span class="line">    clearInterval(this._id);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * Safe Observer</span><br><span class="line"> */</span><br><span class="line">class SafeObserver &#123;</span><br><span class="line">  constructor(destination) &#123;</span><br><span class="line">    this.destination = destination;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  next(value) &#123;</span><br><span class="line">    // only try to next if you&apos;re subscribed have a handler</span><br><span class="line">    if (!this.isUnsubscribed &amp;&amp; this.destination.next) &#123;</span><br><span class="line">      try &#123;</span><br><span class="line">        this.destination.next(value);</span><br><span class="line">      &#125; catch (err) &#123;</span><br><span class="line">        // if the provided handler errors, teardown resources, then throw</span><br><span class="line">        this.unsubscribe();</span><br><span class="line">        throw err;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  error(err) &#123;</span><br><span class="line">    // only try to emit error if you&apos;re subscribed and have a handler</span><br><span class="line">    if (!this.isUnsubscribed &amp;&amp; this.destination.error) &#123;</span><br><span class="line">      try &#123;</span><br><span class="line">        this.destination.error(err);</span><br><span class="line">      &#125; catch (e2) &#123;</span><br><span class="line">        // if the provided handler errors, teardown resources, then throw</span><br><span class="line">        this.unsubscribe();</span><br><span class="line">        throw e2;</span><br><span class="line">      &#125;</span><br><span class="line">      this.unsubscribe();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  complete() &#123;</span><br><span class="line">    // only try to emit completion if you&apos;re subscribed and have a handler</span><br><span class="line">    if (!this.isUnsubscribed &amp;&amp; this.destination.complete) &#123;</span><br><span class="line">      try &#123;</span><br><span class="line">        this.destination.complete();</span><br><span class="line">      &#125; catch (err) &#123;</span><br><span class="line">        // if the provided handler errors, teardown resources, then throw</span><br><span class="line">        this.unsubscribe();</span><br><span class="line">        throw err;</span><br><span class="line">      &#125;</span><br><span class="line">      this.unsubscribe();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  unsubscribe() &#123;</span><br><span class="line">    this.isUnsubscribed = true;</span><br><span class="line">    if (this.unsub) &#123;</span><br><span class="line">      this.unsub();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * our observable</span><br><span class="line"> */</span><br><span class="line">function myObservable(observer) &#123;</span><br><span class="line">  const safeObserver = new SafeObserver(observer);</span><br><span class="line">  const datasource = new DataSource();</span><br><span class="line">  datasource.ondata = (e) =&gt; safeObserver.next(e);</span><br><span class="line">  datasource.onerror = (err) =&gt; safeObserver.error(err);</span><br><span class="line">  datasource.oncomplete = () =&gt; safeObserver.complete();</span><br><span class="line"></span><br><span class="line">  safeObserver.unsub = () =&gt; &#123;</span><br><span class="line">    datasource.destroy();</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  return safeObserver.unsubscribe.bind(safeObserver);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * now let&apos;s use it</span><br><span class="line"> */</span><br><span class="line">const unsub = myObservable(&#123;</span><br><span class="line">  next(x) &#123; console.log(x); &#125;,</span><br><span class="line">  error(err) &#123; console.error(err); &#125;,</span><br><span class="line">  complete() &#123; console.log(&apos;done&apos;)&#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * uncomment to try out unsubscription</span><br><span class="line"> */</span><br><span class="line">// setTimeout(unsub, 500);</span><br></pre></td></tr></table></figure></p>
+<h1 id="Observable的设计-符合人体工程学的-Observer-安全性"><a href="#Observable的设计-符合人体工程学的-Observer-安全性" class="headerlink" title="Observable的设计: 符合人体工程学的 Observer 安全性"></a>Observable的设计: 符合人体工程学的 Observer 安全性</h1><p>若是我们把observables封装成一个class或者 一个对象，那么我们就可以很方便的把SafeObserver当做匿名的obserers传入（或者是函数就好像rxjs里的签名似的<code>subscribe(fn, fn, fn)</code>）并且以更好的符合人体工程学的方式提供给开发者。通过在Observable的’subscribe‘中把SafeObserver以内在的形式创建， Observables 又可以以一种简单的方式来使用了：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">const myObservable = new Observable((observer) =&gt; &#123;</span><br><span class="line">    const datasource = new DataSource();</span><br><span class="line">    datasource.ondata = (e) =&gt; observer.next(e);</span><br><span class="line">    datasource.onerror = (err) =&gt; observer.error(err);</span><br><span class="line">    datasource.oncomplete = () =&gt; observer.complete();</span><br><span class="line">    return () =&gt; &#123;</span><br><span class="line">        datasource.destroy();</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>你可能已经注意到了这个例子和我们的第一个例子是类似的。但是他更容易阅读和理解。具体实现可见<a href="http://jsbin.com/depeka/edit?js,console" target="_blank" rel="noopener">jsbin</a>但在jsbin里面我们可以看到在 new Observable的时候他把 observable又用safeObservable包裹了一下显然是没有必要的，因为我们在调用myObserable的subscribe的时候已经把observer用safeObservable包装过了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">class Observable &#123;</span><br><span class="line">  constructor(_subscribe) &#123;  // 我们在new Observable的时候传递的函数其实才是真正的</span><br><span class="line">    // subscribe</span><br><span class="line">    this._subscribe = _subscribe; // 保存起来当我们调用subscribe的时候回来调用他的</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  subscribe(observer) &#123; // 你看包装过了</span><br><span class="line">    const safeObserver = new SafeObserver(observer);</span><br><span class="line">    return this._subscribe(safeObserver);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="操作符：也只是个函数而已"><a href="#操作符：也只是个函数而已" class="headerlink" title="操作符：也只是个函数而已"></a>操作符：也只是个函数而已</h1><p>Rxjs中操作就是一个接收源observable，然后返回一个新的observable, 并且在你订阅他（指新的observable）的时候，他(操作符)会去订阅源observable。我们可以实现一个简单的如下：<a href="http://jsbin.com/xavaga/2/edit?js,console,output" target="_blank" rel="noopener">jsbin</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">function map(source, project) &#123;</span><br><span class="line">    return new Observable(observer) =&gt; &#123;</span><br><span class="line">        const mapObserver = &#123;</span><br><span class="line">            next: (x) =&gt; observer.next(project(x)),</span><br><span class="line">            error: (err) =&gt; observer.error(err),</span><br><span class="line">            complete: () =&gt; observer.complete()</span><br><span class="line">        &#125;;</span><br><span class="line">        return source.subscribe(mapObserver);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里最重要的地方是这个操作符做了什么： 当你订阅他所返回的observable的时候，他创建了一个’mapObserver‘去执行工作，并且把’observer’和mapObserver连在了一起。构造操作符的链式调用仅仅是创建了一个模板，用于在订阅时把observes连接在一起。</p>
+<h1 id="设计Observable-使操作符更好的链式调用"><a href="#设计Observable-使操作符更好的链式调用" class="headerlink" title="设计Observable: 使操作符更好的链式调用"></a>设计Observable: 使操作符更好的链式调用</h1><p>如果我们把所有的操作符都实现为独立的函数，那么我们的操作符链式调用会很丑陋<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">map(map(myObservable,(x) =&gt; x + 1), (x =&gt; x + 2)</span><br></pre></td></tr></table></figure></p>
+<p>那么我们可以想象一下如果我们来个5，6操作符，那个咋办？基本上时没法使用的了。</p>
+<p>我们还可以使用reduce来简化一下具体实现参考<a href="http://jsbin.com/vipuqiq/6/edit?js,console,output" target="_blank" rel="noopener">jsbin</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pipe(myObservable, map(x =&gt; x + 1), map(x =&gt; x + 2));</span><br></pre></td></tr></table></figure></p>
+<p>理想情况下，我们希望能够使用如下的方式进行链式调用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">myObservable.map(x =&gt; x + 1).map(x =&gt; x + 2);</span><br></pre></td></tr></table></figure></p>
+<p>幸运的是，我们已经把Observable包装成了一个class, 因此我们可以把操作符作为class的方法实现：<a href="">jsbin</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * Observable basic implementation</span><br><span class="line"> */</span><br><span class="line">class Observable &#123;</span><br><span class="line">  constructor(_subscribe) &#123;</span><br><span class="line">    this._subscribe = _subscribe;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  subscribe(observer) &#123;</span><br><span class="line">    const safeObserver = new SafeObserver(observer);</span><br><span class="line">    safeObserver.unsub = this._subscribe(safeObserver);</span><br><span class="line">    return safeObserver.unsubscribe.bind(safeObserver);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 在此看到了map的实现</span><br><span class="line">Observable.prototype.map = function (project) &#123;</span><br><span class="line">  return new Observable((observer) =&gt; &#123;</span><br><span class="line">    const mapObserver = &#123;</span><br><span class="line">      next: (x) =&gt; observer.next(project(x)),</span><br><span class="line">      error: (err) =&gt; observer.error(err),</span><br><span class="line">      complete: () =&gt; observer.complete()</span><br><span class="line">    &#125;;</span><br><span class="line">    return this.subscribe(mapObserver);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>现在我们就得到了我们想要的语法了。这样做还有一个好处，就是我们子类化一些特定Observable(好比包裹Promise或者需要一些静态数值时)</p>
+<h1 id="总结：Observables就是一个接收observer作为参数并且返回一个函数的函数"><a href="#总结：Observables就是一个接收observer作为参数并且返回一个函数的函数" class="headerlink" title="总结：Observables就是一个接收observer作为参数并且返回一个函数的函数"></a>总结：Observables就是一个接收observer作为参数并且返回一个函数的函数</h1><p>牢记此话，Observables are a function that take an observer and return a function. 不多也不少。如果你写了一个函数接收一个observer然后返回一个函数，那么他是同步的还是异步的呢？都有可能，他是一个函数，任何函数的行为都取决与他是如何实现的。因此在处理Observable时，就把他看作是一个你传入的函数的引用, 没有什么魔法，stateful alien type(有状态的外部类型)。当你在使用操作符的链式调用的时候，你所做的其实就是组合一个函数，建立observers的连接，并将它们连接在一起，以及将数据传递给你的observer。</p>
+<blockquote>
+<p>本文中Observable返回都是一个函数，而在Rxjs回哦在那个以及es-observable规范中返回都是Subscription对象，他有一个更好的设计。但在这里这么写保持了文章的简洁性。</p>
+</blockquote>
+<h3 id="接下来再贡献一点其他的"><a href="#接下来再贡献一点其他的" class="headerlink" title="接下来再贡献一点其他的"></a>接下来再贡献一点其他的</h3><ul>
+<li>Subject即是observer 又是observable</li>
+<li>Subject内部有存储observers的list, 因此他可以多播给这些observers</li>
+<li>Observables 就是函数用来建立生产者和消费者的监听的函数</li>
+<li>Observables 目前还没有跟踪错误， 可以使用error handler(都得用啊)或者是observeOn(这招经本地验证无效本地是node环境可能有所不同待研究)<a href="http://jsbin.com/dolutiz/edit?js,console" target="_blank" rel="noopener">jsbin</a><br>上图<br>如下不管是mapped新产生的observable还是source都终止了。最安全的做法就是一定要监听error。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">// This is going to behave strangely</span><br><span class="line">const source$ = Observable.interval(1000).share();</span><br><span class="line">const mapped$ = source$.map(x =&gt; &#123;</span><br><span class="line">  if (x === 1) &#123;</span><br><span class="line">    throw new Error(&apos;oops&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">  return x;</span><br><span class="line">&#125;);</span><br><span class="line">source$.subscribe(x =&gt; console.log(&apos;A&apos;, x));</span><br><span class="line">mapped$.subscribe(x =&gt; console.log(&apos;B&apos;, x));</span><br><span class="line">source$.subscribe(x =&gt; console.log(&apos;C&apos;, x));</span><br><span class="line">// &quot;A&quot; 0</span><br><span class="line">// &quot;B&quot; 0</span><br><span class="line">// &quot;C&quot; 0</span><br><span class="line">// &quot;A&quot; 1</span><br><span class="line">// Uncaught Error: &quot;oops&quot;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>另一个解决的办法就是使用observeOn<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">const source$ = Observable.interval(1000)</span><br><span class="line">  .share()</span><br><span class="line">  .observeOn(Rx.Scheduler.asap); // magic here</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>从subject下游抛出的同步错误会杀掉整个subject(尚未验证，不太明白说的是啥 // TODO: 验证 )</li>
+<li>大神说他自己错了，Promise的错误处理才是个好主意。</li>
+<li>将来的版本或许会支持error trap(但目前我是5.5.5了，也没支持)<br>有图有真相，最近的rxjs的一个<a href="https://github.com/Reactive-Extensions/RxJS/issues/1417" target="_blank" rel="noopener">issue</a>的讨论<img src="/2018/07/14/rxjs原理解析/error_trap.png"></li>
+<li>可能像promise那样全是异步的也不是必须的(shrug耸一下肩)。</li>
+</ul>
+<h3 id="文章评论区精彩内容"><a href="#文章评论区精彩内容" class="headerlink" title="文章评论区精彩内容"></a>文章评论区精彩内容</h3><ul>
+<li>multicast and unicast<br>单播还是多播取决于你是如何连接producer的，如果你是每次subscribe时就新建一个producer,那么就是单播，否则就是多播，但是这里面还有好多细节的，大致可以这么认为。</li>
+</ul>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/rxjs/">rxjs</a><a href="/tags/reactive-programming/">reactive programming</a><a href="/tags/Ben-Lesh-原文作者/">Ben Lesh(原文作者)</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 hello2dj (dj_amazing@sina.com)
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>software啊！你的命名为何这么难 | hello2dj | if you can&#39;t explain it simply, you don&#39;t understand it well enough</title>
+
+  
+  <meta name="author" content="hello2dj (dj_amazing@sina.com)">
+  
+
+  
+  <meta name="description" content="每个人都是带着棱角来到世上，只有磨平棱角才能走的更远">
+  
+
+  
+  
+  <meta name="keywords" content="software,naming">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="software啊！你的命名为何这么难"/>
+
+  <meta property="og:site_name" content="hello2dj"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="hello2dj" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">hello2dj</a>
+    </h1>
+    <p class="site-description">if you can&#39;t explain it simply, you don&#39;t understand it well enough</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/categories">Categories</a></li>
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>software啊！你的命名为何这么难</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/01/01/naming/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-01-01T04:25:35.000Z">
+          2018-01-01
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h3 id="软件是如此的复杂之命名-我们只谈语义问题不谈逻辑问题"><a href="#软件是如此的复杂之命名-我们只谈语义问题不谈逻辑问题" class="headerlink" title="软件是如此的复杂之命名(我们只谈语义问题不谈逻辑问题)"></a>软件是如此的复杂之命名(我们只谈语义问题不谈逻辑问题)</h3><p>让机器懂的代码很简单，让人懂的代码就很难了。 其实代码也是在写作（虽然也大不相同），我现在发现能将自然科学和人文科学完美结合的就是计算机科学了。因为一段正确的代码需要正确的算法逻辑甚至是数学证明，事实上计算机科学发展的基础就是数。可是代码追求的不仅仅是正确，还得是可维护的，就是说是人可以读懂的。那么这时候就要看你的英语功底了，其实也不尽然，但是良好英语功底得是有的，只要你想写出大家可以看懂的代码（此处省略一万字别较真…）。<br>关于代码写作，大部分不是在写完整的句子，反而大部分是在写短语，是在给事物进行命名处理。而是否写的好，这里有两方面的问题：</p>
+<ol>
+<li>大家的英语都是very good, 但这里有个问题, 就是这段代码里的命名是否真正的体现了代码的核心含义就很重要了。举个简单栗子, 在一个业务场景中有这样一个问题 ‘If your customer just considers “order” an “order” that has been approved, don’t call “order” to a non approved one in your code, call it “nonApprovedOrder”’ 翻译一下就是你的客户只会‘订购’那些被批准了的‘订单’，那么你在一段代码里出现了order这个变量，此时就会很模糊了，模糊的关键就在于order到底是被批准了，还是未批准呢？可能你会说order对象有个属性来表示是否批准了。当然这是可以的，但若是我直接使用nonApprovedOrder是否会更清晰呢！这里只是举个简单例子，也并不代表一定得这样，其实order下的属性判断我觉得也是可以的，这里只是为了说明一个问题，能让人一目了然的命名才是更合适的。</li>
+<li>对于非英语母语的半吊子英语的人来说，用对词语就很关键了。但对像我这种半吊子的人来说这里除了用对以外还有一个不可谓不重要的陷阱，那就是关于大家所学英语的共识。比如我知道一个单词a,并且我认为他的意思就是a,可是若是对另一个人来说他所认识的a代表的是b，那此时对于这个变量a,双发就会产生歧义了，甚至会惹得其他人说这是什么意思，怎么可以这么用。我举这个栗子就是要说明，一个公司最好有自己的命名规范甚至是自己的业务词语汇总。能减少不必要的麻烦。</li>
+</ol>
+<p>看了上面两个问题就会发现，你写了一个正确代码，但却不一定写得出可读的代码。接下给大家看一些关于命名原则</p>
+<ol>
+<li>变量的名字尽可能的具有具体的意义，而不是过于泛化</li>
+</ol>
+<p>好的栗子：daysDateRange, flightNumber, carColor<br>坏的栗子：days,dRange,temp,data, aux</p>
+<blockquote>
+<p>关于这个原则，是视具体环境而变化的，比如data这个命名，有的时候我需要的就是data啊，越往底层走就越会出现像data这种抽象的命名，越往业务逻辑层走就越会出现像carColor这种具体的命名</p>
+</blockquote>
+<ol start="2">
+<li>尽量短一些（毕竟我们不是在写以字数多就是好的文章）</li>
+</ol>
+<p>坏的栗子：howLonDoesItTakeToOpenTheDoor, howBigIsTheMaterial…<br>好的栗子：timeToOpenTheDoor, MaterialSize</p>
+<ol start="3">
+<li><p>用缩写没问题，关键得有注释，或者是大家都知道的通用缩写</p>
+</li>
+<li><p>在需要的时候适当使用<a href="https://zh.wikipedia.org/wiki/%E5%8C%88%E7%89%99%E5%88%A9%E5%91%BD%E5%90%8D%E6%B3%95" target="_blank" rel="noopener">匈牙利标记法</a>。<br>举个栗子： 你需要根据苹果的颜色来区分是否成熟 你可这么来命名<br>red_apples, yellow_apples …</p>
+<blockquote>
+<p>这条待定</p>
+</blockquote>
+</li>
+<li><p>保持一致性<br>如果采用驼峰式就都使用驼峰式</p>
+</li>
+<li><p>把业务领域的术语对应到你所熟知的命名上去<br>栗子： If your customer just considers “order” an “order” that has been approved, don’t call “order” to a non approved one in your code, call it “nonApprovedOrder” 同上</p>
+</li>
+<li><p>黄金条例： 花一些时间再命名上（我觉得这条是最靠谱的，我也要贯彻执行）<br>当你近乎不加思索的使用一个变量命名的时候，你基本上就已经选择了一个不好的命名。<br>反之，你总是在向着好的命名前进</p>
+</li>
+</ol>
+<h3 id="那怎么判断我们的命名是合适呢？当我们的命名ok时代码应当呈现以下几个特征"><a href="#那怎么判断我们的命名是合适呢？当我们的命名ok时代码应当呈现以下几个特征" class="headerlink" title="那怎么判断我们的命名是合适呢？当我们的命名ok时代码应当呈现以下几个特征"></a>那怎么判断我们的命名是合适呢？当我们的命名ok时代码应当呈现以下几个特征</h3><ul>
+<li>easy to read</li>
+<li>easy to use</li>
+<li>it looks simple</li>
+<li>lean</li>
+<li>is straight forward<br>但这并不代表我们有了好的命名就会写出可读的代码，好的命名只是我们写出可读的代码的第一步，但若是第一步都迈不出去，那可就惨了。。。</li>
+</ul>
+<h3 id="当然一次性就改好了是在太困难了，那我们以前的旧代码怎么办？"><a href="#当然一次性就改好了是在太困难了，那我们以前的旧代码怎么办？" class="headerlink" title="当然一次性就改好了是在太困难了，那我们以前的旧代码怎么办？"></a>当然一次性就改好了是在太困难了，那我们以前的旧代码怎么办？</h3><p>一句话对我们的代码持续性重构，以及持续性的测试。因此我们需要大量的测试用例，是的，测试用例。</p>
+<h3 id="最后一个真的是太重要了。"><a href="#最后一个真的是太重要了。" class="headerlink" title="最后一个真的是太重要了。"></a>最后一个真的是太重要了。</h3><p>参考：<br><a href="http://www.makinggoodsoftware.com/" target="_blank" rel="noopener">blog</a></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/software/">software</a><a href="/tags/naming/">naming</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 hello2dj (dj_amazing@sina.com)
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

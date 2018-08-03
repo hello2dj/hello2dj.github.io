@@ -1,0 +1,447 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>hyperledger-fabric基础 | hello2dj | if you can&#39;t explain it simply, you don&#39;t understand it well enough</title>
+
+  
+  <meta name="author" content="hello2dj (dj_amazing@sina.com)">
+  
+
+  
+  <meta name="description" content="每个人都是带着棱角来到世上，只有磨平棱角才能走的更远">
+  
+
+  
+  
+  <meta name="keywords" content="fabric">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="hyperledger-fabric基础"/>
+
+  <meta property="og:site_name" content="hello2dj"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="hello2dj" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">hello2dj</a>
+    </h1>
+    <p class="site-description">if you can&#39;t explain it simply, you don&#39;t understand it well enough</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/categories">Categories</a></li>
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>hyperledger-fabric基础</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/04/10/hyperledger-fabric基础/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-04-09T16:00:00.000Z">
+          2018-04-10
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h3 id="流程问题"><a href="#流程问题" class="headerlink" title="流程问题"></a><a href="http://rdcqii.hundsun.com/portal/article/661.html" target="_blank" rel="noopener">流程问题</a></h3><h3 id="关于使用-kafka-实现共识"><a href="#关于使用-kafka-实现共识" class="headerlink" title="关于使用 kafka 实现共识"></a><a href="https://www.jianshu.com/p/f1a671be69a4" target="_blank" rel="noopener">关于使用 kafka 实现共识</a></h3><h3 id="重新部署-chaincode-时要删除-chaincode-生成的-docker-镜像"><a href="#重新部署-chaincode-时要删除-chaincode-生成的-docker-镜像" class="headerlink" title="重新部署 chaincode 时要删除 chaincode 生成的 docker 镜像"></a>重新部署 chaincode 时要删除 chaincode 生成的 docker 镜像</h3><h3 id="fabric-ca-就是发证方，类似于银行发行信用卡。http-hyperledger-fabric-readthedocs-io-en-latest-identity-identity-html"><a href="#fabric-ca-就是发证方，类似于银行发行信用卡。http-hyperledger-fabric-readthedocs-io-en-latest-identity-identity-html" class="headerlink" title="fabric-ca 就是发证方，类似于银行发行信用卡。http://hyperledger-fabric.readthedocs.io/en/latest/identity/identity.html"></a>fabric-ca 就是发证方，类似于银行发行信用卡。<a href="http://hyperledger-fabric.readthedocs.io/en/latest/identity/identity.html" target="_blank" rel="noopener">http://hyperledger-fabric.readthedocs.io/en/latest/identity/identity.html</a></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">A PKI is like a card provider – it dispenses many different types of verifiable identities. An MSP, on the other hand, is like the list of card providers accepted by the store – determining which identities are the trusted members (actors) of the store payment network. MSPs turn verifiable identities into the members of a blockchain network.</span><br></pre></td></tr></table></figure>
+<p>MSPs 把可验证的身份证明集成到了区块链网络的成员中。</p>
+<h3 id="anchor-peer"><a href="#anchor-peer" class="headerlink" title="anchor peer"></a>anchor peer</h3><p>channel 上的其他节点都能够发现他并和他进行交流，并且 channel 上的每个 member 都会有 anchor peers(注意复数可以不只有一个 anchor peer)，这样所有的 peer(注意所有的 peer 就是指所属不同的 memer 的 peer 也是可以相互发现的) 之间可以通过 anchor peer 互相发现。</p>
+<h3 id="只读的-chaincode-调用客户端一般是不会将其记录进-ledger-的，除非客户端明确要求。"><a href="#只读的-chaincode-调用客户端一般是不会将其记录进-ledger-的，除非客户端明确要求。" class="headerlink" title="只读的 chaincode 调用客户端一般是不会将其记录进 ledger 的，除非客户端明确要求。"></a>只读的 chaincode 调用客户端一般是不会将其记录进 ledger 的，除非客户端明确要求。</h3><h3 id="transaction"><a href="#transaction" class="headerlink" title="transaction"></a>transaction</h3><p>我们的 invoke(显然 query 也是 invoke 就意味着 query 也是可以提交到 ledger 的)和 instantiate 都成为 transaction 客户端从背书节点收集返回结果并将其打包提交到 ledger。</p>
+<h3 id="configtx-yml"><a href="#configtx-yml" class="headerlink" title="configtx.yml"></a>configtx.yml</h3><ul>
+<li>Consortium 联盟</li>
+</ul>
+<h3 id="系统链码"><a href="#系统链码" class="headerlink" title="系统链码"></a>系统链码</h3><ul>
+<li>cscc：负责 joinchannel／config update 等</li>
+<li>escc：负责对传入数据进行签名（msp 管理）</li>
+<li>lccc：负责 deploy invoke</li>
+<li>vscc：负责签名验证／策略验证（这里如何进行策略验证？）</li>
+<li>qscc：负责 ledger 查询</li>
+</ul>
+<h3 id="A-principal-is-described-in-terms-of-the-MSP-that-is-tasked-to-validate-the-identity-of-the-signer-and-of-the-role-that-the-signer-has-within-that-MSP-Currently-two-roles-are-supported-member-and-admin-Principals-are-described-as-MSP-ROLE-where-MSP-is-the-MSP-ID-that-is-required-and-ROLE-is-either-one-of-the-two-strings-member-and-admin-Examples-of-valid-principals-are-‘Org0-admin’-any-administrator-of-the-Org0-MSP-or-‘Org1-member’-any-member-of-the-Org1-MSP-http-hyperledger-fabric-readthedocs-io-en-latest-endorsement-policies-html"><a href="#A-principal-is-described-in-terms-of-the-MSP-that-is-tasked-to-validate-the-identity-of-the-signer-and-of-the-role-that-the-signer-has-within-that-MSP-Currently-two-roles-are-supported-member-and-admin-Principals-are-described-as-MSP-ROLE-where-MSP-is-the-MSP-ID-that-is-required-and-ROLE-is-either-one-of-the-two-strings-member-and-admin-Examples-of-valid-principals-are-‘Org0-admin’-any-administrator-of-the-Org0-MSP-or-‘Org1-member’-any-member-of-the-Org1-MSP-http-hyperledger-fabric-readthedocs-io-en-latest-endorsement-policies-html" class="headerlink" title="A principal is described in terms of the MSP that is tasked to validate the identity of the signer and of the role that the signer has within that MSP. Currently, two roles are supported: member and admin. Principals are described as MSP.ROLE, where MSP is the MSP ID that is required, and ROLE is either one of the two strings member and admin. Examples of valid principals are ‘Org0.admin’ (any administrator of the Org0 MSP) or ‘Org1.member’ (any member of the Org1 MSP).(http://hyperledger-fabric.readthedocs.io/en/latest/endorsement-policies.html)"></a>A principal is described in terms of the MSP that is tasked to validate the identity of the signer and of the role that the signer has within that MSP. Currently, two roles are supported: member and admin. Principals are described as MSP.ROLE, where MSP is the MSP ID that is required, and ROLE is either one of the two strings member and admin. Examples of valid principals are ‘Org0.admin’ (any administrator of the Org0 MSP) or ‘Org1.member’ (any member of the Org1 MSP).(<a href="http://hyperledger-fabric.readthedocs.io/en/latest/endorsement-policies.html" target="_blank" rel="noopener">http://hyperledger-fabric.readthedocs.io/en/latest/endorsement-policies.html</a>)</h3><h3 id="configtx-yml-1"><a href="#configtx-yml-1" class="headerlink" title="configtx.yml"></a>configtx.yml</h3><ul>
+<li>Profiles</li>
+<li>Organizations</li>
+<li>Application</li>
+<li>Orderer</li>
+<li>Capabilities</li>
+<li>Resources</li>
+</ul>
+<h3 id="policy-The-primary-purpose-of-this-document-is-to-explain-how-policies-are-defined-in-and-interact-with-the-channel-configuratio"><a href="#policy-The-primary-purpose-of-this-document-is-to-explain-how-policies-are-defined-in-and-interact-with-the-channel-configuratio" class="headerlink" title="policy The primary purpose of this document is to explain how policies are defined in and interact with the channel configuratio"></a>policy <a href="http://hyperledger-fabric.readthedocs.io/en/latest/policies.html" target="_blank" rel="noopener">The primary purpose of this document is to explain how policies are defined in and interact with the channel configuratio</a></h3><ul>
+<li>UNKNOWN = 0; // Reserved to check for proper initialization</li>
+<li>SIGNATURE = 1; 使用</li>
+<li>MSP = 2;</li>
+<li>IMPLICIT_META = 3; 使用</li>
+</ul>
+<h3 id="MSP-OU-organizationalUnitName"><a href="#MSP-OU-organizationalUnitName" class="headerlink" title="MSP OU organizationalUnitName"></a>MSP OU organizationalUnitName</h3><h3 id="msp-config"><a href="#msp-config" class="headerlink" title="msp config"></a>msp config</h3><ul>
+<li>a folder admincerts to include PEM files each corresponding to an administrator certificate</li>
+<li>a folder cacerts to include PEM files each corresponding to a root CA’s certificate</li>
+<li>(optional) a folder intermediatecerts to include PEM files each corresponding to an intermediate CA’s certificate</li>
+<li>(optional) a file config.yaml to configure the supported Organizational Units and identity classifications (see respective sections below).</li>
+<li>(optional) a folder crls to include the considered CRLs</li>
+<li>a folder keystore to include a PEM file with the node’s signing key; we emphasise that currently RSA keys are not supported</li>
+<li>a folder signcerts to include a PEM file with the node’s X.509 certificate</li>
+<li>(optional) a folder tlscacerts to include PEM files each corresponding to a TLS root CA’s certificate</li>
+<li>(optional) a folder tlsintermediatecerts to include PEM files each corresponding to an intermediate TLS CA’s certificate</li>
+</ul>
+<h4 id="Unlike-today’s-systems-where-a-participant’s-private-programs-are-used-to-update-their-private-ledgers-a-blockchain-system-has-shared-programs-to-update-shared-ledgers"><a href="#Unlike-today’s-systems-where-a-participant’s-private-programs-are-used-to-update-their-private-ledgers-a-blockchain-system-has-shared-programs-to-update-shared-ledgers" class="headerlink" title="Unlike today’s systems, where a participant’s private programs are used to update their private ledgers, a blockchain system has shared programs to update shared ledgers."></a>Unlike today’s systems, where a participant’s private programs are used to update their private ledgers, a blockchain system has shared programs to update shared ledgers.</h4><p>不像现在的那些系统，参与者用他们私有的程序修改他们私有的账本，而区块链系统则是使用共享的程序修改共享的账本。</p>
+<h4 id="hyperledger-是由他们的参与者管理他们的交易"><a href="#hyperledger-是由他们的参与者管理他们的交易" class="headerlink" title="hyperledger 是由他们的参与者管理他们的交易"></a>hyperledger 是由他们的参与者管理他们的交易</h4><p>participants manage their transactions</p>
+<h4 id="hyperledger-不是一个公开的任何人都可以进行交易的系统，他是需要登录管理的，依靠-Membership-Service-Provider（MSP）来管理。"><a href="#hyperledger-不是一个公开的任何人都可以进行交易的系统，他是需要登录管理的，依靠-Membership-Service-Provider（MSP）来管理。" class="headerlink" title="hyperledger 不是一个公开的任何人都可以进行交易的系统，他是需要登录管理的，依靠 Membership Service Provider（MSP）来管理。"></a>hyperledger 不是一个公开的任何人都可以进行交易的系统，他是需要登录管理的，依靠 Membership Service Provider（MSP）来管理。</h4><h4 id="多-channel-机制可以对参与者的信息进行隔离管理。"><a href="#多-channel-机制可以对参与者的信息进行隔离管理。" class="headerlink" title="多 channel 机制可以对参与者的信息进行隔离管理。"></a>多 channel 机制可以对参与者的信息进行隔离管理。</h4><h4 id="hyperledger-fabric-账本子系统包括-world-state-和-transaction-log-两部分。"><a href="#hyperledger-fabric-账本子系统包括-world-state-和-transaction-log-两部分。" class="headerlink" title="hyperledger fabric 账本子系统包括 world state 和 transaction log 两部分。"></a>hyperledger fabric 账本子系统包括 world state 和 transaction log 两部分。</h4><ul>
+<li>world state 用来描述某一指定时间点时 ledger 的状态。他是 ledger 的数据库。</li>
+<li>transaction log 记录了所有导致 world state 状态发生改变的 transaction</li>
+</ul>
+<h4 id="smart-contracts"><a href="#smart-contracts" class="headerlink" title="smart contracts"></a>smart contracts</h4><p>只能合约是以 chaincode 的形式体现的，当外部 application 想和 blockchain 交互时都是通过 chaincode, chaincode 和 blockchain 交互则是通过 world state 来进行的。并不是直接和 transaction log 交互的。</p>
+<h4 id="区域内信任即私链"><a href="#区域内信任即私链" class="headerlink" title="区域内信任即私链"></a>区域内信任即私链</h4><h4 id="The-ledger-is-the-sequenced-tamper-resistant-record-of-all-state-transitions-in-the-fabric"><a href="#The-ledger-is-the-sequenced-tamper-resistant-record-of-all-state-transitions-in-the-fabric" class="headerlink" title="The ledger is the sequenced, tamper-resistant record of all state transitions in the fabric"></a>The ledger is the sequenced, tamper-resistant record of all state transitions in the fabric</h4><p>防篡改记录</p>
+<h4 id="features"><a href="#features" class="headerlink" title="features"></a>features</h4><p>每一个 channel 有一个 ledger, 对于参与到 channel 的 peer 他们都是这个 channel 的 member 并且会有一份 ledger 的 copy</p>
+<ul>
+<li>查询更新可以基于 key, 范围查询，组合 key 查询</li>
+<li>只读的查询可以提供丰富的查询语句(world state 使用 CouchDB)</li>
+<li>当启用数据来源功能时，可以查询某一 key 的历史数据</li>
+<li>交易包括了 chaincode read set 和 write set 中 key/value 的版本号</li>
+<li>transaction 包含所有 peer 的签名，并且提交给 ordering service</li>
+<li>transaction 在 blocks 中是有序的</li>
+<li>peers 使用背书策略验证交易并执行这些策略</li>
+<li>采用多版本管理，执行 chaincode 操作时会验证在执行时间内状态是否被改变过</li>
+<li>交易一旦通过并且提交，则不允许在被改变</li>
+<li>一个 channel 的 ledger 会有一个配置块来定以策略，acl 以及其他信息</li>
+<li>channel 有 MSP 来</li>
+</ul>
+<h3 id="msp-目录"><a href="#msp-目录" class="headerlink" title="msp 目录"></a>msp 目录</h3><ul>
+<li>组织<ul>
+<li>ca 组织的根证书和对应的私钥</li>
+<li>msp 代表该组织的身份信息<ul>
+<li>admincerts 组织管理员的身份验证证书，被根证书签名</li>
+<li>cacerts 组织的根证书</li>
+<li>tlscacerts 用于 tls 的 ca 证书，自签名</li>
+</ul>
+</li>
+<li>peers<ul>
+<li>peer0 第一个 peer 的信息<ul>
+<li>msp<ul>
+<li>admincerts 组织管理员的身份验证证书。peer 将基于这些证书来验证交易签署者是否为管理员</li>
+<li>keystore 本节点自己的身份私钥，用来签名</li>
+<li>signcerts 验证本节点签名的证书，被组织更证书签名</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>users<ul>
+<li>存放属于该组织用户的实体</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="configtx-yml-2"><a href="#configtx-yml-2" class="headerlink" title="configtx.yml"></a>configtx.yml</h3><ul>
+<li>Consortiums Order 所服务的联盟列表</li>
+<li>Consortium 该应用通道锁关联的联盟的名称</li>
+</ul>
+<h3 id="MSP-分为-local-msp-和-channel-msp"><a href="#MSP-分为-local-msp-和-channel-msp" class="headerlink" title="MSP 分为 local msp 和 channel msp"></a>MSP 分为 local msp 和 channel msp</h3><ul>
+<li>local msp 就是给 peer, orderer and users 使用的只针对其自身</li>
+<li>channel msp 则是 channel 使用的多个组织都回去使用的，每个 peer 节点都会有一个 copy</li>
+</ul>
+<h3 id="identity"><a href="#identity" class="headerlink" title="identity"></a>identity</h3><ul>
+<li>cert</li>
+<li>public key</li>
+<li>IdentityIdentifier: { msg.name, 以及一个唯一 id }</li>
+</ul>
+<p>一个区块链网络拥有不同的参与者，包括 peer, orderer, client applications, administrators 等等。每一个参与者都会有一个身份证（Identity）以 x.509 数字证书的形式封装。这些身份证很重要，因为他决定了你对于整个区块链网络资源的权限。hyperledger 使用参与者身份证中的一些属性来确定权限，hyperledger 给他们定了一个特殊的名字：principal。Pricipals 就好比是 userIDs 或者是 groupIDs,但是他更灵活，因为他可以包含很多关于参与者身份的属性。当我们说 principals 的时候，我们就是在参与者在系统中的决定参与者权限的身份属性。这些属性通常是 organization, organizational unit, role 或者就是参与者的身份证。</p>
+<p>还有参与者的身份证得是合法的被验证过的，并且是来自被系统所信任的权威组织。MSP(memebership service provider)就是用来验证 Identity 的是否是被信任的，更详细的说就是，MSP 是用来表示组织中成员关系规则的模块。MSP 定义了组织中成员身份（Identity）是否有效的规则。默认的 MSP 使用 X.509 证书来作为身份证，并且整个体系结构采用传统的 PKI 模型。</p>
+<p>Identity 是身份证，CA 是发放身份证的，MSP 是验证身份证的。</p>
+<h4 id="msp-最多包含-9-项"><a href="#msp-最多包含-9-项" class="headerlink" title="msp 最多包含 9 项"></a>msp 最多包含 9 项</h4><ul>
+<li>root CAs(cacerts): 包含根证书，不只一个，可以有多个，对具体的 node 来说可能只有一个，就是 orgs 的根证书而对于一些 orgs 来说则有可能有很多个根证书，他标识了哪些 CAs 是属于相同的 orgs。（必有）</li>
+<li>Intermediate CAs(intermediatecerts): 同上中间级的 CA</li>
+<li><p>Organizational Units (config.yaml): 是用来严格指定 orgs 成员，若是没有则所有可以通过根 CA 认证的都被认为是相同组织的。</p>
+<blockquote>
+<p>是需要在根证书中有体现的, 也就是在下发证书时是要表明你是属于哪个 ou 的, 这里还有问题就是可以根据具体的 node 的类型来设置 ou, 只有两类： client 和 peer</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">OrganizationalUnitIdentifiers:</span><br><span class="line"></span><br><span class="line">    Certificate: &quot;cacerts/cacert.pem&quot;</span><br><span class="line">    OrganizationalUnitIdentifier: &quot;COP&quot;</span><br><span class="line"></span><br><span class="line">NodeOUs:</span><br><span class="line"></span><br><span class="line">    Enable: false</span><br><span class="line"></span><br><span class="line">    ClientOUIdentifier: # if Certificate is empty, then the certifier identifier will not be enforced</span><br><span class="line"></span><br><span class="line">        Certificate: &quot;cacerts/cacert.pem&quot;</span><br><span class="line">        OrganizationalUnitIdentifier: &quot;OU_client&quot;</span><br><span class="line"></span><br><span class="line">    PeerOUIdentifier:</span><br><span class="line">        Certificate: &quot;cacerts/cacert.pem&quot;</span><br><span class="line">        OrganizationalUnitIdentifier: &quot;OU_peer&quot;</span><br><span class="line">```</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Administrators(admincerts): 管理的证书（必选）</p>
+</li>
+<li>Revoked Certificates(crls): 被撤销的证书</li>
+<li>Node Identity(signcerts): 自身的身份识别证书，被组织根证书签过名的（必选）</li>
+<li>keystore(keystore): 上述证书身份认证证书的私钥（必选）</li>
+<li>tls root CA(tlscacerts): tls 链接使用的证书（必选）</li>
+<li>TLS Intermediate CA(tlsintermediatecerts):未见到是 tls 中间层的证书</li>
+</ul>
+<h3 id="资源权限的确认是用-principal-来确定"><a href="#资源权限的确认是用-principal-来确定" class="headerlink" title="资源权限的确认是用 principal 来确定"></a>资源权限的确认是用 principal 来确定</h3><p>一共有以下几类 pricinpal</p>
+<ul>
+<li><p>MSPPrincipal_ROLE：角色类, 参与者在网络的角色</p>
+<ul>
+<li>admin</li>
+<li>member</li>
+<li>peer</li>
+<li>client</li>
+</ul>
+</li>
+<li><p>MSPPrincipal_ORGANIZATION_UNIT：组织类，参与者在网络中的组织</p>
+</li>
+<li><p>MSPPrincipal_IDENTITY：身份证类，具体到某一个参与者的权限设置</p>
+</li>
+</ul>
+<h3 id="application-与-fabric-的交互"><a href="#application-与-fabric-的交互" class="headerlink" title="application 与 fabric 的交互"></a>application 与 fabric 的交互</h3><p>app 要和 fabric 交互是需要通过 peer 的</p>
+<ol>
+<li>connect to peer</li>
+<li>invoke chaincode(proposal)<ol>
+<li>peer invokes chaincode with proposal</li>
+<li>chaincode generates query or update proposal response</li>
+</ol>
+</li>
+<li>proposal response</li>
+<li>request that transaction is ordered<ol>
+<li>transactions sent to peers in blocks( from order to peers)</li>
+<li>peer updates ledger using transaction blocks</li>
+</ol>
+</li>
+<li>ledger update event</li>
+</ol>
+<blockquote>
+<p>通过以上我们得出 我们的客户端想要和 fabric 交互是先连接到 peer, 可 MSP 还记得否，因此 app 必须得有和 MSP 同一个 CA 下发的证书。</p>
+</blockquote>
+<blockquote>
+<p>还有我们知道同一个组织的 peer 的证书是被同一个根证书所信任的，意味着，同一个组织间的 peer 的才可以进行 gossip 通信。不同组织间的通信通过 anchor peer 进行。</p>
+</blockquote>
+<h3 id="configtxgen"><a href="#configtxgen" class="headerlink" title="configtxgen"></a>configtxgen</h3><p>configtx.yml</p>
+<h4 id="顶层"><a href="#顶层" class="headerlink" title="顶层"></a>顶层</h4><ul>
+<li>Profiles map[string]*Profile： 包括 order 以及 channel 配置</li>
+<li><p>Organizations []*Organization：各个组织的配置（公共配置）</p>
+<ul>
+<li>Name string <code>yaml:&quot;Name&quot;</code></li>
+<li>ID string <code>yaml:&quot;ID&quot;</code></li>
+<li>MSPDir string <code>yaml:&quot;MSPDir&quot;</code></li>
+<li>MSPType string <code>yaml:&quot;MSPType&quot;</code></li>
+<li>AdminPrincipal string <code>yaml:&quot;AdminPrincipal&quot;</code><ul>
+<li>AdminRoleAdminPrincipal = “Role.ADMIN”</li>
+<li>MemberRoleAdminPrincipal = “Role.MEMBER”</li>
+</ul>
+</li>
+<li>AnchorPeers []*AnchorPeer <code>yaml:&quot;AnchorPeers&quot;</code></li>
+</ul>
+</li>
+<li><p>Application *Application：应用通道的配置（公共配置）</p>
+</li>
+<li>Orderer *Orderer：order 配置（公共配置）</li>
+<li>Capabilities map[string]map[string]bool （未知）(个人理解绝得他应该是指定 channel 或者其他实体对某项功能是否支持)</li>
+<li>Resources（未知）：权限判定<ul>
+<li>目前看到 Toplevel 有 resource, 还有 application 有 resource, 同以前讲的路径权限类似， /channel/application/admins</li>
+</ul>
+</li>
+</ul>
+<p>configtxgen 工具生成 tx 文件依靠的就是 profile 中的配置项。</p>
+<h4 id="policy-规则"><a href="#policy-规则" class="headerlink" title="policy 规则"></a>policy 规则</h4><ul>
+<li>Policy_UNKNOWN Policy_PolicyType = 0</li>
+<li>Policy_SIGNATURE Policy_PolicyType = 1： n_out_of 规则</li>
+<li>Policy_MSP Policy_PolicyType = 2：就是 msp 证书验证规则（这里又有 MSPPrincipal role 角色规则判定）</li>
+<li><p>Policy_IMPLICIT_META Policy_PolicyType = 3：路径判定规则</p>
+<p>比如：Admins 意味着只有某个实体或者组织的管理员才能操作<br>/channel/order/Admins 意味只有 channel 中的 order 的管理员才能操作</p>
+</li>
+</ul>
+<blockquote>
+<p>ModPolicy 是指对策略的修改权限</p>
+</blockquote>
+<h3 id="国家部门规定药企需要自建追溯系统"><a href="#国家部门规定药企需要自建追溯系统" class="headerlink" title="国家部门规定药企需要自建追溯系统"></a>国家部门规定药企需要自建追溯系统</h3><h3 id="医药（溯源），供应链金融"><a href="#医药（溯源），供应链金融" class="headerlink" title="医药（溯源），供应链金融"></a>医药（溯源），供应链金融</h3><h3 id="群托管的公共交换协议"><a href="#群托管的公共交换协议" class="headerlink" title="群托管的公共交换协议"></a>群托管的公共交换协议</h3><h3 id="专业投资者（专业投资者可以做一些投资策略的事情但也以区块链的形式存储）与普通投资者的交互平台（Dao-以太坊）"><a href="#专业投资者（专业投资者可以做一些投资策略的事情但也以区块链的形式存储）与普通投资者的交互平台（Dao-以太坊）" class="headerlink" title="专业投资者（专业投资者可以做一些投资策略的事情但也以区块链的形式存储）与普通投资者的交互平台（Dao 以太坊）"></a>专业投资者（专业投资者可以做一些投资策略的事情但也以区块链的形式存储）与普通投资者的交互平台（Dao 以太坊）</h3><ul>
+<li>发基金</li>
+<li>购买</li>
+</ul>
+<h3 id="安全的智能合约"><a href="#安全的智能合约" class="headerlink" title="安全的智能合约"></a>安全的智能合约</h3><h3 id="形式化验证技术"><a href="#形式化验证技术" class="headerlink" title="形式化验证技术"></a>形式化验证技术</h3><ul>
+<li>定理证明（定理库）</li>
+<li>模型检测（模型爆炸，程序太长）</li>
+</ul>
+<h3 id="hyperledger-的密码算法应用场景"><a href="#hyperledger-的密码算法应用场景" class="headerlink" title="hyperledger 的密码算法应用场景"></a>hyperledger 的密码算法应用场景</h3><ul>
+<li>数字证书做身份认证</li>
+</ul>
+<h3 id="client-和-peers-之间的节点的交易数据是会被加密的，order-是无发探查到-client-提交的交易信息"><a href="#client-和-peers-之间的节点的交易数据是会被加密的，order-是无发探查到-client-提交的交易信息" class="headerlink" title="client 和 peers 之间的节点的交易数据是会被加密的，order 是无发探查到 client 提交的交易信息"></a>client 和 peers 之间的节点的交易数据是会被加密的，order 是无发探查到 client 提交的交易信息</h3><h3 id="bccsp-统一密码服务入口"><a href="#bccsp-统一密码服务入口" class="headerlink" title="bccsp 统一密码服务入口"></a>bccsp 统一密码服务入口</h3><p>接口描述</p>
+<ul>
+<li>秘钥声明周期管理<ul>
+<li>keyGen</li>
+<li>秘钥派生（通过一个秘钥生成另一个秘钥）</li>
+<li>秘钥导入</li>
+<li>获取秘钥</li>
+</ul>
+</li>
+<li><p>秘钥操作</p>
+<ul>
+<li>验签</li>
+<li>签名</li>
+<li>hash</li>
+</ul>
+</li>
+</ul>
+<p>实现方案</p>
+<ul>
+<li>software</li>
+<li>pkcs11 硬件（保证私钥不出设备）</li>
+<li>plugin(自实现 bccsp)</li>
+</ul>
+<h3 id="msp"><a href="#msp" class="headerlink" title="msp"></a>msp</h3><ul>
+<li>Indentity 接口， 同上所描述的身份</li>
+<li>可以从 channel 中获取其他 org 的 msg 信息</li>
+</ul>
+<h3 id="国密算法（是国内一些领域的准入门槛）"><a href="#国密算法（是国内一些领域的准入门槛）" class="headerlink" title="国密算法（是国内一些领域的准入门槛）"></a>国密算法（是国内一些领域的准入门槛）</h3><ul>
+<li>sm2 椭圆曲线算法</li>
+<li>sm3 hash 算法</li>
+<li>sm4 对称算法</li>
+</ul>
+<h3 id="可以通过扩展-fabric-的-sw-来增加国密算法"><a href="#可以通过扩展-fabric-的-sw-来增加国密算法" class="headerlink" title="可以通过扩展 fabric 的 sw 来增加国密算法"></a>可以通过扩展 fabric 的 sw 来增加国密算法</h3><h3 id="还可以使用硬件的方法实现"><a href="#还可以使用硬件的方法实现" class="headerlink" title="还可以使用硬件的方法实现"></a>还可以使用硬件的方法实现</h3><h3 id="还有-plugin-的方式实现-bccsp-的实现"><a href="#还有-plugin-的方式实现-bccsp-的实现" class="headerlink" title="还有 plugin 的方式实现 bccsp 的实现"></a>还有 plugin 的方式实现 bccsp 的实现</h3><h3 id="国密算法加入-msp-的支持"><a href="#国密算法加入-msp-的支持" class="headerlink" title="国密算法加入-msp 的支持"></a>国密算法加入-msp 的支持</h3><ul>
+<li>go 的运行时环境改造</li>
+<li>go lib 层更改</li>
+<li>重新实现 msp</li>
+<li>也实现 msp 的插件形式</li>
+</ul>
+<h3 id="国密算法的其他支持"><a href="#国密算法的其他支持" class="headerlink" title="国密算法的其他支持"></a>国密算法的其他支持</h3><ul>
+<li><p>工具链支持</p>
+</li>
+<li><p>ca 支持</p>
+</li>
+<li><p>sdk 支持</p>
+</li>
+</ul>
+<h3 id="msp-还可以根据-x-509-的属性来判断"><a href="#msp-还可以根据-x-509-的属性来判断" class="headerlink" title="msp 还可以根据 x.509 的属性来判断"></a>msp 还可以根据 x.509 的属性来判断</h3><ul>
+<li>1.1.0 中 增加了一个新的属性，可以在 chaincode 中调用接口来获取属性</li>
+</ul>
+<h3 id="cryptogen-的工具是没有中间-CA-的"><a href="#cryptogen-的工具是没有中间-CA-的" class="headerlink" title="cryptogen 的工具是没有中间 CA 的"></a>cryptogen 的工具是没有中间 CA 的</h3><h3 id="CA"><a href="#CA" class="headerlink" title="CA"></a>CA</h3><ul>
+<li>推荐加上中间 CA</li>
+<li>使用 fabric-ca</li>
+<li>使用 可信第三方权威 CA 作为根 CA， fabric-ca 作为中间 CA</li>
+<li>全部使用外部 CA,应当支持 fabric 所支持的 rest api，以及 x.509 的实现，添加属性等</li>
+</ul>
+<h3 id="用户操作"><a href="#用户操作" class="headerlink" title="用户操作"></a>用户操作</h3><ul>
+<li>regist 注册</li>
+<li>enroll 登录（登录后需要把返回的 secret 等信息保存在本地）</li>
+<li>reenroll(快到期的是后)</li>
+<li>revoke(吊销证书， 需要把吊销的证书放到 msp 的目录下)</li>
+</ul>
+<h3 id="msp-分为"><a href="#msp-分为" class="headerlink" title="msp 分为"></a>msp 分为</h3><ul>
+<li>localmsp</li>
+<li>channelmsp</li>
+</ul>
+<h3 id="msp-与-创世块"><a href="#msp-与-创世块" class="headerlink" title="msp 与 创世块"></a>msp 与 创世块</h3><ul>
+<li>各个组织的 msp 信息都会被打倒创世块中</li>
+</ul>
+<h3 id="idmex-是另一种-bccsp-的实现"><a href="#idmex-是另一种-bccsp-的实现" class="headerlink" title="idmex 是另一种 bccsp 的实现"></a>idmex 是另一种 bccsp 的实现</h3><h3 id="添加-admins-需要在-fabric-ca-中注册一个新的用户，在把他的证书-copy-到-msp-的-amdincerts-中"><a href="#添加-admins-需要在-fabric-ca-中注册一个新的用户，在把他的证书-copy-到-msp-的-amdincerts-中" class="headerlink" title="添加 admins 需要在 fabric-ca 中注册一个新的用户，在把他的证书 copy 到 msp 的 amdincerts 中"></a>添加 admins 需要在 fabric-ca 中注册一个新的用户，在把他的证书 copy 到 msp 的 amdincerts 中</h3><h3 id="1-1-0-中-Identity-增加了很多借口"><a href="#1-1-0-中-Identity-增加了很多借口" class="headerlink" title="1.1.0 中 Identity 增加了很多借口"></a>1.1.0 中 Identity 增加了很多借口</h3><h3 id="transientMap-是可以被-chaincode-的代码访问到的，可以提供一些加密秘钥或者是其他的一些东西，但他们都不会记录到-ledger-的。"><a href="#transientMap-是可以被-chaincode-的代码访问到的，可以提供一些加密秘钥或者是其他的一些东西，但他们都不会记录到-ledger-的。" class="headerlink" title="transientMap 是可以被 chaincode 的代码访问到的，可以提供一些加密秘钥或者是其他的一些东西，但他们都不会记录到 ledger 的。"></a>transientMap 是可以被 chaincode 的代码访问到的，可以提供一些加密秘钥或者是其他的一些东西，但他们都不会记录到 ledger 的。</h3><h3 id="登录过期问题"><a href="#登录过期问题" class="headerlink" title="登录过期问题"></a>登录过期问题</h3><p>用户登录以后缺少检查登录过期的问题</p>
+<h3 id="背书策略有如下三类，在创建-channel-的时候就确定了"><a href="#背书策略有如下三类，在创建-channel-的时候就确定了" class="headerlink" title="背书策略有如下三类，在创建 channel 的时候就确定了"></a>背书策略有如下三类，在创建 channel 的时候就确定了</h3><ul>
+<li>role: memeber, admin</li>
+<li>ou: 部门名称</li>
+<li>indenti</li>
+</ul>
+<h3 id="初始块解析出来以后可以看到很多的策略权限，但是目前还没看到可以有设置修改的位置"><a href="#初始块解析出来以后可以看到很多的策略权限，但是目前还没看到可以有设置修改的位置" class="headerlink" title="初始块解析出来以后可以看到很多的策略权限，但是目前还没看到可以有设置修改的位置"></a>初始块解析出来以后可以看到很多的策略权限，但是目前还没看到可以有设置修改的位置</h3><h3 id="所有的镜像版本号得一致若是-1-1-0-的那就都得是-1-1-0-的，比如-fabric-ccenv"><a href="#所有的镜像版本号得一致若是-1-1-0-的那就都得是-1-1-0-的，比如-fabric-ccenv" class="headerlink" title="所有的镜像版本号得一致若是 1.1.0 的那就都得是 1.1.0 的，比如 fabric-ccenv"></a>所有的镜像版本号得一致若是 1.1.0 的那就都得是 1.1.0 的，比如 fabric-ccenv</h3><h3 id="客户端链码安装时-go-版本是会去-GOPATH-下面去找的"><a href="#客户端链码安装时-go-版本是会去-GOPATH-下面去找的" class="headerlink" title="客户端链码安装时 go 版本是会去 GOPATH 下面去找的"></a>客户端链码安装时 go 版本是会去 GOPATH 下面去找的</h3><h3 id="history-查询需要开启-history-db"><a href="#history-查询需要开启-history-db" class="headerlink" title="history 查询需要开启 history db"></a>history 查询需要开启 history db</h3><h3 id="一次-chaincode-调用，可以调用多次-putState"><a href="#一次-chaincode-调用，可以调用多次-putState" class="headerlink" title="一次 chaincode 调用，可以调用多次 putState"></a>一次 chaincode 调用，可以调用多次 putState</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">putState(&apos;k1&apos;, &apos;1&apos;);</span><br><span class="line">putState(&apos;k2&apos;, &apos;2&apos;);</span><br><span class="line">putState(&apos;k3&apos;, &apos;3&apos;);</span><br></pre></td></tr></table></figure>
+<h3 id="链码（不同-channel-之间也可以）之间可以互相调用使用-invokeChaincode-但是只能是只读的。"><a href="#链码（不同-channel-之间也可以）之间可以互相调用使用-invokeChaincode-但是只能是只读的。" class="headerlink" title="链码（不同 channel 之间也可以）之间可以互相调用使用 invokeChaincode 但是只能是只读的。"></a>链码（不同 channel 之间也可以）之间可以互相调用使用 invokeChaincode 但是只能是只读的。</h3><h3 id="kafka-排序最少需要-4-个节"><a href="#kafka-排序最少需要-4-个节" class="headerlink" title="kafka 排序最少需要 4 个节"></a>kafka 排序最少需要 4 个节</h3><ul>
+<li><a href="https://zhuanlan.zhihu.com/p/25358" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/25358</a></li>
+<li><a href="https://www.jianshu.com/p/bd00f24a4771" target="_blank" rel="noopener">https://www.jianshu.com/p/bd00f24a4771</a></li>
+<li><a href="https://docs.google.com/document/d/1vNMaM7XhOlu9tB_10dKnlrhy5d7b1u8lSY8a-kVjCO4/edit" target="_blank" rel="noopener">https://docs.google.com/document/d/1vNMaM7XhOlu9tB_10dKnlrhy5d7b1u8lSY8a-kVjCO4/edit</a></li>
+</ul>
+<h3 id="ca-server-需要先初始化，-再启动"><a href="#ca-server-需要先初始化，-再启动" class="headerlink" title="ca-server 需要先初始化， 再启动"></a>ca-server 需要先初始化， 再启动</h3><h3 id="实例化-chaincode-时可以指定，背书策略"><a href="#实例化-chaincode-时可以指定，背书策略" class="headerlink" title="实例化 chaincode 时可以指定，背书策略"></a>实例化 chaincode 时可以指定，背书策略</h3><p>如下，指定 admin 和 member 然后指定由谁来背书</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&apos;endorsement-policy&apos;: &#123;</span><br><span class="line">    identities: [</span><br><span class="line">        &#123; role: &#123; name: &apos;member&apos;, mspId: ORGS[&apos;org1&apos;].mspid &#125; &#125;,</span><br><span class="line">        &#123; role: &#123; name: &apos;member&apos;, mspId: ORGS[&apos;org2&apos;].mspid &#125; &#125;,</span><br><span class="line">        &#123; role: &#123; name: &apos;admin&apos;, mspId: ORGS[&apos;org1&apos;].mspid &#125; &#125;</span><br><span class="line">    ],</span><br><span class="line">    policy: &#123;</span><br><span class="line">        &apos;1-of&apos;: [</span><br><span class="line">            // &#123; &apos;signed-by&apos;: 2&#125;,</span><br><span class="line">            // &#123; &apos;2-of&apos;: [&#123; &apos;signed-by&apos;: 0&#125;, &#123; &apos;signed-by&apos;: 1 &#125;]&#125;</span><br><span class="line">            &#123; &apos;signed-by&apos;: 0 &#125;,</span><br><span class="line">            &#123; &apos;signed-by&apos;: 1 &#125;</span><br><span class="line">        ]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="没有加入-channel-的-peer-是可以安装-chaincode-的但是无法实例化指定-channel-的-chaincode。"><a href="#没有加入-channel-的-peer-是可以安装-chaincode-的但是无法实例化指定-channel-的-chaincode。" class="headerlink" title="没有加入 channel 的 peer 是可以安装 chaincode 的但是无法实例化指定 channel 的 chaincode。"></a>没有加入 channel 的 peer 是可以安装 chaincode 的但是无法实例化指定 channel 的 chaincode。</h3><h3 id="peer-的配置"><a href="#peer-的配置" class="headerlink" title="peer 的配置"></a>peer 的配置</h3><ul>
+<li>CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fixtures_default（当前目录名_network 名字） 很重要关系到 chaincode 容器是否能链接到相应的 peer</li>
+</ul>
+<h3 id="fabric-网络中加入新的-peer，可以不需要再重新配置-config-只需要相应的-org-向他颁发证书即可"><a href="#fabric-网络中加入新的-peer，可以不需要再重新配置-config-只需要相应的-org-向他颁发证书即可" class="headerlink" title="fabric 网络中加入新的 peer，可以不需要再重新配置 config, 只需要相应的 org 向他颁发证书即可"></a>fabric 网络中加入新的 peer，可以不需要再重新配置 config, 只需要相应的 org 向他颁发证书即可</h3><ol>
+<li>msp<ul>
+<li>admincerts 是 org 的 cert</li>
+<li>cacerts 是 org 的 ca 的 cacerts（最顶层的根证书）</li>
+<li>peer 自己的证书由 org 的 ca 签发</li>
+<li>还有对应的私钥</li>
+<li>tlscacerts 是 org 的 tlscacert(最顶层的根证书)</li>
+</ul>
+</li>
+<li>tls<ul>
+<li>ca.crt 由 org 的 tlscacert 颁发</li>
+<li>server.crt 由 ca.crt 颁发</li>
+</ul>
+</li>
+</ol>
+<h3 id="颁发的-x509-证书的域名是要和节点的域名相匹配"><a href="#颁发的-x509-证书的域名是要和节点的域名相匹配" class="headerlink" title="颁发的 x509 证书的域名是要和节点的域名相匹配"></a>颁发的 x509 证书的域名是要和节点的域名相匹配</h3><p>例如我给 order 节点颁发的是 example.com 这个域名那么，order 机器对外的域名就得是 example 的子域名，若 order 对外的是 ip，则证书失效，证书里面必须体现 ip 才可以。</p>
+<h3 id="hyperledger-的-gossip-协议-简介"><a href="#hyperledger-的-gossip-协议-简介" class="headerlink" title="hyperledger 的 gossip 协议 简介"></a>hyperledger 的 gossip 协议 <a href="https://zhuanlan.zhihu.com/p/27989809" target="_blank" rel="noopener">简介</a></h3><ol>
+<li>当我们配置 peer.gossip.orgLeader = true， 那么每个节点启动后都会去和 orderer 连接并接收消息</li>
+<li>当我们配置 peer.gossip.userLeaderElection = true, 那么组织内配的节点启动后， 会参与 leader 的选举，选出一个 leader 和 orderer 进行通信，其他节点则是通过 leader 节点同步小心。</li>
+</ol>
+<p>上面两项属于 bootstrap 配置，与 anchor peer 无关，anchor peer 是用来和其他组织进行通信的接口</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/fabric/">fabric</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 hello2dj (dj_amazing@sina.com)
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

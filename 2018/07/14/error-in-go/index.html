@@ -1,0 +1,153 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Golang 高效的错误处理 | hello2dj | if you can&#39;t explain it simply, you don&#39;t understand it well enough</title>
+
+  
+  <meta name="author" content="hello2dj (dj_amazing@sina.com)">
+  
+
+  
+  <meta name="description" content="每个人都是带着棱角来到世上，只有磨平棱角才能走的更远">
+  
+
+  
+  
+  <meta name="keywords" content="golang,error">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="Golang 高效的错误处理"/>
+
+  <meta property="og:site_name" content="hello2dj"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="hello2dj" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">hello2dj</a>
+    </h1>
+    <p class="site-description">if you can&#39;t explain it simply, you don&#39;t understand it well enough</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/categories">Categories</a></li>
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>Golang 高效的错误处理</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/07/14/error-in-go/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-07-14T13:00:30.002Z">
+          2018-07-14
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <blockquote>
+<p><a href="https://morsmachine.dk/error-handling" target="_blank" rel="noopener">原文地址</a></p>
+</blockquote>
+<p><img src="https://ideassea.com/content/images/2017/07/golang-error-handling-1-1.jpg" alt=""></p>
+<h4 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h4><p>golang 的错误处理方式一直是他遭受抨击的一个原因之一。探查每一个的错误然后处理确实是一个艰巨的任务，这里有几招可以让你减少错误的处理方式（处理错误的方法）。</p>
+<h3 id="错误处理靠前"><a href="#错误处理靠前" class="headerlink" title="错误处理靠前"></a>错误处理靠前</h3><p>当我们写golang的时候倾向于<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">f, err := os.Open(path)</span><br><span class="line">if err != nil &#123;</span><br><span class="line">  // handle error</span><br><span class="line">&#125;</span><br><span class="line">// do stuff</span><br></pre></td></tr></table></figure></p>
+<p>而不是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">f, err := os.Open(path)</span><br><span class="line">if err == nil &#123;</span><br><span class="line">  // do stuff</span><br><span class="line">&#125;</span><br><span class="line">// handle error</span><br></pre></td></tr></table></figure></p>
+<p>这种方式可以让我们的正常处理方式一路看到底，而不是if之后是错误</p>
+<h3 id="定义属于自己的错误"><a href="#定义属于自己的错误" class="headerlink" title="定义属于自己的错误"></a>定义属于自己的错误</h3><p>处理错误的第一步得是知道错误是啥，如果你的package发生了错误，那么你的用户一定对错误的原因很感兴趣。要做到让你的user知道错误是啥，你只需要实现error interface, 如下就可以了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">type Error string</span><br><span class="line">func (e Error) Error() string &#123; return string(e) &#125;</span><br></pre></td></tr></table></figure></p>
+<p>这样你的用户就可以通过类型断言来判断是否是你的错误<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">result, err := yourpackage.Foo()</span><br><span class="line">if err, ok := err.(yourpackage.Error); ok &#123;</span><br><span class="line">  // use tp to handle err</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>你也可以暴露一个结构体的error给你的用户<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">type OpenError struct &#123;</span><br><span class="line">  File *File</span><br><span class="line">  Error string</span><br><span class="line">&#125;</span><br><span class="line">func (oe *OpenError) Error() string &#123;</span><br><span class="line">  // format error string here</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func ParseFiles(files []*File) error &#123;</span><br><span class="line">  for _, f := range files &#123;</span><br><span class="line">    err := f.parse()</span><br><span class="line">    if err != nil &#123;</span><br><span class="line">      return &amp;OpenError&#123;</span><br><span class="line">        File: f,</span><br><span class="line">        Error: err.Error(),</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>通过这种方式，你的用户就可以分辨具体是哪个文件解析失败了<br>但是当你包裹错误的时候你也应当注意，因为包裹一个error，会丢失一些信息，就好比上面那个你已经丢失了err的类型而只剩下了err里的信息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">var c net.Conn</span><br><span class="line">f, err := DownloadFile(e, path)</span><br><span class="line">switch e := err.(type) &#123;</span><br><span class="line">  default:</span><br><span class="line">    // this will get executed if err == nil</span><br><span class="line">  case net.Error:</span><br><span class="line">    // close connection, not valid anymore</span><br><span class="line">    c.Close()</span><br><span class="line">    return e</span><br><span class="line">  case error:</span><br><span class="line">    // if err is non-nil</span><br><span class="line">    return err</span><br><span class="line">&#125;</span><br><span class="line">// do other things</span><br></pre></td></tr></table></figure></p>
+<p>见上如果此时你包裹了net.Error, 那么这段代码就不会看到net.Error这个错误了，而只能是一段错误信息，此时就无法具体区分错误了（见前一段的包裹方式丢失了具体的错误类型）<br>一个好的处理方式是尽量不要包裹你调用的其他包自己产生的错误，因为用户可能更关心他们产生的错误而不是你的。</p>
+<h3 id="把错误当做状态"><a href="#把错误当做状态" class="headerlink" title="把错误当做状态"></a>把错误当做状态</h3><p>有时候你可能想要持有一个错误而不是抛出，不管你是打算随后上报或者是你知道这个错误很快就会再次出现</p>
+<p>这种情况的一个栗子就是bufio这个包。当bufio.Reader遇到一个错误，他会持有这个错误一直到buffer空为止，只有此时他才会上报这个错误。<br>另一种栗子就是使用go/loader。当使用参数调用遇到错误时，他会持有这个错误，因为有很大的概率他会再次使用相同的参数又调用一遍</p>
+<h3 id="使用函数去避免重复"><a href="#使用函数去避免重复" class="headerlink" title="使用函数去避免重复"></a>使用函数去避免重复</h3><p>如果你有一段错误处理的代码是重复的，你可以把他提出来做一个函数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">func handleError(c net.Conn, err error)&#123;</span><br><span class="line">  // repeated error handling</span><br><span class="line">&#125;</span><br><span class="line">func DoStuff(c net.Conn) error&#123;</span><br><span class="line">  f, err := downloadFile(c, path)</span><br><span class="line">  if err != nil &#123;</span><br><span class="line">    handeError(c, err)</span><br><span class="line">    return err</span><br><span class="line">  &#125;</span><br><span class="line">  f, err := doOtherThing(c)</span><br><span class="line">  if err != nil &#123;</span><br><span class="line">    handleError(c, err)</span><br><span class="line">    return err</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>一个替换方案是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">func handeError(c net.Conn, err error) &#123;</span><br><span class="line">  if err == nil &#123;</span><br><span class="line">    return</span><br><span class="line">  &#125;</span><br><span class="line">  // repeat err handling</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func DoStuff(c net.Conn) error &#123;</span><br><span class="line">  // defer func()&#123; handleError(c, err) &#125;()</span><br><span class="line">  // 这是原文在的位置，但明显有错误啊，err未定义啊</span><br><span class="line">  f, err := downloadFile(c, path)</span><br><span class="line">  defer func()&#123; handleError(c, err) &#125;()// 所以我挪到这里了，但效果是否ok，暂未验证 </span><br><span class="line">  if err != nil &#123;</span><br><span class="line">    return err</span><br><span class="line">  &#125;</span><br><span class="line">  f, err := doOtherThing(c)</span><br><span class="line">  if err != nil</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>ps: 一个golang官网的一段翻译</p>
+<h3 id="Why-is-my-nil-error-value-not-equal-to-nil-为什么我的nil-error-不等于nil呢？"><a href="#Why-is-my-nil-error-value-not-equal-to-nil-为什么我的nil-error-不等于nil呢？" class="headerlink" title="Why is my nil error value not equal to nil? 为什么我的nil error 不等于nil呢？"></a><a href="https://golang.org/doc/faq#nil_error" target="_blank" rel="noopener">Why is my nil error value not equal to nil?</a> 为什么我的nil error 不等于nil呢？</h3><p>先上代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">func returnError() error&#123;</span><br><span class="line">  var p *MyError = nil</span><br><span class="line">  if bad() &#123;</span><br><span class="line">    p = ErrBad</span><br><span class="line">  &#125;</span><br><span class="line">  return p // Will always return a non-nil error</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如上这里的p明明是nil值为啥返回后就不是了呢？这里涉及到另外一个问题就是interface值，我们知道error是一个interface，而MyError是一个struct, 就是要把struct值赋值给interface,在golang里interface值是包括两个的一个type值，一个value值，只有当两者都是nil的时候interface值才是nil, 上述代码，很明显虽然value是nil,可是类型还在啊，就是说type不是你nil而是MyError, 改进如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">func returnsError() error &#123;</span><br><span class="line">  if bad() &#123;</span><br><span class="line">    return ErrBad</span><br><span class="line">  &#125;</span><br><span class="line">  return nil</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/golang/">golang</a><a href="/tags/error/">error</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 hello2dj (dj_amazing@sina.com)
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>
